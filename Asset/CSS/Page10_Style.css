@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+
+/* ===================================
+        main Section
+================================== */
+
+main {
+    max-height: 100%;
+    /* border: solid red; */
+    transition: all .5s ease;
+    padding: 10px;
+    position: relative;
+}
+
+.main-container {
+  /* border: solid green; */
+  max-height: 100%;
+  width: 70%;
+  margin: 0 auto;
+  padding: 5px;
+  position: relative;
+}
+
+.main-container .bannerJudul{
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* border: solid; */
+}
+
+.main-container .bannerJudul img {
+  /* border: solid brown; */
+  width: 100%;
+  z-index: -1;
+  border-radius: 5px;
+}
+
+.main-container .bannerJudul h1 {
+  /* border: solid greenyellow; */
+  width: 100%;
+  color: white;
+  text-shadow: 2px 2px 4px #000000;
+  position: absolute;
+  padding: 10px 20px;
+  bottom: 5%;
+}
+
+.materi {
+  margin: 5% 0;
+  position: relative;
+}
+
+.editor {
+  margin-top: 2%;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  border-radius: 8px;
+  
+}
+.editor:focus {
+  outline: none;
+}
+
+@media(max-width : 1025px) {
+  .main-container {
+    width: 80%;
+  }
+
+  .main-container .bannerJudul h1 {
+    bottom: 5%;
+    }
+    
+   main {
+    min-height: 1000px;
+   } 
+}
+
+
+@media(max-width: 525px){
+  .main-container .folderTugas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .main-container .folderTugas .folder {
+    width: 80%;
+    height: 80%;
+    
+  }
+  .main-container {
+    width: 90%;
+  }
+  .main-container .bannerJudul {
+    height: 15%;
+  }
+  .main-container .bannerJudul h1 {
+    font-size: 16px;
+    bottom: 10px;
+    left: 0;
+  }
+  .main-container .namfolder {
+    font-size: 12px;
+  }
+  .cd-btn--primary {
+    width: 30%;
+    font-size: 12px;
+  }
+  
+}
+
+
+/* ===================================
+      Modal Tambah Folder
+=================================== */
+
+ @media(max-width: 535px){
+  main {
+    display: contents ;
+  }
+  main {
+    position: relative;
+  }
+
+  .modal-tbhtgs .modal {
+    width: 80%;
+  }
+  .tombol .buat {
+    background-color: rgb(4, 104, 245);
+    color: white;
+    font-size: 16px;
+  }
+  .tombol .batal{
+    background-color: transparent;
+    color: red;
+    font-size: 16px;
+  }
+  .modal form .inputan{
+    width: 80%;
+    height: 35%;
+  }
+ }

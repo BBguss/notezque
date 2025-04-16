@@ -1,0 +1,164 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background:  linear-gradient(to right, rgb(31, 127, 245), rgb(108, 169, 244));
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+section {
+    position: relative;
+    max-width: 400px;
+    background-color: rgba(208, 208, 210, 0.213);
+    border: 2px solid rgba(225, 225, 225, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(200px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 3rem;
+}
+
+section h1 {
+    font-size: 2rem;
+    color: #fff;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #fff;
+    text-align: center;
+}
+
+p {
+    color: white;
+    margin-top: 40px;
+}
+
+.pilih {
+    color: #fff;
+    margin-top: 10px;
+    margin-left: 20px;
+    
+}
+
+.inputbox {
+    position: relative;
+    margin: 30px 0;
+    max-width: 310px;
+    border-bottom: 2px solid #fff;
+}
+
+.inputbox label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.5s ease-in-out;
+}
+input:focus ~ label,
+input:valid ~ label {
+    top: -5px;
+}
+
+.inputbox input {
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0 35px 0 5px;
+    color: #fff;
+}
+
+.inputbox icon-icon {
+    position: absolute;
+    right: 8px;
+    color: #fff;
+    font-size: 1.2rem;
+    top: 20px;
+}
+
+.forget {
+    margin: 35px 0;
+    font-size: 0.85rem;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+}
+
+.forget label {
+    display: flex;
+    align-items: center;
+}
+
+.forget label input {
+    margin-right: 3px;
+}
+
+.forget a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.forget a:hover {
+    text-decoration: underline;
+}
+
+button {
+    width: 100%;
+    height: 40px;
+    border-radius: 40px;
+    background: hsl(225, 89%, 48%);
+        color: hsl(0, 0%, 100%);
+        box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+            0 1px 3px hsla(240, 89%, 38%, 0.25),
+            0 2px 6px hsla(248, 89%, 38%, 0.1),
+            0 6px 10px -2px hsla(246, 89%, 38%, 0.25);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.4s ease;
+}
+
+button:hover {
+    background: hsl(209, 89%, 56%);
+        box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+            0 1px 2px hsla(209, 89%, 38%, 0.25),
+            0 1px 4px hsla(209, 89%, 38%, 0.1),
+            0 3px 6px -2px hsla(209, 89%, 38%, 0.1);
+}
+
+.register {
+    font-size: 0.9rem;
+    color: #fff;
+    text-align: center;
+    margin: 25px 0 10px;
+}
+
+.register p a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+}
+
+.register p a:hover {
+    text-decoration: underline;
+}

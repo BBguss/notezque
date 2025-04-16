@@ -1,0 +1,200 @@
+        /* Global Style */
+        body {
+            
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+           
+        }
+
+       main .container {
+            width: 100%;
+        }
+
+        .container {
+            margin: 50px auto;
+        }
+        
+        h1 {
+            font-size: 45px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 3%;
+        }
+
+        main {
+            display: block;
+            transition: all .5s ease;
+            
+        }
+
+        /* Button untuk membuka modal */
+
+        .btn {
+            text-align: right;
+        }
+
+        .open-modal-btn {
+            background-color: rgb(81, 156, 247);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10%;
+        }
+
+        .open-modal-btn:hover {
+            background-color: rgb(7, 114, 244);
+        }
+
+        /* Modal */
+        .modal {
+            display: none; /* Modal tersembunyi secara default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 50%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="file"],
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+
+        .submit-btn {
+            background: hsl(225, 89%, 48%);
+            color: hsl(0, 0%, 100%);
+            box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+                    0 1px 3px hsla(240, 89%, 38%, 0.25),
+                    0 2px 6px hsla(248, 89%, 38%, 0.1),
+                    0 6px 10px -2px hsla(246, 89%, 38%, 0.25);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: hsl(209, 89%, 56%);
+            box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+                    0 1px 2px hsla(209, 89%, 38%, 0.25),
+                    0 1px 4px hsla(209, 89%, 38%, 0.1),
+                    0 3px 6px -2px hsla(209, 89%, 38%, 0.1);
+        }
+
+        /* Div untuk menampilkan hasil */
+        .result-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px auto;
+            width: 80%;
+            box-shadow: 3px 3px 5px 0 grey, 0.5px 0.5px 0 0 gray inset;
+            border-radius: 10px;
+            min-height: 500px;
+            /* border: 1px solid red; */
+        }
+
+        .result-card {
+            width: 31%;
+            height: 300px ;
+            background-color: rgb(241, 241, 241);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px auto;
+        }
+
+        .result-card:hover {
+            scale: 1.05;
+            transition: all ease 1.2s;
+        }
+
+        .result-card img {
+            width: 100%;
+            height: 70%;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+
+
+        /* Close button style */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        a{
+            text-decoration: none;
+            color: black;
+        }
+
+        @media (max-width: 1025px) {
+
+        }
+
+        @media (max-width: 525px) {
+            .result-container {
+                justify-content: center;
+                margin-top: 0;
+            }
+           .result-card {
+            width: 300px;
+            height: 300px;
+           }
+           .open-modal-btn {
+            margin-top: 20px;
+           }
+        }

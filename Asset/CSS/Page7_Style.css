@@ -1,0 +1,457 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+  }
+  
+main {
+    height: 900px;
+    /* border: solid red; */
+    transition: all .5s ease;
+    padding: 30px;
+    display: flex;
+    padding: 5px;
+    transition: all .5s ease;
+}
+  
+  .container {
+    transition: all .5s ease;
+    width: 100%;
+    max-width: 9000px;
+    /* background: #fff; */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .add-task {
+    margin: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: none;
+  }
+
+  
+  .add-task input, .add-task select, .add-task textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .task-lists {
+    display: flex;
+    gap: 20px;
+    width: 80%;
+    margin: 15px auto;
+  }
+  
+  .task-category {
+    flex: 3;
+  }
+  
+  .task-list {
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 5px;
+    min-height: 200px;
+    box-shadow: 3px 3px 5px 0 grey, 0.5px 0.5px 0 0 gray inset;
+    background: linear-gradient(to bottom, rgb(22, 137, 231), rgb(135, 168, 235) 70%);
+  }
+  
+  .task {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .task h3 {
+    margin-bottom: 5px;
+  }
+  
+  .task p, .task span {
+    font-size: 0.9em;
+    color: #555;
+  }
+
+  .deadline p {
+    color: red;
+  }
+
+  .task:hover {
+    border-left: 10px solid rgb(24, 130, 217);
+    background-color:  rgba(122, 178, 241, 0.751) ;
+    h3, p {
+    color: white;
+    transition: all ease 0.5s;
+    }
+    .deadline p {
+    color: rgb(107, 0, 0);
+    font-weight: bold;
+    font-size: 16px;
+    transition: all ease 0.5s;
+    }
+    transition: all ease-in-out 0.4s;
+  }
+  
+  .task button {
+    margin-top: 5px;
+    padding: 5px;
+    border: none;
+    border-radius: full;
+    cursor: pointer;
+    max-width: 50px;
+    max-height: 30px;
+  }
+  
+  .task .delete-task {
+    /* background-color: #dc3545; */
+    color: #000000;
+    border-radius: 100%;
+    border-color: #000000;
+    border: 1px;
+  }
+
+  .task .delete-task:hover {
+    color: red;
+  }
+  
+  /* -------------------------------- 
+
+File#: _1_dialog
+Title: Dialog
+Descr: Overlay informing user about tasks/decisions
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+/* reset */
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: hsl(0, 0%, 100%);
+    color: hsl(230, 7%, 23%);
+    font-size: 1.125rem;
+    /* 18px */
+    line-height: 1.4;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    line-height: 1.2;
+    color: hsl(230, 13%, 9%);
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 2.5rem;
+    /* 40px */
+}
+
+h2 {
+    font-size: 2.125rem;
+    /* 34px */
+}
+
+h3 {
+    font-size: 1.75rem;
+    /* 28px */
+}
+
+h4 {
+    font-size: 1.375rem;
+    /* 22px */
+}
+
+ol,
+ul,
+menu {
+    list-style: none;
+}
+
+button,
+input,
+textarea,
+select {
+    background-color: transparent;
+    border-radius: 0;
+    color: inherit;
+    line-height: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+textarea {
+    resize: vertical;
+    overflow: auto;
+    vertical-align: top;
+}
+
+a {
+    color: hsl(238, 84%, 54%);
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+img,
+video,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* -------------------------------- 
+  
+  Buttons 
+  
+  -------------------------------- */
+
+.btn {
+    text-align: end;
+    margin-right: 10%;
+}
+
+.cd-btn {
+    z-index: 2;
+    position: relative;
+    display: inline-flex;
+    white-space: nowrap;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375em;
+    font-size: 1em;
+    text-decoration: none;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: 0.2s;
+    will-change: transform;
+}
+
+.cd-btn:focus-visible {
+    outline: none;
+}
+
+.cd-btn:active {
+    transform: translateY(2px);
+}
+
+.cd-btn--primary {
+    background: rgb(81, 156, 247);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        0 1px 3px hsla(250, 84%, 38%, 0.25),
+        0 2px 6px hsla(250, 84%, 38%, 0.1),
+        0 6px 10px -2px hsla(250, 84%, 38%, 0.25);
+    color: hsl(0, 0%, 100%);
+}
+
+.cd-btn--primary:hover {
+    background: hsl(221, 84%, 60%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        0 1px 2px hsla(250, 84%, 38%, 0.25),
+        0 1px 4px hsla(250, 84%, 38%, 0.1),
+        0 3px 6px -2px hsla(250, 84%, 38%, 0.25);
+}
+
+.cd-btn--primary:focus-visible {
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        0 1px 2px hsl(250, 84%, 38%),
+        0 1px 4px hsla(250, 84%, 38%, 0.1),
+        0 3px 6px -2px hsla(250, 84%, 38%, 0.25),
+        0 0 0 2px hsl(0, 0%, 100%),
+        0 0 0 4px hsl(236, 84%, 54%);
+}
+
+.cd-btn--subtle {
+    background: hsl(0, 89%, 48%);
+    color: hsl(0, 0%, 100%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+            0 1px 3px hsla(0, 89%, 38%, 0.25),
+            0 2px 6px hsla(248, 89%, 38%, 0.1),
+            0 6px 10px -2px hsla(0, 89%, 38%, 0.25);
+}
+
+.cd-btn--subtle:hover {
+    background: hsl(10, 89%, 56%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+            0 1px 2px hsla(10, 89%, 38%, 0.25),
+            0 1px 4px hsla(209, 89%, 38%, 0.1),
+            0 3px 6px -2px hsla(9, 89%, 38%, 0.1);
+}
+
+.cd-btn--subtle:focus-visible {
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.1),
+        0 0 0 1px hsla(230, 13%, 9%, 0.02),
+        0 0.3px 0.4px hsla(230, 13%, 9%, 0.025),
+        0 1px 3px -1px hsla(230, 13%, 9%, 0.2),
+        0 3.5px 6px hsla(230, 13%, 9%, 0.12),
+        0 0 0 2px hsl(0, 0%, 100%),
+        0 0 0 4px hsl(230, 7%, 23%);
+}
+
+.cd-btn--accent {
+    background: hsl(225, 89%, 48%);
+    color: hsl(0, 0%, 100%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        0 1px 3px hsla(240, 89%, 38%, 0.25),
+        0 2px 6px hsla(248, 89%, 38%, 0.1),
+        0 6px 10px -2px hsla(246, 89%, 38%, 0.25);
+}
+
+.cd-btn--accent:hover {
+    background: hsl(209, 89%, 56%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        0 1px 2px hsla(209, 89%, 38%, 0.25),
+        0 1px 4px hsla(209, 89%, 38%, 0.1),
+        0 3px 6px -2px hsla(209, 89%, 38%, 0.1);
+}
+
+.cd-btn--accent:focus-visible {
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        0 1px 2px hsla(342, 89%, 38%, 0.25),
+        0 1px 4px hsla(342, 89%, 38%, 0.1),
+        0 3px 6px -2px hsla(342, 89%, 38%, 0.1),
+        0 0 0 2px hsl(0, 0%, 100%),
+        0 0 0 4px hsl(242, 89%, 48%);
+}
+
+.cd-btn--disabled,
+.cd-btn[disabled],
+.cd-btn[readonly] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* -------------------------------- 
+  
+  Component 
+  
+  -------------------------------- */
+
+.dialog {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 25;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.dialog__content {
+    width: calc(100% - 3rem);
+    max-width: 32rem;
+    overflow: auto;
+    padding: 1.5rem;
+    background-color: hsl(0, 0%, 100%);
+    box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+        0 1.2px 1.9px -1px hsla(230, 13%, 9%, 0.01),
+        0 3px 5px -1px hsla(230, 13%, 9%, 0.015),
+        0 8px 15px -1px hsla(230, 13%, 9%, 0.05),
+        0 28px 40px -1px hsla(230, 13%, 9%, 0.1);
+    border-radius: 0.75em;
+}
+
+.dialog__title {
+    color: hsl(230, 13%, 9%);
+    font-size: 1.375rem;
+    margin-bottom: 0.75rem;
+}
+
+.dialog__description {
+    color: hsl(225, 4%, 47%);
+    font-size: 0.9375rem;
+}
+
+.dialog__footer {
+    background: none;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: end;
+}
+
+.dialog--is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dialog--sticky {
+    align-items: flex-start;
+}
+
+.dialog--sticky .dialog__content {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.dialog[data-animation=on] {
+    transition: opacity 0.3s, visibility 0s 0.3s;
+    perspective: 800px;
+}
+
+.dialog[data-animation=on] .dialog__content {
+    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateY(10%);
+}
+
+.dialog[data-animation=on].dialog--is-visible {
+    transition: opacity 0.3s;
+}
+
+.dialog[data-animation=on].dialog--is-visible .dialog__content {
+    transform: translateY(0);
+}
+
+.dialog[data-animation=on].dialog--sticky .dialog__content {
+    transform: translateY(-100%);
+}
+
+.dialog[data-animation=on].dialog--sticky.dialog--is-visible {
+    transition: none;
+}
+
+.dialog[data-animation=on].dialog--sticky.dialog--is-visible .dialog__content {
+    transform: translateY(0);
+}

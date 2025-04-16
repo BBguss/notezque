@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", serif;
+}
+
+
+header .top-navbar {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(to right, rgb(31, 127, 245), rgb(108, 169, 244));
+    box-shadow: 0 5px 5px 0 gray;
+}
+
+header .top-navbar nav {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .top-navbar nav a {
+    color: white;
+}
+
+header .top-navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.carousel {
+    box-shadow: 1px 1px 3px 1px rgb(88, 88, 88); 
+    margin-bottom: 10px;
+}
+
+header .top-navbar .nav ul {
+    display: inline-flex;
+    text-wrap: wrap;
+    gap: 10px;
+}
+
+header .nav ul li {
+    list-style: none;
+}
+
+header .nav li a {
+    text-decoration: none;
+}
+
+header .top-navbar .loginRegist {
+    display: flex;
+    gap: 20px;
+} 
+
+header .loginRegist button {
+    padding: 10px;
+    border-radius: 10px;
+    align-items:center;
+    margin: auto 0px;
+    font-size: 16px;
+}
+
+.loginRegist .login {
+    background-color: transparent;
+    box-shadow: 1px 1px 3px 1px black; 
+    /* box shadow: kanan, bawah, blur, keseluruhan, warna */
+}
+
+/* mouse masuk kebagian login */
+.login:hover {
+    scale: 1.2;
+    background-color: rgb(15, 127, 248);
+    color: white;
+    transition: scale 1s, background-color 1s;
+    /* transition = delay */
+}
+
+main h1 {
+    /* border: solid; */
+    width: 100%;
+    margin: 30px auto 10px auto;
+    text-align: center;
+    padding: 10px;
+    font-weight: 700;
+    background: linear-gradient(to right, rgb(90, 164, 255),
+        rgb(2, 36, 78));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.loginRegist2  {
+    margin: 0 auto 30px auto;
+    width: 100%;
+    text-align: center;
+    /* border: solid; */
+}
+
+.loginRegist2 button {
+    box-shadow: 1px 1px 3px 2px black; 
+    /* box shadow: kanan, bawah, blur, keseluruhan, warna */
+    background-color:  rgb(31, 127, 245);
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+    align-items:center;
+    margin: 0 auto;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.loginRegist2 :hover {
+    scale: 1.2;
+    background-color: rgb(15, 127, 248);
+    color: white;
+    transition: scale 1s, background-color 2s;
+}
+
+/* mouse masuk kebagian register */
+.register:hover {
+    scale: 1.1;
+    background-color: rgb(15, 127, 248);
+    transition: scale 1s, background-color 1s;
+}
+
+.carousel-inner img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.gif-container {
+    width: 65%;
+    margin: 25px auto;
+    /* border: solid red; */
+    border-radius: 5px;
+    box-shadow: 5px 2px 10px  black;
+}
+
+.gif-container .carousel-control-next:hover, .carousel-control-prev:hover {
+    background-color: #42414151;
+}
+
+@media(max-width : 1025px) {
+    main {
+        min-height: 900px;
+    }
+
+}
+

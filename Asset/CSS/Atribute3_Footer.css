@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+
+footer {
+    /* border: solid red; */
+    background: #303030;
+    position: relative;
+}
+
+footer .container {
+    /* border: solid green; */
+    display: grid;
+    grid-template-columns: 45% 45%;
+    padding: 25px;
+    justify-content: space-around;
+}
+
+footer .contactus {
+    /* border: solid gold; */
+    text-align: end;
+    margin: 10px 0;
+}
+
+footer .aboutus {
+    margin: 10px 0;
+}
+
+footer .container .sec h2 {
+    /* border: solid blue; */
+    color: whitesmoke;
+    margin-bottom: 10px;
+}
+
+    footer .container .sec p {
+        color: whitesmoke;
+        
+    }
+
+    footer .container .aboutus p {
+        /* border: solid;  */
+        width: 80%; 
+        text-align: justify;
+    }
+
+    footer .container .satu {
+        /* border: solid mediumpurple; */
+        display: flex;
+        gap: 10px;
+    }
+
+footer .container .aboutus ul {
+    /* border: solid red; */
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+footer .container .contactus ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+footer .container ul {
+    list-style:none;
+    padding: 0px;
+    margin: 5px 0;
+}
+
+footer .container .satu li a {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background: #000000;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+footer .container .satu li a i {
+    color: white;
+    font-size: 20px;
+}
+
+footer .container .contactus .info li {
+    display: flex;
+    gap: 10px;
+    justify-content: end;
+}
+
+footer .container .contactus .info li span {
+    color: #000000;
+    font-size: 20px;
+    /* border: solid red; */
+}
+
+footer .container .contactus .info li a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
+footer .copyrightText {
+    /* border: solid mediumturquoise; */
+    justify-items: center;
+    background: #000000;
+    padding: 10px 10px 10px 10px;
+    text-align: center;
+    color: whitesmoke;
+}
+
+@media(max-width : 1025px) {
+
+}
+
+@media(max-width: 525px) {
+footer .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* border: solid; */
+    padding: 25px;
+    justify-content: space-around; 
+}
+footer .contactus {
+    text-align: left;
+    margin: 10px 0;
+}
+footer .container .contactus .info li{
+    justify-content: start;
+}
+}

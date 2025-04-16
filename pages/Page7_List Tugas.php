@@ -1,0 +1,167 @@
+<?php
+include '../koneksi.php';
+
+if (isset($_POST['simpan'])) {
+  $judul = $_POST['tugas'];
+  $matkul = $_POST['matkul'];
+  $deskripsi = $_POST['deskripsi'];
+  $tanggal = $_POST['dl1'];  
+  $waktu = $_POST['dl2'];    
+
+  $deadline = "$tanggal $waktu:00"; 
+
+  $sql = "INSERT INTO tugas (judul_tugas, matkul, desc_tugas, deadline) 
+            VALUES ('$judul', '$matkul', '$deskripsi', '$deadline')";
+
+  if (mysqli_query($conn, $sql)) {
+
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+    
+    // Redirect ke halaman ini sendiri
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
+}
+
+$query = "SELECT * FROM tugas ORDER BY deadline ASC";
+$dataTugas = mysqli_query($conn, $query);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NotezQue</title>
+  <link rel="icon" type="image/x-icon" href="Logo NotezQue.svg">
+  <link rel="stylesheet" href="../Asset/css/page7_style.css">
+  <link rel="stylesheet" href="../asset/font/Font.css">
+  <link rel="stylesheet" href="../asset/css/Atribute1_Top Nav.css">
+  <link rel="stylesheet" href="../asset/css/Atribute2_Side Nav.css">
+  <link rel="stylesheet" href="../asset/css/Atribute3_Footer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <div class="topNav-db">
+      <nav>
+        <div class="logo">
+          <a href="page5_Dasboard.php"><img src="Logo NotezQue.svg" alt=""></a>
+        </div>
+        <div class="dropdown">
+          <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36"
+              height="36"></iconify-icon></i>
+          <div class="dropdown-content">
+            <a href="#" onclick="">Proflie</a>
+            <a href="page1_homepage.php" onclick="logout()">Logout</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <aside>
+      <input type="checkbox" name="" id="check">
+      <label for="check">
+        <i id="tombol" style="color: white;"><iconify-icon icon="tabler:menu-2" width="32"
+            height="32"></iconify-icon></i>
+        <i id="batal" style="color: white;"><iconify-icon icon="tabler:menu-3" width="32"
+            height="32"></iconify-icon></i>
+      </label>
+      <div class="sideNav-db">
+        <nav>
+          <h2>Menu</h2>
+          <a href="page5_Dasboard.php" class="active">
+            <iconify-icon icon="ic:round-space-dashboard" width="38" height="38"></iconify-icon>
+            <span>Dashboard</span>
+          </a>
+          <a href="page6_Kalender.php">
+            <iconify-icon icon="uim:schedule" width="38" height="38"></iconify-icon>
+            <span>Kalender</span>
+          </a>
+          <a href="page7_List Tugas.php">
+            <iconify-icon icon="fluent:task-list-square-ltr-24-filled" width="38" height="38"></iconify-icon>
+            <span>Tugas</span>
+          </a>
+          <a href="page8_Mata Kuliah.php">
+            <iconify-icon icon="mingcute:book-5-line" width="38" height="38"></iconify-icon>
+            <span>Mata kuliah</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+  </header>
+
+  <main id="main">
+    <div class="container">
+      <h1>List Tugas</h1>
+      <div class="btn">
+        <button class="cd-btn cd-btn--primary" aria-controls="dialog-1">Tambah Tugas</button>
+      </div>
+
+      <div id="dialog-1" class="dialog js-dialog" data-animation="on">
+        <div class="dialog__content" role="alertdialog" aria-labelledby="dialog-title-1"
+          aria-describedby="dialog-description-1">
+          <h4 id="dialog-title-1" class="dialog__title">Tambah Tugas</h4>
+
+          <form action="" method="post">
+            <div id="dialog-description-1 inputMK" class="dialog__description add-task">
+              <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required>
+              <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required>
+              <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas" required></textarea>
+              <input type="date" id="deadline1" name="dl1" required>
+              <input type="time" id="deadline2" name="dl2" required>
+            </div>
+            <footer class="dialog__footer">
+              <button class="cd-btn cd-btn--subtle js-dialog__close">Cancel</button>
+              <button type="submit" class="cd-btn cd-btn--accent" name="simpan">Simpan</button>
+            </footer>
+          </form>
+        </div>
+      </div>
+
+      <div class="task-lists">
+        <div class="task-category">
+          <div id="not-started" class="task-list">
+            <?php
+            if ($dataTugas && mysqli_num_rows($dataTugas) > 0) {
+              while ($row = mysqli_fetch_assoc($dataTugas)) {
+                // Format tanggal untuk ditampilkan
+                $formatted_deadline = date('d-m-Y H.i', strtotime($row['deadline']));
+
+                echo '<div class="task">
+                  <div>
+                    <div class="task-header">
+                      <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>
+                    </div>
+                    <p><strong>Mata Kuliah:</strong> ' . htmlspecialchars($row['matkul']) . '</p>
+                    <p><strong>Deskripsi Tugas:</strong> ' . htmlspecialchars($row['desc_tugas']) . '</p>
+                    <div class="deadline">
+                      <p><strong>Deadline:</strong> ' . $formatted_deadline . '</p>
+                    </div>
+                  </div>
+                  <iconify-icon class="delete-task" icon="material-symbols:cancel-outline-rounded" width="32" height="32" onclick="deleted(this)"></iconify-icon>
+                </div>';
+              }
+            } 
+            ?>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <?php include 'footer.php' ?>
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <script src="../asset/js/Atribute 1_Top Nav.js"></script>
+  <script src="../asset/js/Atribute 2_Side Nav.js"></script>
+  <script src="../asset/js/page 7_Script.js"></script>
+</body>
+
+</html>

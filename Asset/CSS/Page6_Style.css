@@ -1,0 +1,274 @@
+* {
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+
+/* =====================================
+          Main Section
+===================================== */
+main {
+    padding: 5px;
+    /* border: solid red; */
+    transition: ease 1s;
+    display: flex;
+}
+
+main .main-container {
+  /* border: ridge; */
+  padding: 5px;
+  display: flex;
+  margin: 20px 0 20px auto;
+  flex-direction: column;
+  box-shadow: 0px 0px 5px 1px gray;
+}
+
+@media(max-width : 1025px) {
+  main{
+     display: block;
+  }
+}
+
+@media(max-width: 525px){
+  main {
+      display: contents;
+  }
+}
+
+/* ==========================================
+          Kalender Section
+========================================== */
+
+main .main-container .jadwal {
+  display: flex;
+  align-items: center;
+  /* border: solid; */
+  padding: 5px;
+  justify-content: center;
+}
+.main-container .next, .prev {
+  display: flex;
+  cursor: pointer;
+}
+main .weeks {
+  /* border: solid yellow; */
+  margin: 5px;
+  padding: 5px;
+}
+
+main .bln-thn{
+  font-weight: 600;
+  font-size: 20px;
+}
+
+main .weeks .hari {
+  /* border: solid red; */
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+}
+main .weeks .hari div {
+  width: 100%;
+  text-align: center;
+  border: 1px ridge;
+  background-color: darkgrey;
+  padding: 5px;
+}
+main .weeks .tglBln {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 16px;
+}
+main .weeks .tglBln .tgl {
+  width: calc(100%/7);
+  text-align: center;
+  border: 1px ridge;
+  height: 130px;
+  padding: 5px;
+  cursor: pointer;
+}
+.weeks .tglBln .tgl:hover {
+  color: rgb(0, 110, 255);
+  box-shadow: inset 0 3px 1px 0 rgb(1, 94, 235);
+}
+.weeks .tglBln .tglSkrg {
+  color: rgb(0, 85, 255);
+  box-shadow: inset 0px 3px 3px 0px rgb(1, 94, 235);
+}
+.tglBln .tglSblm, .tglStlh {
+  color: grey;
+}
+.tglBln .tgl .acara {
+  /* border: solid; */
+  text-align: left;
+  padding: 5px;
+  font-size: 14px;
+  color: white;
+  box-shadow: 5px 5px 1px 0 grey;
+  margin: 5px;
+  text-transform: capitalize;
+}
+
+@media (max-width: 525px){
+  main .weeks .tglBln .tgl{
+    height: 100px;
+  }
+}
+
+/* ================================================
+                  Side Event 
+================================================ */
+
+.side-listAcara .acara iconify-icon:hover {
+  color: rgb(244, 32, 32);
+  cursor: pointer;
+}
+.side-listAcara .acara-container {
+  display: none;
+}
+.side-listAcara {
+  /* border: solid red; */
+  border-radius: 5px;
+  width: 20%;
+  padding: 5px;
+  margin: 20px auto 20px 0px;
+  background-color: rgba(96, 165, 255, 0.431);
+  box-shadow: 1px 1px 5px 0px gray;
+  transition: ease all 1s;
+}
+
+.side-listAcara .acara {
+  margin: 5px auto;
+  border-radius: 10px;
+  padding: 10px;
+  z-index: 10;
+  color: white;
+}
+
+@media(max-width : 1025px) {
+  .detailAcara .bukaDetail, .tutupDetail {
+    left: -20%;
+  }
+  .side-listAcara {
+    width: 30%;
+    right: -32%;
+    top: 110px;
+  }
+}
+
+@media(max-width: 525px){
+  .detailAcara .bukaDetail, .tutupDetail {
+    left: -35%;
+  }
+  .side-listAcara {
+    width: 30%;
+    right: -32%;
+    top: 110px;
+  }
+  }
+
+
+/* =========================================
+              Modal Form
+========================================= */
+
+.modal {
+  /* border: solid red; */
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #010101ab;
+  z-index: 40;
+  justify-items: center;
+  align-items: center;
+}
+
+.modal .form {
+  border: solid;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 12%;
+}
+
+form {
+  /* border: solid blue; */
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  transition: all ease 1s;
+  
+}
+.modal form .inputan {
+  height: 100%;
+  /* border: solid; */
+  position: relative;
+}
+
+.modal form input[type],.modal form textarea {
+  /* border: solid; */
+  margin: 10px 0 0 0;
+}
+
+.modal form .btn {
+  text-align: end;
+  padding: 5px;
+  margin-top: 55px;
+}
+.modal .btn button {
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+}
+.btn .btl {
+  background: hsl(0, 89%, 48%);
+    color: hsl(0, 0%, 100%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+      0 1px 3px hsla(0, 89%, 38%, 0.25),
+      0 2px 6px hsla(248, 89%, 38%, 0.1),
+      0 6px 10px -2px hsla(0, 89%, 38%, 0.25);
+  cursor: pointer;
+}
+
+.btn .btl:hover {
+  background: hsl(10, 89%, 56%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+      0 1px 2px hsla(10, 89%, 38%, 0.25),
+      0 1px 4px hsla(209, 89%, 38%, 0.1),
+      0 3px 6px -2px hsla(9, 89%, 38%, 0.1);
+}
+.btn .save {
+  background: hsl(225, 89%, 48%);
+    color: hsl(0, 0%, 100%);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+      0 1px 3px hsla(240, 89%, 38%, 0.25),
+      0 2px 6px hsla(248, 89%, 38%, 0.1),
+      0 6px 10px -2px hsla(246, 89%, 38%, 0.25);
+}
+.btn .save:hover{
+  background: hsl(209, 89%, 56%);
+  box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+      0 1px 2px hsla(209, 89%, 38%, 0.25),
+      0 1px 4px hsla(209, 89%, 38%, 0.1),
+      0 3px 6px -2px hsla(209, 89%, 38%, 0.1);
+}
+.modal form input,[type=text], textarea, [type=time]{
+  width: 100%;
+  border-radius: 5px;
+  border: 2px ridge;
+  height: 45px;
+  /* border: solid; */
+  padding: 0 5px;
+  align-content: center;
+}
+
+@media(max-width: 525px){
+ .modal .form {
+   width: 70%;
+   margin-top: 50%;
+ }
+}

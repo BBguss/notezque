@@ -1,0 +1,97 @@
+
+header aside .sideNav-db {
+    /* border: solid; */
+    position: fixed;
+    left: -240px;
+    height: 100%;
+    background: linear-gradient(to top, rgb(31, 127, 245), rgb(108, 169, 244));
+    transition: all .5s ease;
+    margin: 0 10px 0 0;
+    box-shadow: 1px 0px 5px 0 inset, 1px 0px 3px 0 grey;
+    
+  }
+
+header aside .sideNav-db h2 {
+    font-size: 28px;
+    color: #ffffff;
+    line-height: 70px;
+    text-align: center;
+    /* border: solid red; */
+  }
+
+header aside .sideNav-db a{
+    /* border: solid; */
+    display: block;
+    height: 65px;
+    width: 100%;
+    color: #ffffff;
+    line-height: 65px;
+    padding-left: 30px;
+    box-sizing: border-box;
+    border-left: 5px solid transparent;
+    transition: all .5s ease;
+}
+
+header .sideNav-db a:hover{
+    border-left: 5px solid rgb(43, 120, 243);
+    color: rgb(43, 120, 243);
+    background: linear-gradient(to left, rgb(196, 227, 253), rgb(160, 192, 255));
+    border-bottom-right-radius: 25px;
+    transition: ease-out all .5s;
+  }
+
+header aside label #tombol,label #batal{
+    position: absolute;
+    left: 20px;
+    top: 30px;
+    /* border: solid; */
+    cursor: pointer;
+    border-radius: 5px;  
+    padding: 8px;
+    height: 45px;
+    width: 45px;
+    transition: all .5s ease;
+}
+
+header aside label #batal{
+    opacity: 0;
+    visibility: hidden;
+}
+
+header aside #check:checked ~ .sideNav-db{
+    left: 0;
+}
+
+header aside #check:checked ~ label #tombol{
+    /* margin-left: 245px; */
+    opacity: 0;
+    visibility: hidden;
+}
+
+header aside #check:checked ~ label #batal{
+    /* margin-left: 245px; */
+    opacity: 1;
+    visibility: visible;
+}
+
+#check{
+    display: none;
+}
+
+aside .sideNav-db nav a {
+    /* border: solid; */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+/* @media(max-width : 860px){
+    header aside .sideNav-db {
+        margin: 100px 0;
+        width: 70px;
+        height: auto;
+        left: 0;
+    }
+} */
+
