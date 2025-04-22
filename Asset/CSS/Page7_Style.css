@@ -128,10 +128,12 @@ main {
     border: 1px;
   }
 
-  .task .delete-task:hover {
+  .hapus {
+    color: black;
+  }
+  .hapus:hover {
     color: red;
   }
-  
   /* -------------------------------- 
 
 File#: _1_dialog

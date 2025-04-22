@@ -1,7 +1,13 @@
 <?php
 include '../koneksi.php';
+session_start();
 
 $login_message = '';
+
+if (isset($_SESSION['is_login'])) {
+    header("Location: Page5_Dashboard.php");
+
+}
 
 if (isset($_POST['login'])) {
     $userormail = trim($_POST['userormail']);
@@ -17,6 +23,10 @@ if (isset($_POST['login'])) {
 
         // Cocokkan password
         if (password_verify($password, $data['password'])) {
+            $_SESSION ["username"] = $data["username"];
+            $_SESSION["email"] = $data["email"];
+            $_SESSION ["is_login"] = true;
+
             header("Location: Page5_Dasboard.php");
             exit();
         } else {
@@ -46,12 +56,12 @@ if (isset($_POST['login'])) {
 
 <body>
     <section>
-        <?php if ($login_message): ?>
-            <p style="color: red; text-align: center;"><?= $login_message ?></p>
-        <?php endif; ?>
-
+        
         <!-- Form harus mengarah ke file INI SENDIRI (bukan dashboard) -->
         <form action="" method="POST">
+            <?php if ($login_message): ?>
+                <p class="login_message"><?= $login_message ?></p>
+            <?php endif; ?>
             <h1>Masuk</h1>
             <div class="inputbox">
                 <input type="text" name="userormail" required>
@@ -71,6 +81,21 @@ if (isset($_POST['login'])) {
             </div>
         </form>
     </section>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const loginMessage = document.querySelector('.login_message');
+        if (loginMessage) {
+            setTimeout(() => {
+                loginMessage.style.transition = "opacity 1.5s ease-out";
+                loginMessage.style.opacity = 0;
+                setTimeout(() => {
+                    loginMessage.remove();
+                }, 880);
+            }, 880);
+        }
+    });
+</script>
 </body>
 
 </html>

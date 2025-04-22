@@ -27,5 +27,20 @@ if ($conn->query($sql_tugas) === TRUE) {
     echo "Error membuat tabel tugas: " . $conn->error . "<br>";
 }
 
+$sql_kalender_acara = "CREATE TABLE IF NOT EXISTS kalender_acara (
+    id_acara INT AUTO_INCREMENT PRIMARY KEY,
+    judul_acara VARCHAR(100) NOT NULL,
+    desc_acara TEXT NOT NULL,
+    waktu_acara DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+
+if ($conn->query($sql_kalender_acara) === TRUE) {
+    echo "Tabel kalender_acara berhasil dibuat.<br>";
+} else {
+    echo "Error membuat tabel kalender_acara: " . $conn->error . "<br>";
+}
+
+
 $conn->close();
 ?>

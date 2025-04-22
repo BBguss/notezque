@@ -1,5 +1,24 @@
 <?php
 include '../koneksi.php';
+session_start();
+
+if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
+    header("Location: Page2_loginpage.php");
+    exit();
+}
+
+if (isset($_POST['logout'])) {
+    session_unset();
+    session_destroy();
+    header('location: Page1_homepage.php');
+}
+
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    mysqli_query($conn, "DELETE FROM tugas WHERE id_tugas = $id");
+    header("Location:". $_SERVER['PHP_SELF']);
+    exit();
+}
 
 $query = "SELECT * FROM tugas ORDER BY deadline ASC";
 $dataTugas = mysqli_query($conn, $query);
@@ -33,8 +52,11 @@ $dataTugas = mysqli_query($conn, $query);
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
                     <div class="dropdown-content">
-                        <a href="#" onclick="">Profile</a>
-                        <a href="page1_homepage.php" onclick="logout()">Logout</a>
+                        <form action="" method="post">
+                            <button type="submit" name="profile">Profile</button>
+                            <button type="submit" name="logout">Logout</button>
+                        </form>
+                        <!-- <a href="page1_homepage.php" onclick="logout()" name="logout">Logout</a> -->
                     </div>
                 </div>
             </nav>
@@ -73,6 +95,7 @@ $dataTugas = mysqli_query($conn, $query);
 
     <main id="main">
         <div class="mainContainer-db">
+            <h1>Halo <?= $_SESSION['username']?> selamat datang kembali</h1>
             <div class="container-atas">
                 <div class="jadwalKuliah-db">
                     <div class="nama-matkul">
@@ -201,7 +224,10 @@ $dataTugas = mysqli_query($conn, $query);
                                 <p><strong>Deadline:</strong> ' . $formatted_deadline . '</p>
                             </div>
                             <h4><strong>Judul tugas:</strong> ' . htmlspecialchars($row['judul_tugas']) . '</h4>
-                            <iconify-icon class="cancel-btn" icon="material-symbols:cancel-outline-rounded" width="32" height="32"></iconify-icon>
+                            <p><strong>Mata Kuliah:</strong> ' . htmlspecialchars($row['matkul']) . '</p>
+                            <a href="?id=' . $row['id_tugas'] . '" onclick="return confirm(\'Yakin hapus?\')" class="hapus">
+                                <iconify-icon class="cancel-btn" icon="material-symbols:cancel-outline-rounded" width="32" height="32"></iconify-icon>
+                            </a>
                         </div>
                         ';
                         }

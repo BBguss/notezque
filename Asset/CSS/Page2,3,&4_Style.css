@@ -162,3 +162,15 @@ button:hover {
 .register p a:hover {
     text-decoration: underline;
 }
+
+section .login_message, .register_message {
+    font-weight: 500;
+    color: red;
+    text-align: center;
+    margin-top: 0;
+    padding: 10px;
+    position: relative;
+    background-color: #ffffff59;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;  
+} 

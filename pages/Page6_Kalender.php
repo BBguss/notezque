@@ -1,3 +1,37 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
+    header("Location: Page2_loginpage.php");
+    exit();
+}
+
+if (isset($_POST['logout'])) {
+    session_unset();
+    session_destroy();
+    header('location: Page1_homepage.php');
+}
+
+if (isset($_POST['save'])) {
+    $judul_acara = $_POST['j.acara'];
+    $deskripsi_acara = $_POST['d.acara'];
+    $deadline_acara = $_POST['dl.acara'];
+
+    $sql = "INSERT INTO kalender_acara (judul_acara, desc_acara, waktu_acara) 
+            VALUES ('$judul_acara', '$deskripsi_acara', '$deadline_acara')";
+                
+    if (mysqli_query($conn, $sql)) {
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+
+}
+
+// $query = "SELECT * FROM kalender_acara GROUP BY deadline";
+// $dataAcara = mysqli_query($conn, $query);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,14 +60,16 @@
         <div class="topNav-db">
             <nav>
                 <div class="logo">
-                    <a href="page5_Dasboard.php"><img src="Logo NotezQue.svg" alt=""></a>
+                    <a href="page5_Dasboard.php"><img src="../Asset/images/Logo NotezQue.svg" alt=""></a>
                 </div>
                 <div class="dropdown">
-                    <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light"
-                            width="36" height="36"></iconify-icon></i>
+                    <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
                     <div class="dropdown-content">
-                        <a href="#" onclick="">Proflie</a>
-                        <a href="page1_homepage.php" onclick="logout()">Logout</a>
+                        <form action="" method="post">
+                            <button type="submit" name="profile">Profile</button>
+                            <button type="submit" name="logout">Logout</button>
+                        </form>
+                        <!-- <a href="page1_homepage.php" onclick="logout()" name="logout">Logout</a> -->
                     </div>
                 </div>
             </nav>
@@ -77,11 +113,11 @@
         <div class="main-container">
             <div class="jadwal">
                 <div>
-                    <i class="prev"><iconify-icon icon="mingcute:left-fill" width="32" height="32"></iconify-icon></i>
+                    <i class="prev"><iconify-icon icon="mingcute:left-fill" width="32" height="32" style="color: #4285f4"></iconify-icon></i>
                 </div>
                 <div class="bln-thn"></div>
                 <div>
-                    <i class="next"><iconify-icon icon="mingcute:right-fill" width="32" height="32"></iconify-icon></i>
+                    <i class="next"><iconify-icon icon="mingcute:right-fill" width="32" height="32"style="color: #4285f4"></iconify-icon></i>
                 </div>
             </div>
 
@@ -103,7 +139,8 @@
 
 
         <div class="side-listAcara">
-            <h2 style="text-align: center;">List acara</h2>
+            <h2 class="side-title">List acara</h2>
+            
         </div>
 
         <div class="acara-container">
@@ -113,27 +150,29 @@
 
     </main>
 
-    <aside id="modal" class="modal">
+    <aside id="modal" class="modal" style="">
         <div class="form">
-            <form action="/submit">
+            <form action="" method="post">
+                <h2 id="modalTitle" class="sr-only">Add New Event</h2>
                 <div class="inputan">
                     <label for="title">
-                        <input type="text" id="title" placeholder="Masukan Judul" required>
+                        <input type="text" name="j.acara" id="title" placeholder="Judul Acara" required>
                     </label>
                     <label for="desk">
-                        <textarea id="desk" placeholder="Tambah Deskripsi" required></textarea>
+                        <textarea id="desk" name="d.acara" placeholder="Deskripsi Acara"></textarea>
                     </label>
                     <label for="tenggat">
-                        <input type="time" id="tenggat" required>
+                        <input type="time" name="dl.acara" id="tenggat" required>
                     </label>
                     <div class="btn">
-                        <button type="button" class="btl" id="closeBtn">Batal</button>
-                        <button type="button" class="save" id="save">Simpan</button>
+                        <button type="button" class="btl" id="closeBtn" name="batal">Batal</button>
+                        <button type="button" class="save" id="save" name="save">Simpan</button>
                     </div>
                 </div>
             </form>
         </div>
     </aside>
+    
     <?php include 'footer.php'?>
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <script src="../asset/js/Atribute 1_Top Nav.js"></script>

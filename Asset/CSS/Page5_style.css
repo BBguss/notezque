@@ -416,9 +416,9 @@ aside .aside-container h1 {
 .cancel-btn {
     position: absolute;
     right: 10px;
-    bottom: 10px;
+    bottom: 20px;
     cursor: pointer;
-    
+    color: black;
 }
 
 .cancel-btn:hover {
@@ -449,3 +449,4 @@ aside .aside-container h1 {
         grid-template-columns: 1fr;
     }
 }
+

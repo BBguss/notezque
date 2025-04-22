@@ -1,7 +1,12 @@
 <?php
 include '../koneksi.php';
+session_start();
 
 $register_message = '';
+if (isset($_SESSION['is_login'])) {
+    header("Location: Page5_Dashboard.php");
+}
+
 
 if (isset($_POST['register'])) {
     $username = trim($_POST['username']);
@@ -12,9 +17,11 @@ if (isset($_POST['register'])) {
     // Validasi password cocok
     if ($password !== $password_confirm) {
         $register_message = "Kata sandi tidak cocok!";
+    } elseif (strlen($password) < 6) {
+        $register_message = "Kata sandi harus minimal 6 karakter!";
     } else {
         // Hash password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($password, PASSWORD_ARGON2ID);
 
         try {
             // Buat query
@@ -52,8 +59,10 @@ if (isset($_POST['register'])) {
 
 <body>
     <section>
-        <i><?= $register_message ?></i>
         <form action="page3_register.php" method="POST">
+            <?php if ($register_message): ?>
+            <p class="register_message"><?= $register_message ?></p>
+            <?php endif; ?>
             <h1>Daftar</h1>
             <div class="inputbox">
                 <input type="text" name="username" required>
@@ -77,6 +86,21 @@ if (isset($_POST['register'])) {
             </div>
         </form>
     </section>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const registerMessage = document.querySelector('.register_message');
+        if (registerMessage) {
+            setTimeout(() => {
+                registerMessage.style.transition = "opacity 1.5s ease-out";
+                registerMessage.style.opacity = 0;
+                setTimeout(() => {
+                    registerMessage.remove();
+                }, 980);
+            }, 980);
+        }
+    });
+</script>
 </body>
 
 </html>

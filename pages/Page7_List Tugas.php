@@ -1,28 +1,46 @@
 <?php
 include '../koneksi.php';
+session_start();
+if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
+  header("Location: Page2_loginpage.php");
+  exit();
+}
+
+if (isset($_POST['logout'])) {
+  session_unset();
+  session_destroy();
+  header('location: Page1_homepage.php');
+}
 
 if (isset($_POST['simpan'])) {
   $judul = $_POST['tugas'];
   $matkul = $_POST['matkul'];
   $deskripsi = $_POST['deskripsi'];
-  $tanggal = $_POST['dl1'];  
-  $waktu = $_POST['dl2'];    
+  $tanggal = $_POST['dl1'];
+  $waktu = $_POST['dl2'];
+  $hapus = $_GET['delete-task'];
 
-  $deadline = "$tanggal $waktu:00"; 
+  $deadline = "$tanggal $waktu:00";
 
   $sql = "INSERT INTO tugas (judul_tugas, matkul, desc_tugas, deadline) 
             VALUES ('$judul', '$matkul', '$deskripsi', '$deadline')";
 
+
   if (mysqli_query($conn, $sql)) {
 
-    } else {
-        echo "Error: " . mysqli_error($conn);
-    }
-    
-    // Redirect ke halaman ini sendiri
-    header("Location: ".$_SERVER['PHP_SELF']);
-    exit();
+  } else {
+    echo "Error: " . mysqli_error($conn);
+  }
+  header("Location: " . $_SERVER['PHP_SELF']);
+  exit();
 }
+
+if (isset($_GET['id'])) {
+  $id = $_GET['id'];
+    mysqli_query($conn, "DELETE FROM tugas WHERE id_tugas = $id");
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+} 
 
 $query = "SELECT * FROM tugas ORDER BY deadline ASC";
 $dataTugas = mysqli_query($conn, $query);
@@ -50,21 +68,22 @@ $dataTugas = mysqli_query($conn, $query);
 
 <body>
   <header>
-    <div class="topNav-db">
-      <nav>
-        <div class="logo">
-          <a href="page5_Dasboard.php"><img src="Logo NotezQue.svg" alt=""></a>
+        <div class="topNav-db">
+            <nav>
+                <div class="logo">
+                    <a href="page5_Dasboard.php"><img src="../Asset/images/Logo NotezQue.svg" alt=""></a>
+                </div>
+                <div class="dropdown">
+                    <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
+                    <div class="dropdown-content">
+                        <form action="" method="post">
+                            <button type="submit" name="profile">Profile</button>
+                            <button type="submit" name="logout">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
         </div>
-        <div class="dropdown">
-          <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36"
-              height="36"></iconify-icon></i>
-          <div class="dropdown-content">
-            <a href="#" onclick="">Proflie</a>
-            <a href="page1_homepage.php" onclick="logout()">Logout</a>
-          </div>
-        </div>
-      </nav>
-    </div>
 
     <aside>
       <input type="checkbox" name="" id="check">
@@ -127,15 +146,15 @@ $dataTugas = mysqli_query($conn, $query);
       </div>
 
       <div class="task-lists">
-        <div class="task-category">
+        <form class="task-category">
           <div id="not-started" class="task-list">
             <?php
             if ($dataTugas && mysqli_num_rows($dataTugas) > 0) {
               while ($row = mysqli_fetch_assoc($dataTugas)) {
                 // Format tanggal untuk ditampilkan
                 $formatted_deadline = date('d-m-Y H.i', strtotime($row['deadline']));
-
-                echo '<div class="task">
+                echo '
+                <div class="task">
                   <div>
                     <div class="task-header">
                       <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>
@@ -145,12 +164,14 @@ $dataTugas = mysqli_query($conn, $query);
                     <div class="deadline">
                       <p><strong>Deadline:</strong> ' . $formatted_deadline . '</p>
                     </div>
-                  </div>
-                  <iconify-icon class="delete-task" icon="material-symbols:cancel-outline-rounded" width="32" height="32" onclick="deleted(this)"></iconify-icon>
-                </div>';
-              }
-            } 
-            ?>
+                    </div>
+                    <a href="?id='.$row['id_tugas'].'" onclick="return confirm(\'Yakin hapus?\')" class="hapus">
+                        <iconify-icon icon="material-symbols:cancel-outline-rounded" width="32" height="32"></iconify-icon>
+                    </a>
+                    </div>';
+                  }
+                }
+                ?>
           </div>
         </div>
       </div>

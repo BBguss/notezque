@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
+    header("Location: Page2_loginpage.php");
+    exit();
+}
+
+if (isset($_POST['logout'])) {
+    session_unset();
+    session_destroy();
+    header('location: Page1_homepage.php');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +41,10 @@
                 <div class="dropdown">
                     <i  style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
                     <div class="dropdown-content">
-                        <a href="#" onclick="">Proflie</a>
-                        <a href="page1_homepage.php" onclick="logout()">Logout</a>
+                         <form action="" method="post">
+                            <button type="submit" name="profile">Profile</button>
+                            <button type="submit" name="logout">Logout</button>
+                        </form>
                     </div>
                 </div>
             </nav>
