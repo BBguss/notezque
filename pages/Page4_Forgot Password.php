@@ -51,23 +51,6 @@ if (isset($_POST['send'])) {
                 <p>Coba gunakan akun lain <a href="page2_loginpage.php">Masuk</a></p>
             </div>
         </form>
-        <!-- 
-        <div id="emailInput" class="mail" style="display: none;">
-            <div class="inputbox">
-                <input type="email" id="email" required>
-                <label>Email</label>
-            </div>
-            <button onclick="email()">Email Me</button>
-        </div>
-
-        <div id="smsInput" class="sms" style="display: none;">
-            <div class="inputbox">
-                <input type="tel" id="sms" required>
-                <label for="sms">Nomor Telepon:</label>
-            </div>
-            <button>SMS OTP</button>
-        </div>
-        -->
     </section>
     <script src="Page4_Script.js"></script>
 </body>
