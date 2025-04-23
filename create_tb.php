@@ -10,6 +10,11 @@ $sql_users = "CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 
+if ($conn->query($sql_users) === TRUE) {
+    echo "Tabel user berhasil dibuat.<br>";
+} else {
+    echo "Error membuat tabel user: " . $conn->error . "<br>";
+}
 
 // Buat tabel tugas
 $sql_tugas = "CREATE TABLE IF NOT EXISTS tugas (
@@ -40,7 +45,6 @@ if ($conn->query($sql_kalender_acara) === TRUE) {
 } else {
     echo "Error membuat tabel kalender_acara: " . $conn->error . "<br>";
 }
-
 
 $conn->close();
 ?>
