@@ -365,12 +365,6 @@ aside .aside-container {
     padding: 10px;
 }
 
-aside .aside-container h1 {
-    text-align: center;
-    padding: 10px;
-    text-shadow: 1px 1px 7px #aed3fb;
-}
-
 .listTugas-db {
     /* border: solid yellow; */
     display: grid;
@@ -454,5 +448,20 @@ aside .aside-container h1 {
     background-color: #aed3fb;
     padding: 20px 10px;
     margin-bottom: 20px;
-    border
+}
+
+.no-events {
+    font-style: italic;
+    text-align: center;
+    position: relative;
+    padding: 0px 0px 10px 0;
+    margin: 0;
+}
+
+.task-title {
+    border-bottom: 1px solid #0c0c0c;
+    color: #000000;
+    font-weight:bold;
+    padding: 10px;
+    margin-bottom: 0;
 }

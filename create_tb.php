@@ -46,5 +46,31 @@ if ($conn->query($sql_kalender_acara) === TRUE) {
     echo "Error membuat tabel kalender_acara: " . $conn->error . "<br>";
 }
 
+$sql_tambahFolder = "CREATE TABLE IF NOT EXISTS tambahFolder (
+    id_folder INT AUTO_INCREMENT PRIMARY KEY,
+    nama_materi VARCHAR(100) NOT NULL,
+    nama_pengajar VARCHAR(100) NOT NULL,
+    gambar VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+
+if ($conn->query($sql_tambahFolder) === TRUE) {
+    echo "Tabel tambahFolder berhasil dibuat.<br>";
+} else {
+    echo "Error membuat tabel tambahFolder: " . $conn->error . "<br>";
+}
+
+$sql_tambahFile = "CREATE TABLE IF NOT EXISTS tambahFile (
+    id_file INT AUTO_INCREMENT PRIMARY KEY,
+    nama_file VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+
+if ($conn->query($sql_tambahFile) === TRUE) {
+    echo "Tabel tambahFile berhasil dibuat.<br>";
+} else {
+    echo "Error membuat tabel tambahFile: " . $conn->error . "<br>";
+}
+
 $conn->close();
 ?>

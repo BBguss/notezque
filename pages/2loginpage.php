@@ -18,6 +18,7 @@ if (isset($_POST['login'])) {
 
         // Cocokkan password
         if (password_verify($password, $data['password'])) {
+            $_SESSION ["id_user"] = $data ["id_user"];
             $_SESSION ["username"] = $data["username"];
             $_SESSION["email"] = $data["email"];
             $_SESSION ["is_login"] = true;

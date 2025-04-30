@@ -210,7 +210,7 @@ $dataTugas = mysqli_query($conn, $query);
 
         <aside>
             <div class="aside-container">
-                <h1>List Tugas</h1>
+                <h1 class="task-title" style="text-align: center">List acara</h1>
                 <div class="listTugas-db">
                     <?php
                     if ($dataTugas && mysqli_num_rows($dataTugas) > 0 ) {
@@ -228,7 +228,9 @@ $dataTugas = mysqli_query($conn, $query);
                             </a>
                         </div>
                         ';
-                        }
+                        } 
+                    } else {
+                        echo '<p class="no-events" style="text-align: center">yeay tidak ada tugas hari ini</p>';
                     }
                         ?>
                 </div>
