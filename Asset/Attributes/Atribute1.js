@@ -1,3 +1,5 @@
+// TOP NAV ATTR
+
 function logout() {
     // Tambahkan logika logout sesuai kebutuhan Anda
     alert('Anda telah logout!');

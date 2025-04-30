@@ -3,14 +3,14 @@ include '../koneksi.php';
 session_start();
 
 if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
-    header("Location: Page2_loginpage.php");
+    header("Location: 2loginpage.php");
     exit();
 }
 
 if (isset($_POST['logout'])) {
     session_unset();
     session_destroy();
-    header('location: Page1_homepage.php');
+    header('location: 1homepage.php');
 }
 
 if (isset($_GET['id'])) {
@@ -30,12 +30,12 @@ $dataTugas = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
-    <link rel="icon" type="image/x-icon" href="../Asset/images/Logo NotezQue.svg">
-    <link rel="stylesheet" href="../Asset/css/page5_style.css">
-    <link rel="stylesheet" href="../Asset/font/Font.css">
-    <link rel="stylesheet" href="../Asset/css/Atribute1_Top Nav.css">
-    <link rel="stylesheet" href="../Asset/css/Atribute2_Side Nav.css">
-    <link rel="stylesheet" href="../Asset/css/Atribute3_Footer.css">
+    <link rel="icon" type="image/x-icon" href="../asset/images/logoNotezQue.svg">
+    <link rel="stylesheet" href="../asset/css/5dashboard.css">
+    <link rel="stylesheet" href="../asset/font/Font.css">
+    <link rel="stylesheet" href="../asset/attributes/Atribute1.css">
+    <link rel="stylesheet" href="../asset/attributes/Atribute2.css">
+    <link rel="stylesheet" href="../asset/attributes/Atribute3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@ $dataTugas = mysqli_query($conn, $query);
         <div class="topNav-db">
             <nav>
                 <div class="logo">
-                    <a href="page5_Dasboard.php"><img src="../Asset/images/Logo NotezQue.svg" alt=""></a>
+                    <a href="5Dashboard.php"><img src="../asset/images/logoNotezQue.svg" alt=""></a>
                 </div>
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
@@ -56,7 +56,6 @@ $dataTugas = mysqli_query($conn, $query);
                             <button type="submit" name="profile">Profile</button>
                             <button type="submit" name="logout">Logout</button>
                         </form>
-                        <!-- <a href="page1_homepage.php" onclick="logout()" name="logout">Logout</a> -->
                     </div>
                 </div>
             </nav>
@@ -71,31 +70,30 @@ $dataTugas = mysqli_query($conn, $query);
             <div class="sideNav-db">
                 <nav>
                     <h2>Menu</h2>
-                    <a href="page5_Dasboard.php" class="active">
+                    <a href="5Dashboard.php" class="active">
                         <iconify-icon icon="ic:round-space-dashboard" width="38" height="38"></iconify-icon>
                         <span>Dashboard</span>
                     </a>
-                    <a href="page6_Kalender.php">
+                    <a href="./kalender/6kalender.php">
                         <iconify-icon icon="uim:schedule" width="38" height="38"></iconify-icon>
                         <span>Kalender</span>
                     </a>
-                    <a href="page7_List Tugas.php">
+                    <a href="7listTugas.php">
                         <iconify-icon icon="fluent:task-list-square-ltr-24-filled" width="38" height="38"></iconify-icon>
                         <span>Tugas</span>
                     </a>
-                    <a href="page8_Mata Kuliah.php">
+                    <a href="8tambahMateri.php">
                         <iconify-icon icon="mingcute:book-5-line" width="38" height="38"></iconify-icon>
-                        <span>Mata kuliah</span>
+                        <span>Tambah Materi</span>
                     </a>
                 </nav>
             </div>
-    </aside>
-        
+    </aside>  
     </header>
 
     <main id="main">
         <div class="mainContainer-db">
-            <h1>Halo <?= $_SESSION['username']?> selamat datang kembali</h1>
+            <h1 class="greeting">Halo <?= $_SESSION['username']?> selamat datang kembali</h1>
             <div class="container-atas">
                 <div class="jadwalKuliah-db">
                     <div class="nama-matkul">
@@ -239,9 +237,9 @@ $dataTugas = mysqli_query($conn, $query);
     </main>
     <?php include 'footer.php'?>
 
-    <script src="../Asset/js/page 5_Script.js"></script>
+    <script src="../asset/js/5dashboard.js"></script>
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-    <script src="../Asset/JS/Atribute 1_Top Nav.js"></script>
-    <script src="../Asset/JS/Atribute 2_Side Nav.js"></script>
+    <script src="../asset/attributes/Atribute1.js"></script>
+    <script src="../asset/attributes/Atribute2.js"></script>
 </body>
 </html>

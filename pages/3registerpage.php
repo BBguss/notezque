@@ -3,9 +3,6 @@ include '../koneksi.php';
 session_start();
 
 $register_message = '';
-if (isset($_SESSION['is_login'])) {
-    header("Location: Page5_Dashboard.php");
-}
 
 
 if (isset($_POST['register'])) {
@@ -49,8 +46,8 @@ if (isset($_POST['register'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
     <link rel="icon" type="image/x-icon" href="Logo NotezQue.svg">
-    <link rel="stylesheet" href="../Asset/css/Page2,3,&4_Style.css">
-    <link rel="stylesheet" href="../Asset/font/Font.css">
+    <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
+    <link rel="stylesheet" href="../asset/font/Font.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
@@ -59,7 +56,7 @@ if (isset($_POST['register'])) {
 
 <body>
     <section>
-        <form action="page3_register.php" method="POST">
+        <form action="3registerpage.php" method="POST">
             <?php if ($register_message): ?>
             <p class="register_message"><?= $register_message ?></p>
             <?php endif; ?>
@@ -82,7 +79,7 @@ if (isset($_POST['register'])) {
             </div>
             <button type="submit" name="register">Daftar</button>
             <div class="register">
-                <p>Saya sudah mempunyai akun <a href="page2_loginpage.php">Masuk</a></p>
+                <p>Saya sudah mempunyai akun <a href="2loginpage.php">Masuk</a></p>
             </div>
         </form>
     </section>

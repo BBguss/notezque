@@ -12,9 +12,9 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../Asset/css/Page1_Style.css">
-    <link rel="stylesheet" href="../Asset/css/Atribute3_Footer.css">
-    <link rel="stylesheet" href="../Asset/font/Font.css">
+    <link rel="stylesheet" href="../asset/css/1homepage.css">
+    <link rel="stylesheet" href="../asset/attributes/Atribute3.css">
+    <link rel="stylesheet" href="../asset/font/Font.css">
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -24,12 +24,12 @@ session_start();
         <div class="top-navbar">
             <nav>
                 <div class="logo">
-                    <img src="../Asset/images/logo-notezque.svg" alt="404logo" title="NotzQue">
+                    <img src="../asset/images/logoNotezque.svg" alt="404logo" title="NotzQue">
                     <h2 style="color: white;">NotzQue</h2>
                 </div>
                 <div class="loginRegist">
-                    <a href="page2_loginpage.php"><button type="button" class="login">Masuk</button></a>
-                    <a href="Page3_register.php"><button type="button" class="login">Daftar</button></a>
+                    <a href="2loginpage.php"><button type="button" class="login">Masuk</button></a>
+                    <a href="3register.php"><button type="button" class="login">Daftar</button></a>
                 </div>
             </nav>
         </div>
@@ -37,28 +37,28 @@ session_start();
     <main>
         <h1 class="apa">Mulai sekarang dan jadikan produktivitas Anda <br> lebih terorganisir bersama NotzQue!</h1>
         <div class="loginRegist2">
-            <a href="Page3_register.php"><button type="button" class="button">Bergabung Sekarang</button></a>
+            <a href="3registerpage.php"><button type="button" class="button">Bergabung Sekarang</button></a>
         </div>
         <div class="gif-container">
             <div id="videoCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="../Asset/images/gambar (1).png">
+                        <img src="../asset/images/gambar (1).png">
                     </div>
                     <div class="carousel-item">
-                        <img src="../Asset/images/gambar (2).png">
+                        <img src="../asset/images/gambar (2).png">
                     </div>
                     <div class="carousel-item">
-                        <img src="../Asset/images/gambar (3).png">
+                        <img src="../asset/images/gambar (3).png">
                     </div>
                     <div class="carousel-item">
-                        <img src="../Asset/images/gambar (4).png">
+                        <img src="../asset/images/gambar (4).png">
                     </div>
                     <div class="carousel-item">
-                        <img src="../Asset/images/gambar (5).png">
+                        <img src="../asset/images/gambar (5).png">
                     </div>
                     <div class="carousel-item">
-                        <img src="../Asset/images/gambar (6).png">
+                        <img src="../asset/images/gambar (6).png">
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#videoCarousel"

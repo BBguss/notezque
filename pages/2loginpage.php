@@ -4,11 +4,6 @@ session_start();
 
 $login_message = '';
 
-if (isset($_SESSION['is_login'])) {
-    header("Location: Page5_Dashboard.php");
-
-}
-
 if (isset($_POST['login'])) {
     $userormail = trim($_POST['userormail']);
     $password = $_POST['password'];
@@ -27,7 +22,7 @@ if (isset($_POST['login'])) {
             $_SESSION["email"] = $data["email"];
             $_SESSION ["is_login"] = true;
 
-            header("Location: Page5_Dasboard.php");
+            header("Location: 5Dashboard.php");
             exit();
         } else {
             $login_message = "Password salah!";
@@ -46,8 +41,8 @@ if (isset($_POST['login'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
     <link rel="icon" type="image/x-icon" href="Logo NotezQue.svg">
-    <link rel="stylesheet" href="../Asset/css/Page2,3,&4_Style.css">
-    <link rel="stylesheet" href="../Asset/font/Font.css">
+    <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
+    <link rel="stylesheet" href="../asset/font/Font.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
@@ -73,11 +68,11 @@ if (isset($_POST['login'])) {
             </div>
             <div class="forget">
                 <label><input type="checkbox"> Ingatkan saya</label>
-                <span><a href="Page4_Forgot Password.php">Lupa password?</a></span>
+                <span><a href="4forgotpass.php">Lupa password?</a></span>
             </div>
             <button type="submit" name="login">Masuk</button>
             <div class="register">
-                <p>Saya tidak mempunyai akun <a href="Page3_register.php">Daftar</a></p>
+                <p>Saya tidak mempunyai akun <a href="3registerpage.php">Daftar</a></p>
             </div>
         </form>
     </section>

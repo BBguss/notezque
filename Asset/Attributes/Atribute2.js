@@ -1,3 +1,5 @@
+// ATTR SIDE NAV
+
 const sideNav = document.querySelector('.sideNav-db');
 const buka = document.getElementById('tombol');
 const main = document.getElementById('main');

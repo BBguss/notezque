@@ -163,7 +163,7 @@ button:hover {
     text-decoration: underline;
 }
 
-section .login_message, .register_message {
+section .login_message, .register_message, .forgot_message{
     font-weight: 500;
     color: red;
     text-align: center;
@@ -174,3 +174,14 @@ section .login_message, .register_message {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;  
 } 
+
+section .berhasil_message{
+    font-weight: 500;
+    color: rgb(0, 233, 54);
+    text-align: center;
+    margin-top: 0;
+    padding: 10px;
+    background-color: #57575788;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
