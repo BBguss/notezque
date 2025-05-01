@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../koneksi.php'; // Sesuaikan dengan lokasi file koneksi Anda
+include '../../config/koneksi.php';
 
 header('Content-Type: application/json');
 

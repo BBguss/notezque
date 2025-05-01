@@ -1,17 +1,7 @@
 <?php
-include '../koneksi.php';
-session_start();
+include '../../config/koneksi.php';
+include '../../config/session.php';
 
-if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
-    header("Location: 2loginpage.php");
-    exit();
-}
-
-if (isset($_POST['logout'])) {
-    session_unset();
-    session_destroy();
-    header('location: 1homepage.php');
-}
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -20,7 +10,7 @@ if (isset($_GET['id'])) {
     exit();
 }
 
-$query = "SELECT * FROM tugas ORDER BY deadline ASC";
+$query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] ORDER BY deadline ASC ";
 $dataTugas = mysqli_query($conn, $query);
 ?>
 
@@ -31,11 +21,11 @@ $dataTugas = mysqli_query($conn, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
     <link rel="icon" type="image/x-icon" href="../asset/images/logoNotezQue.svg">
-    <link rel="stylesheet" href="../asset/css/5dashboard.css">
-    <link rel="stylesheet" href="../asset/font/Font.css">
-    <link rel="stylesheet" href="../asset/attributes/Atribute1.css">
-    <link rel="stylesheet" href="../asset/attributes/Atribute2.css">
-    <link rel="stylesheet" href="../asset/attributes/Atribute3.css">
+    <link rel="stylesheet" href="../../asset/css/5dashboard.css">
+    <link rel="stylesheet" href="../../asset/font/Font.css">
+    <link rel="stylesheet" href="../../asset/attributes/Atribute1.css">
+    <link rel="stylesheet" href="../../asset/attributes/Atribute2.css">
+    <link rel="stylesheet" href="../../asset/attributes/Atribute3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +37,7 @@ $dataTugas = mysqli_query($conn, $query);
         <div class="topNav-db">
             <nav>
                 <div class="logo">
-                    <a href="5Dashboard.php"><img src="../asset/images/logoNotezQue.svg" alt=""></a>
+                    <a href="5Dashboard.php"><img src="../../asset/images/logoNotezQue.svg" alt=""></a>
                 </div>
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
@@ -74,15 +64,15 @@ $dataTugas = mysqli_query($conn, $query);
                         <iconify-icon icon="ic:round-space-dashboard" width="38" height="38"></iconify-icon>
                         <span>Dashboard</span>
                     </a>
-                    <a href="./kalender/6kalender.php">
+                    <a href="../kalender/6kalender.php">
                         <iconify-icon icon="uim:schedule" width="38" height="38"></iconify-icon>
                         <span>Kalender</span>
                     </a>
-                    <a href="7listTugas.php">
+                    <a href="../7listTugas.php">
                         <iconify-icon icon="fluent:task-list-square-ltr-24-filled" width="38" height="38"></iconify-icon>
                         <span>Tugas</span>
                     </a>
-                    <a href="8tambahMateri.php">
+                    <a href="../8tambahMateri.php">
                         <iconify-icon icon="mingcute:book-5-line" width="38" height="38"></iconify-icon>
                         <span>Tambah Materi</span>
                     </a>
@@ -152,11 +142,11 @@ $dataTugas = mysqli_query($conn, $query);
                 </div>
 
                 <div class="kalender-db">
-                    <div class="bln">
-                        <a href="/TUBES/Jadwal page/jadwal.php"><div class="tanggal" style="font-weight: bold;"></div></a>
+                    <div class="kalender-nav">
                         <div class="kal-nextprev">
-                            <i class="prev"><iconify-icon icon="mingcute:left-fill" width="24" height="24"></iconify-icon></i>
-                            <i class="next"><iconify-icon icon="mingcute:right-fill" width="24" height="24"></iconify-icon></i>
+                            <button class="prev"><iconify-icon icon="mingcute:left-fill" width="24" height="24"></iconify-icon></button>
+                            <div class="tanggal"></div>
+                            <button class="next"><iconify-icon icon="mingcute:right-fill" width="24" height="24"></iconify-icon></button>
                         </div>
                     </div>
                     <div class="mingguan">
@@ -168,11 +158,11 @@ $dataTugas = mysqli_query($conn, $query);
                         <div class="minggu">Jum</div>
                         <div class="minggu" style="color: red;">Sab</div>
                     </div> 
-                    <div class="harian">
-                        
-                    </div>
+                    <div class="harian"></div>
+      
                 </div>
             </div>
+
 
            <div class="aksesCepat">
             <div class="q-pilihanMatkul">
@@ -237,11 +227,11 @@ $dataTugas = mysqli_query($conn, $query);
             </div>
         </aside>
     </main>
-    <?php include 'footer.php'?>
+    <?php include '../footer.php'?>
 
-    <script src="../asset/js/5dashboard.js"></script>
+    <script src="../../asset/js/5dashboard.js"></script>
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-    <script src="../asset/attributes/Atribute1.js"></script>
-    <script src="../asset/attributes/Atribute2.js"></script>
+    <script src="../../asset/attributes/Atribute1.js"></script>
+    <script src="../../asset/attributes/Atribute2.js"></script>
 </body>
 </html>

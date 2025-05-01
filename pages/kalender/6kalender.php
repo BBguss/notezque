@@ -1,16 +1,6 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
-    header("Location: Page2_loginpage.php");
-    exit();
-}
-
-if (isset($_POST['logout'])) {
-    session_unset();
-    session_destroy();
-    header('location: Page1_homepage.php');
-}
+include '../../config/koneksi.php';
+include '../../config/session.php';
 
 ?>
 <!DOCTYPE html>
@@ -37,7 +27,7 @@ if (isset($_POST['logout'])) {
         <div class="topNav-db">
             <nav>
                 <div class="logo">
-                    <a href="../5Dashboard.php"><img src="../../asset/images/logoNotezQue.svg" alt=""></a>
+                    <a href="../dashboard/5Dashboard.php"><img src="../../asset/images/logoNotezQue.svg" alt=""></a>
                 </div>
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
@@ -60,7 +50,7 @@ if (isset($_POST['logout'])) {
             <div class="sideNav-db">
                 <nav>
                     <h2>Menu</h2>
-                    <a href="../5Dashboard.php" class="active">
+                    <a href="../dashboard/5Dashboard.php" class="active">
                         <iconify-icon icon="ic:round-space-dashboard" width="38" height="38"></iconify-icon>
                         <span>Dashboard</span>
                     </a>

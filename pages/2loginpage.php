@@ -1,5 +1,5 @@
 <?php
-include '../koneksi.php';
+include '../config/koneksi.php';
 session_start();
 
 $login_message = '';
@@ -22,8 +22,9 @@ if (isset($_POST['login'])) {
             $_SESSION ["username"] = $data["username"];
             $_SESSION["email"] = $data["email"];
             $_SESSION ["is_login"] = true;
+            $_SESSION["aktivitas"] = time();
 
-            header("Location: 5Dashboard.php");
+            header("Location: dashboard/5Dashboard.php");
             exit();
         } else {
             $login_message = "Password salah!";

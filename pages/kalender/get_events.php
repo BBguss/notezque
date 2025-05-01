@@ -1,5 +1,6 @@
 <?php
-include '../../koneksi.php';
+include '../../config/koneksi.php';
+include '../../config/session.php';
 
 header('Content-Type: application/json');
 

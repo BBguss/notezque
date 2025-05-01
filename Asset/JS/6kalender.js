@@ -25,16 +25,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Data yang akan digunakan
     const data = {
-        tanggalSekarang: new Date(), // Tanggal saat ini
-        tanggalDipilih: null,        // Tanggal yang dipilih user
-        daftarAcara: [],            // Untuk menyimpan acara dari database
-        namaBulan: [                 // Nama-nama bulan dalam setahun
+        tanggalSekarang: new Date(),
+        tanggalDipilih: null,       
+        daftarAcara: [],            
+        namaBulan: [                 
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"
         ],
-        warnaAcara: [                // Warna-warna untuk acara berbeda
-            '#295F98', '#114B5F', '#1A936F', '#47663B', '#1A1A19', 
-            '#003161', '#697565', '#1E201E', '#4C3BCF'
+        warnaAcara: [           
+            '#ea4335', // Merah Google
+            '#4285f4', // Biru Google
+            '#1e90ff', // Biru Laut
+            '#8a2be2', // Ungu Terang
+            '#ff1493', // Pink Cerah
+            '#b22222', // Merah Gelap
+            '#ff4500', // Oranye Merah
+            '#32cd32', // Hijau Cerah
+            '#40e0d0', // Biru Laut Muda
+            '#d2691e'  // Coklat Oranye
         ]
     };
 
