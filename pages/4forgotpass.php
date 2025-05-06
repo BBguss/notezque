@@ -1,5 +1,5 @@
 <?php
-include '../koneksi.php'; // koneksi ke DB
+include '../config/koneksi.php'; // koneksi ke DB
 
 $forgot_message = "";
 $berhasil_message ="";

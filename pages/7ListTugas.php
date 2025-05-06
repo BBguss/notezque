@@ -11,10 +11,17 @@ if (isset($_POST['simpan'])) {
   $waktu = $_POST['dl2'];
   $hapus = $_GET['delete-task'];
   $id_user = $_SESSION['id_user'];
+  $admin = $_SESSION['username'];
   $deadline = "$tanggal $waktu:00";
 
+  if ($admin == 'admin') {
+    $sql = "INSERT INTO tugas (judul_tugas, matkul, desc_tugas, deadline) 
+            VALUES ( '$judul', '$matkul', '$deskripsi', '$deadline')";
+  } else {
   $sql = "INSERT INTO tugas (id_user, judul_tugas, matkul, desc_tugas, deadline) 
             VALUES ('$id_user', '$judul', '$matkul', '$deskripsi', '$deadline')";
+  }
+
 
   if (mysqli_query($conn, $sql)) {
 
@@ -31,8 +38,7 @@ if (isset($_GET['id'])) {
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 } 
-
-$query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] ORDER BY deadline ASC ";
+$query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] OR '$admin' == 'admin' ORDER BY deadline ASC ";
 $dataTugas = mysqli_query($conn, $query);
 ?>
 
