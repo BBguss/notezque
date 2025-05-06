@@ -20,16 +20,19 @@ $dataTugas = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
-    <link rel="icon" type="image/x-icon" href="../asset/images/logoNotezQue.svg">
-    <link rel="stylesheet" href="../../asset/css/5dashboard.css">
-    <link rel="stylesheet" href="../../asset/font/Font.css">
-    <link rel="stylesheet" href="../../asset/attributes/Atribute1.css">
-    <link rel="stylesheet" href="../../asset/attributes/Atribute2.css">
-    <link rel="stylesheet" href="../../asset/attributes/Atribute3.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/x-icon" href="../Asset/images/logoNotezQue.svg">
+    <link rel="stylesheet" href="../../Asset/css/5dashboard.css">
+    <link rel="stylesheet" href="../../Asset/font/Font.css">
+    <link rel="stylesheet" href="../../Asset/attributes/Atribute1.css">
+    <link rel="stylesheet" href="../../Asset/attributes/Atribute2.css">
+    <link rel="stylesheet" href="../../Asset/attributes/Atribute3.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> -->
 
 </head>
 <body>
@@ -83,9 +86,10 @@ $dataTugas = mysqli_query($conn, $query);
 
     <main id="main">
         <div class="mainContainer-db">
-            <h1 class="greeting">Halo <?= $_SESSION['username']?> selamat datang kembali</h1>
+            <h1 class="greeting">Halo <?= $_SESSION['username']?> selamat datang</h1>
             <div class="container-atas">
                 <div class="jadwalKuliah-db">
+                    <h2>Acara hari ini</h2>
                     <div class="nama-matkul">
                         <a href="#" style="text-decoration: none;color: black;"><h3>DESAIN ANTARMUKA PENGGUNA</h3></a>
                         <div class="keterangan">
@@ -200,7 +204,7 @@ $dataTugas = mysqli_query($conn, $query);
 
         <aside>
             <div class="aside-container">
-                <h1 class="task-title" style="text-align: center">List acara</h1>
+                <h1 class="task-title" style="text-align: center">List Tugas</h1>
                 <div class="listTugas-db">
                     <?php
                     if ($dataTugas && mysqli_num_rows($dataTugas) > 0 ) {

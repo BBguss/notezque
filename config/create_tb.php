@@ -19,6 +19,7 @@ if ($conn->query($sql_users) === TRUE) {
 // Buat tabel tugas
 $sql_tugas = "CREATE TABLE IF NOT EXISTS tugas (
     id_tugas INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL FOREIGN KEY,
     judul_tugas VARCHAR(100) NOT NULL,
     matkul VARCHAR(100) NOT NULL,
     desc_tugas TEXT NOT NULL,
@@ -34,6 +35,7 @@ if ($conn->query($sql_tugas) === TRUE) {
 
 $sql_kalender_acara = "CREATE TABLE IF NOT EXISTS kalender_acara (
     id_acara INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL FOREIGN KEY,
     judul_acara VARCHAR(100) NOT NULL,
     desc_acara TEXT NOT NULL,
     waktu_acara DATETIME NOT NULL,
@@ -48,6 +50,7 @@ if ($conn->query($sql_kalender_acara) === TRUE) {
 
 $sql_tambahFolder = "CREATE TABLE IF NOT EXISTS tambahFolder (
     id_folder INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL FOREIGN KEY,
     nama_materi VARCHAR(100) NOT NULL,
     nama_pengajar VARCHAR(100) NOT NULL,
     gambar VARCHAR(255),
