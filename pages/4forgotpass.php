@@ -1,28 +1,55 @@
 <?php
+<<<<<<< HEAD
 include '../config/koneksi.php'; // koneksi ke DB
+=======
+include '../config/koneksi.php';
+>>>>>>> e514ffd5f7a2e8a9a43520720910f8d16e650801
 
-$forgot_message = "";
-$berhasil_message ="";
+$forgot_message = '';
+$berhasil_message = '';
 
 if (isset($_POST['send'])) {
-    $email = $_POST['email'];
+    $email = trim($_POST['email']);
+    $quiz_answer = trim($_POST['quiz_answer']); // Jawaban quiz dari form
 
-    // Cek apakah email ada di database
-    $sql = "SELECT * FROM users WHERE email = '$email'";
-    $result = mysqli_query($conn, $sql);
-
-    if (mysqli_num_rows($result) > 0) {
-        $berhasil_message = "Berhasil. Silakan periksa email Anda.";
+    // Validasi email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $forgot_message = "Email tidak valid!";
     } else {
-        $forgot_message = "Email tidak ditemukan!";
+        // Cek apakah email ada di database
+        $stmt = $conn->prepare("SELECT id_user, quiz_answer FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+
+            // Cek jawaban quiz
+            if (strtolower($quiz_answer) === strtolower($user['quiz_answer'])) {
+                // Jawaban benar, kirimkan token untuk reset password
+                $token = bin2hex(random_bytes(50)); // Buat token unik
+
+                // Simpan token di database
+                $stmt = $conn->prepare("INSERT INTO reset_password_requests (id_user, token) VALUES (?, ?)");
+                $stmt->bind_param("is", $user['id_user'], $token);
+                $stmt->execute();
+
+                // Redirect ke halaman reset password
+                header("Location: 11reset_password.php?token=$token");
+                exit; // Pastikan skrip berhenti setelah redirect
+            } else {
+                $forgot_message = "Jawaban quiz salah!";
+            }
+        } else {
+            $forgot_message = "Email tidak ditemukan!";
+        }
     }
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +58,6 @@ if (isset($_POST['send'])) {
     <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
     <link rel="stylesheet" href="/asset/font/Font.css">
 </head>
-
 <body>
     <section id="isi">
         <form method="post">
@@ -39,10 +65,14 @@ if (isset($_POST['send'])) {
                 <p class="forgot_message"><?= $forgot_message ?></p>
                 <p class="berhasil_message"><?= $berhasil_message ?></p>
             <?php endif; ?>
-            <h1>Perbarui Kata Sandi</h1>
+            <h1>Lupa Kata Sandi?</h1>
             <div class="inputbox">
                 <input type="email" name="email" required>
                 <label>Masukkan Email Anda</label>
+            </div>
+            <div class="inputbox">
+                <input type="text" name="quiz_answer" required>
+                <label>Jawaban pertanyaan keamanan Anda</label>
             </div>
             <button type="submit" name="send">Kirim</button>
 
@@ -51,25 +81,5 @@ if (isset($_POST['send'])) {
             </div>
         </form>
     </section>
-    <script src="4forgotpass.js"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const forgotmessage = document.querySelector('.forgot_message');
-        const berhasilmessage = document.querySelector('.berhasil_message');
-        if (forgotmessage || berhasilmessage) {
-            setTimeout(() => {
-                forgotmessage.style.transition = "opacity 1.5s ease-out";
-                forgotmessage.style.opacity = 0;
-                berhasilmessage.style.transition = "opacity 1.5s ease-out";
-                berhasilmessage.style.opacity = 0;
-                setTimeout(() => {
-                    forgotmessage.remove();
-                    berhasilmessage.remove();
-                }, 1000);
-            }, 1000);
-        }
-    });
-</script>
 </body>
-
 </html>

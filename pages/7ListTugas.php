@@ -131,7 +131,7 @@ $dataTugas = mysqli_query($conn, $query);
               <input type="time" id="deadline2" name="dl2" required>
             </div>
             <footer class="dialog__footer">
-              <button class="cd-btn cd-btn--subtle js-dialog__close">Cancel</button>
+              <button class="cd-btn cd-btn--subtle js-dialog__close">Batalkan</button>
               <button type="submit" class="cd-btn cd-btn--accent" name="simpan">Simpan</button>
             </footer>
           </form>
