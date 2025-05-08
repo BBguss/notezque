@@ -93,10 +93,10 @@ $sql_reser_password_requests = "CREATE TABLE `reset_password_requests` (
     `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
   )";
 
-if ($conn->query($sql_tambahFile) === TRUE) {
-    echo "Tabel tambahFile berhasil dibuat.<br>";
+if ($conn->query($sql_reser_password_requests) === TRUE) {
+    echo "Tabel reset_password_requests berhasil dibuat.<br>";
 } else {
-    echo "Error membuat tabel tambahFile: " . $conn->error . "<br>";
+    echo "Error membuat tabel reset_password_requests: " . $conn->error . "<br>";
 }  
 
 $conn->close();
