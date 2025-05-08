@@ -87,10 +87,11 @@ if ($conn->query($sql_tambahFile) === TRUE) {
     echo "Error membuat tabel tambahFile: " . $conn->error . "<br>";
 }
 
-$sql_reser_password_requests = "CREATE TABLE `reset_password_requests` (
-    `id_user` int(11) NOT NULL FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`),
+$sql_reser_password_requests = "CREATE TABLE IF NOT EXISTS `reset_password_requests` (
+    `id_user` int(11) NOT NULL,
     `token` int(255) NOT NULL,
-    `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    FOREIGN KEY (id_user) REFERENCES users(id_user)
   )";
 
 if ($conn->query($sql_reser_password_requests) === TRUE) {
