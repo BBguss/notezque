@@ -4,14 +4,15 @@ include '../config/koneksi.php';
 $reset_message = '';
 
 if (isset($_GET['token'])) {
-   ECT id_user FROM reset_password_requests WHERE token = ?");
+    $token = $_GET['token'];
+
+    // Ambil ID user dari token
+    $stmt = $conn->prepare("SELECT id_user FROM reset_password_requests WHERE token = ?");
     $stmt->bind_param("s", $token);
     $stmt->execute();
-    $result = $stmt->get_result(); $token = $_GET['token'];
+    $result = $stmt->get_result();
 
     // Cek apakah token valid
-    $stmt = $conn->prepare("SEL
-
     if ($result->num_rows > 0) {
         // Token valid, lanjutkan ke reset password
         if (isset($_POST['reset'])) {
