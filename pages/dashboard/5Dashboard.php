@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
     exit();
 }
 
-$query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] ORDER BY deadline ASC ";
+$query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] ORDER BY deadline1 ASC ";
 $dataTugas = mysqli_query($conn, $query);
 ?>
 
@@ -209,11 +209,10 @@ $dataTugas = mysqli_query($conn, $query);
                     <?php
                     if ($dataTugas && mysqli_num_rows($dataTugas) > 0 ) {
                         while ($row = mysqli_fetch_assoc( $dataTugas )) {
-                        $formatted_deadline = date('d-m-Y H.i', strtotime($row['deadline']));
                         echo '
                         <div class="tmatkul">
                             <div class="deadline">
-                                <p><strong>Deadline:</strong> ' . $formatted_deadline . '</p>
+                                <p><strong>Deadline:</strong> ' . htmlspecialchars($row['deadline1']) . htmlspecialchars($row['deadline2']) . '</p>
                             </div>
                             <h4><strong>Judul tugas:</strong> ' . htmlspecialchars($row['judul_tugas']) . '</h4>
                             <p><strong>Mata Kuliah:</strong> ' . htmlspecialchars($row['matkul']) . '</p>
