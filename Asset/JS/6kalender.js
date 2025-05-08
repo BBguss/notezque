@@ -327,29 +327,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    async function updateAcara(idAcara, judul, deskripsi, waktuAcara) {
-        try {
-            const response = await fetch('edit_event.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    id: idAcara, 
-                    judul_acara: judul,
-                    desc_acara: deskripsi,
-                    waktu_acara: waktuAcara
-                })
-            });
+    async function updateAcara(id, judul, deskripsi, waktu) {
+    try {
+        const response = await fetch('edit_event.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, judul_acara: judul, desc_acara: deskripsi, waktu_acara: waktu })
+        });
 
-            if (!response.ok) {
-                throw new Error('Gagal mengupdate acara');
-            }
+        const result = await response.json();
+        if (!result.success) throw new Error(result.message);
+        return true;
 
-        } catch (error) {
-            alert('Maaf, ada masalah saat mengupdate acara. Silakan coba lagi.');
-        }
+    } catch (error) {
+        alert(error.message);
+        return false;
     }
+}
 
 
     // Fungsi untuk mengatur event listener
@@ -379,18 +373,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Tombol tutup dan simpan di popup
         elemen.tombolTutup.addEventListener('click', tutupPopup);
-        elemen.tombolSimpan.addEventListener('click', async (e) => {
-        if (elemen.tombolSimpan.dataset.editId) {
-            const idAcara = elemen.tombolSimpan.dataset.editId;
-            const judul = elemen.inputJudul.value.trim();
-            const deskripsi = elemen.inputDeskripsi.value.trim();
-            const waktuAcara = `${data.tanggalDipilih} ${elemen.inputWaktu.value}:00`;
+            elemen.tombolSimpan.addEventListener('click', async (e) => {
+        // Validasi input
+        if (!elemen.inputJudul.value.trim() || !elemen.inputWaktu.value) {
+            alert('Judul dan waktu acara harus diisi!');
+            return;
+        }
 
-            await updateAcara(idAcara, judul, deskripsi, waktuAcara);
-            tutupPopup();
-            ambilAcaraDariDatabase();
+        const waktuAcara = `${data.tanggalDipilih} ${elemen.inputWaktu.value}:00`;
+        
+        if (elemen.tombolSimpan.dataset.editId) {
+            // Mode edit - HAPUS parameter idUser yang tidak diperlukan
+            const berhasil = await updateAcara(
+                elemen.tombolSimpan.dataset.editId,
+                elemen.inputJudul.value.trim(),
+                elemen.inputDeskripsi.value.trim(),
+                waktuAcara
+            );
+            
+            if (berhasil) {
+                tutupPopup();
+                ambilAcaraDariDatabase(); // Refresh data
+            }
         } else {
-            simpanAcara();
+            // Mode tambah baru
+            await simpanAcara();
+            tutupPopup();
         }
     });
 

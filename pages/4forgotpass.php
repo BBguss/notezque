@@ -1,9 +1,5 @@
 <?php
-<<<<<<< HEAD
 include '../config/koneksi.php'; // koneksi ke DB
-=======
-include '../config/koneksi.php';
->>>>>>> e514ffd5f7a2e8a9a43520720910f8d16e650801
 
 $forgot_message = '';
 $berhasil_message = '';

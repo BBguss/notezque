@@ -3,7 +3,7 @@ session_start();
 include './config/koneksi.php';
 
 // Ambil data user
-$result = mysqli_query($conn, "SELECT * FROM users");
+$result = mysqli_query($conn, "SELECT * FROM users WHERE username != 'admin'");
 
 // Hitung data
 $jumlahPengguna = mysqli_num_rows($result);
@@ -78,15 +78,6 @@ $jumlahEvent = 8;
                 <h2><?= $jumlahPengguna ?></h2>
                 <p>Pengguna</p>
             </div>
-            <div class="card">
-                <h2><?= $jumlahTugas ?></h2>
-                <p>Tugas</p>
-            </div>
-            <div class="card">
-                <h2><?= $jumlahEvent ?></h2>
-                <p>Event Kalender</p>
-            </div>
-        </div>
 
         <h2 style="margin-top:40px;">Daftar Pengguna</h2>
         <table>
@@ -97,25 +88,22 @@ $jumlahEvent = 8;
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
-            <?php while ($user = mysqli_fetch_assoc($result)): ?>
-                <tr>
-                    <td><?= $user['id_user'] ?></td>
-                    <td><?= $user['username'] ?></td>
-                    <td><?= $user['email'] ?></td>
-                    <td><?= $user['created_at'] ?></td>
-                    <td>
-                        <?php if (strtolower($user['created_at']) == 'tidak aktif'): ?>
-                            <a href="hapus_user.php?id=<?= $user['id_user'] ?>"
-                                onclick="return confirm('Yakin ingin menghapus user ini?')">Hapus</a>
-                        <?php else: ?>
-                            -
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
+            <?php $no = 1; // Nomor urut dimulai dari 1
+            while ($user = mysqli_fetch_assoc($result)): ?>
+        <tr>
+            <td><?= $no ?></td> <!-- Nomor urut -->
+            <td><?= $user['username'] ?></td>
+            <td><?= $user['email'] ?></td>
+            <td><?= $user['created_at'] ?></td>
+            <td>
+            <a href="hapus_user.php?id=<?= $user['id_user'] ?>"
+                onclick="return confirm('Yakin ingin menghapus user ini?')">Hapus</a>
+            </td>
+            </tr>
+            <?php
+            $no++; // Tambah nomor urut
+            endwhile; ?>
         </table>
     </div
-    
-    <?php include 'includes/footer.php'; ?>
 </body>
 </html>

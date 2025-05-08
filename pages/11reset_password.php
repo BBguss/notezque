@@ -4,14 +4,15 @@ include '../config/koneksi.php';
 $reset_message = '';
 
 if (isset($_GET['token'])) {
-   ECT id_user FROM reset_password_requests WHERE token = ?");
+    $token = $_GET['token'];
+
+    // Ambil ID user dari token
+    $stmt = $conn->prepare("SELECT id_user FROM reset_password_requests WHERE token = ?");
     $stmt->bind_param("s", $token);
     $stmt->execute();
-    $result = $stmt->get_result(); $token = $_GET['token'];
+    $result = $stmt->get_result();
 
     // Cek apakah token valid
-    $stmt = $conn->prepare("SEL
-
     if ($result->num_rows > 0) {
         // Token valid, lanjutkan ke reset password
         if (isset($_POST['reset'])) {
@@ -34,7 +35,7 @@ if (isset($_GET['token'])) {
                     // Update password pengguna
                     $hashed_password = password_hash($new_password, PASSWORD_ARGON2ID);
                     $update_sql = "UPDATE users SET password = '$hashed_password' WHERE email = '$email'";
-                    
+
                     if ($conn->query($update_sql)) {
                         $reset_message = "Kata sandi berhasil diperbarui.";
                     } else {
@@ -55,17 +56,19 @@ if (isset($_GET['token'])) {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue - Reset Kata Sandi</title>
     <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
 </head>
+
 <body>
     <section id="reset_password">
         <form method="post">
             <?php if ($reset_message): ?>
-            <p class="reset_message"><?= $reset_message ?></p>
+                <p class="reset_message"><?= $reset_message ?></p>
             <?php endif; ?>
             <h1>Perbarui Kata Sandi</h1>
             <div class="inputbox">
@@ -91,4 +94,5 @@ if (isset($_GET['token'])) {
         </form>
     </section>
 </body>
+
 </html>

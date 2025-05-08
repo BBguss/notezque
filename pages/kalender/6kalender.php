@@ -32,8 +32,8 @@ include '../../config/session.php';
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
                     <div class="dropdown-content">
+                        <a href="../../pages/12profile.php"><button type="submit" name="profile">Profile</button></a>
                         <form action="" method="post">
-                            <button type="submit" name="profile">Profile</button>
                             <button type="submit" name="logout">Logout</button>
                         </form>
                     </div>
