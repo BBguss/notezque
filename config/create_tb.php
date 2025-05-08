@@ -24,7 +24,7 @@ $sql_tugas = "CREATE TABLE IF NOT EXISTS tugas (
     matkul VARCHAR(100) NOT NULL,
     desc_tugas TEXT NOT NULL,
     deadline1 DATE NOT NULL,
-    deadline2s TIME NOT NULL,
+    deadline2 TIME NOT NULL,
     status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
