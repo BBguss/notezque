@@ -9,7 +9,6 @@ if (isset($_POST['simpan'])) {
   $deskripsi = $_POST['deskripsi'];
   $tanggal = $_POST['dl1'];
   $waktu = $_POST['dl2'];
-  $hapus = $_GET['delete-task'];
   $id_user = $_SESSION['id_user'];
   $admin = $_SESSION['username'];
   $deadline = "$tanggal $waktu:00";
@@ -37,8 +36,13 @@ if (isset($_GET['id'])) {
     mysqli_query($conn, "DELETE FROM tugas WHERE id_tugas = $id");
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
-} 
-$query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] OR '$admin' == 'admin' ORDER BY deadline ASC ";
+}
+if ($_SESSION['username'] == 'admin') {
+  $query = "SELECT * FROM tugas ORDER BY deadline ASC";
+} else {
+  $id_user = $_SESSION['id_user'];
+  $query = "SELECT * FROM tugas WHERE id_user = $id_user ORDER BY deadline ASC";
+}
 $dataTugas = mysqli_query($conn, $query);
 ?>
 

@@ -11,7 +11,11 @@ if (isset($_GET['id'])) {
 }
 
 $query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] ORDER BY deadline ASC ";
+$query1 = "SELECT * FROM kalender_acara WHERE id_user = $_SESSION[id_user] ORDER BY waktu_acara ASC";
+$dataAcara = mysqli_query($conn, $query1);
 $dataTugas = mysqli_query($conn, $query);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -87,63 +91,39 @@ $dataTugas = mysqli_query($conn, $query);
     <main id="main">
         <div class="mainContainer-db">
             <h1 class="greeting">Halo <?= $_SESSION['username']?> selamat datang</h1>
-            <div class="container-atas">
-                <div class="jadwalKuliah-db">
-                    <h2>Acara hari ini</h2>
-                    <div class="nama-matkul">
-                        <a href="#" style="text-decoration: none;color: black;"><h3>DESAIN ANTARMUKA PENGGUNA</h3></a>
-                        <div class="keterangan">
-                            <div class="waktu">
-                                <h4>Waktu</h4>
-                                <p>07:30 - 10:30</p>
-                            </div>
-                            <div class="ruangan">
-                                <h4>Ruangan</h4>
-                                <p>D4-40</p>
-                            </div>
-                            <div class="dosen">
-                                <h4>Dosen</h4>
-                                <p>Bu Ais</p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="jadwalKuliah-db">
+        <h2>Acara Hari Ini</h2>
+    <?php
+                $today = date('Y-m-d');
 
-                    <div class="nama-matkul">
-                        <a href="#" style="text-decoration: none;color: black;"><h3>JARINGAN KOMPUTER</h3></a>
-                        <div class="keterangan">
-                            <div class="waktu">
-                                <h4>Waktu</h4>
-                                <p>10:30 - 12:30</p>
-                            </div>
-                            <div class="ruangan">
-                                <h4>Ruangan</h4>
-                                <p>B3</p>
-                            </div>
-                            <div class="dosen">
-                                <h4>Dosen</h4>
-                                <p>Pak Tedi</p>
-                            </div>
-                        </div>
-                    </div>
-                   
-                    <div class="nama-matkul">
-                        <a href="#" style="text-decoration: none;color: black;"><h3>ALGORITMA dan PEMOGRAMAN</h3></a>
-                        <div class="keterangan">
-                            <div class="waktu">
-                                <h4>Waktu</h4>
-                                <p>13:30 - 15:30</p>
-                            </div>
-                            <div class="ruangan">
-                                <h4>Ruangan</h4>
-                                <p>C3</p>
-                            </div>
-                            <div class="dosen">
-                                <h4>Dosen</h4>
-                                <p>Pak Patrick</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                if ($dataAcara && mysqli_num_rows($dataAcara) > 0) {
+                    while ($row = mysqli_fetch_assoc($dataAcara)) {
+                        $tanggalAcara = date('Y-m-d', strtotime($row['waktu_acara']));
+
+                        if ($tanggalAcara === $today) {
+                            echo '
+    <div class="nama-matkul">
+        <a href="#" style="text-decoration: none; color: black;">
+            <h3>' . htmlspecialchars($row['judul_acara']) . '</h3>
+        </a>
+        <div class="keterangan">
+            <div class="waktu">
+                <h4>Waktu</h4>
+                <p>' . date('H:i', strtotime($row['waktu_acara'])) . '</p>
+            </div>
+            <div class="deskripsi">
+                <h4>Deskripsi</h4>
+                <p>' . htmlspecialchars($row['desc_acara']) . '</p>
+            </div>
+        </div>
+    </div>';
+                        }
+                    }
+                } else {
+                    echo '<p>Tidak ada acara hari ini.</p>';
+                }
+                ?>
+            </div>
 
                 <div class="kalender-db">
                     <div class="kalender-nav">
@@ -215,8 +195,8 @@ $dataTugas = mysqli_query($conn, $query);
                             <div class="deadline">
                                 <p><strong>Deadline:</strong> ' . $formatted_deadline . '</p>
                             </div>
-                            <h4><strong>Judul tugas:</strong> ' . htmlspecialchars($row['judul_tugas']) . '</h4>
-                            <p><strong>Mata Kuliah:</strong> ' . htmlspecialchars($row['matkul']) . '</p>
+                            <h4><strong>Judul tugas:</strong> ' . ($row['judul_tugas']) . '</h4>
+                            <p><strong>Mata Kuliah:</strong> ' . ($row['matkul']) . '</p>
                             <a href="?id=' . $row['id_tugas'] . '" onclick="return confirm(\'Yakin hapus?\')" class="hapus">
                                 <iconify-icon class="cancel-btn" icon="material-symbols:cancel-outline-rounded" width="32" height="32"></iconify-icon>
                             </a>
