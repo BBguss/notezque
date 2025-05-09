@@ -227,7 +227,7 @@ $dataTugas = mysqli_query($conn, $query);
                             echo '
                         <div class="tmatkul">
                             <div class="deadline">
-                                <p><strong>Deadline:</strong> ' . ($row['deadline1']) . ($row['deadline2']) . '</p>
+                                <p><strong>Deadline:</strong> ' . htmlspecialchars($row['deadline1']) ." [". htmlspecialchars($row['deadline2']) ."]". '</p>
                             </div>
                             <h4><strong>Judul tugas:</strong> ' .($row['judul_tugas']) . '</h4>
                             <p><strong>Mata Kuliah:</strong> ' . ($row['matkul']) . '</p>
