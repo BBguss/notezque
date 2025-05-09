@@ -25,13 +25,6 @@ $jumlahPengguna = mysqli_num_rows($result);
 <body>
     <div class="dashboard-container">
         <h1>Dashboard Admin</h1>
-
-        <?php if (isset($_GET['status'])): ?>
-            <div class="notification <?= $_GET['status'] === 'deleted' ? 'success' : 'error' ?>">
-                <?= $_GET['status'] === 'deleted' ? 'User berhasil dihapus' : 'Gagal menghapus user' ?>
-            </div>
-        <?php endif; ?>
-
         <div class="cards">
             <div class="card">
                 <h2><?= $jumlahPengguna ?></h2>
@@ -44,21 +37,22 @@ $jumlahPengguna = mysqli_num_rows($result);
                     <th>No</th>
                     <th>Nama</th>
                     <th>Email</th>
-                    <th>Tanggal Daftar</th>
+                    <th>Tanggal Buat</th>
                     <th>Aksi</th>
                 </tr>
+
                 <?php
                 $no = 1;
                 while ($user = mysqli_fetch_assoc($result)):
                     ?>
                     <tr>
                         <td><?= $no++ ?></td>
-                        <td><?= htmlspecialchars($user['username']) ?></td>
-                        <td><?= htmlspecialchars($user['email']) ?></td>
+                        <td><?= ($user['username']) ?></td>
+                        <td><?= ($user['email']) ?></td>
                         <td><?= $user['created_at'] ?></td>
                         <td>
                             <a href="hapus_user.php?id=<?= $user['id_user'] ?>" class="btn-hapus"
-                                onclick="return confirm('Yakin hapus user <?= htmlspecialchars($user['username']) ?>?')">
+                                onclick="return confirm('Yakin hapus user <?= ($user['username']) ?>?')">
                                 Hapus
                             </a>
                         </td>

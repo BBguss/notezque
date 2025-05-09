@@ -19,24 +19,24 @@ if (empty($data['id']) || empty($data['judul_acara']) || empty($data['waktu_acar
 // Ambil nilai dari data
 $id = $data['id'];
 $judul = $data['judul_acara'];
-$deskripsi = $data['desc_acara'] ?? ''; // Pakai nilai default jika kosong
+$deskripsi = $data['desc_acara'] ?? ''; 
 $waktu = $data['waktu_acara'];
 $user_id = $_SESSION['id_user'];
 
 // Update database
-$query = "UPDATE kalender_acara SET 
+$sql = "UPDATE kalender_acara SET 
           judul_acara = '$judul', 
           desc_acara = '$deskripsi', 
           waktu_acara = '$waktu' 
           WHERE id_acara = $id AND id_user = $user_id";
 
-$result = mysqli_query($conn, $query);
+$hasil = mysqli_query($conn, $sql);
 
 // Beri respon
-if ($result && mysqli_affected_rows($conn) > 0) {
-    echo '{"success":true,"message":"Update berhasil"}';
+if ($hasil && mysqli_affected_rows($conn) > 0) {
+    echo '{"Update berhasil"}';
 } else {
-    echo '{"success":false,"message":"Gagal update"}';
+    echo '{"Gagal update"}';
 }
 
 // Tutup koneksi
