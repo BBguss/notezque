@@ -14,11 +14,11 @@ if (isset($_POST['simpan'])) {
   $now = date('Y-m-d');
 
   if (date('Y-m-d', strtotime($tanggal)) < date('Y-m-d', strtotime($now))) {
-    $status = "Terlambat";
+    $status = "Terlambat!";
   } else if (date('Y-m-d', strtotime($tanggal)) == date('Y-m-d', strtotime($now))) {
-    $status = "Hari ini";
+    $status = "Hati-hati!";
   } else {
-    $status = "Beberapa Hari lagi";
+    $status = "Aman";
   }
 
   $sql = "INSERT INTO tugas (id_user, judul_tugas, matkul, desc_tugas, deadline1, deadline2, status) 
@@ -46,11 +46,11 @@ if (isset($_POST['update'])) {
   $now = date('Y-m-d');
 
   if (date('Y-m-d', strtotime($tanggal)) < date('Y-m-d', strtotime($now))) {
-    $status = "Terlambat";
+    $status = "Terlambat!";
   } else if (date('Y-m-d', strtotime($tanggal)) == date('Y-m-d', strtotime($now))) {
-    $status = "Hari ini";
+    $status = "Hati-hati!";
   } else {
-    $status = "Beberapa Hari lagi";
+    $status = "Aman";
   }
 
   $sql = "UPDATE `tugas` SET `judul_tugas`='$judul', `matkul`='$matkul',`desc_tugas`='$deskripsi',
@@ -210,16 +210,47 @@ $dataTugas = mysqli_query($conn, $query);
                 echo '
                 <div class="task">
                   <div>
-                    <div class="task-header">
-                      <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>
-                      <p>' . htmlspecialchars($row['status']) . '</p>
-                      <p>' . htmlspecialchars($row['status']) .'</p>
-                    </div>
-                    <p><strong>Mata Kuliah:</strong> ' . htmlspecialchars($row['matkul']) . '</p>
-                    <p><strong>Deskripsi Tugas:</strong> ' . htmlspecialchars($row['desc_tugas']) . '</p>
-                    <div class="deadline">
-                      <p><strong>Deadline:</strong> ' . htmlspecialchars($row['deadline1']) . htmlspecialchars($row['deadline2']) . '</p>
-                    </div>
+                    <table>
+                      <tr>
+                      <div class="task-header">
+                        <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>
+                      </div>
+                      </tr>
+                      <tr>
+                      <td>
+                      <p><strong>Status</strong></p>
+                      </td>
+                      <td>
+                      <p>' . ": " . htmlspecialchars($row['status']) . '</p>
+                      </td>
+                      </tr>
+                      <tr>
+                      <td>
+                      <p><strong>Mata Kuliah</strong> </p>
+                      </td>
+                      <td>
+                      <p>' . ": " . htmlspecialchars($row['matkul']) . '</p>
+                      </td>
+                      </tr>
+                      <tr>
+                      <td>
+                      <p><strong>Deskripsi Tugas</strong> </p>
+                      </td>
+                      <td>
+                      <p>' . ": " . htmlspecialchars($row['desc_tugas']) . '</p>
+                      </td>
+                      </tr>
+                      <tr class="deadline">
+                      <div class="deadline">
+                      <td>
+                      <p><strong>Deadline</strong> </p>
+                      </td>
+                      <td>
+                      <p>' . ": " . htmlspecialchars($row['deadline1']) . " [" . htmlspecialchars($row['deadline2']) . "]" . '</p>
+                      </td>
+                      </div>
+                      </tr>
+                    </table>
                   </div>
                   <div>
                     <div>
@@ -245,10 +276,10 @@ $dataTugas = mysqli_query($conn, $query);
 
   <?php include 'footer.php' ?>
   </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous">
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous">
+  </script>
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   <script src="../asset/attributes/Atribute1.js"></script>
   <script src="../asset/attributes/Atribute2.js"></script>
