@@ -228,21 +228,12 @@ $dataTugas = mysqli_query($conn, $query);
                 <h1 class="task-title" style="text-align: center">List Tugas</h1>
                 <div class="listTugas-db">
                     <?php
-<<<<<<< HEAD
                     if ($dataTugas && mysqli_num_rows($dataTugas) > 0) {
                         while ($row = mysqli_fetch_assoc($dataTugas)) {
                             echo '
                         <div class="tmatkul">
                             <div class="deadline">
                                 <p><strong>Deadline:</strong> ' . ($row['deadline1']) . ($row['deadline2']) . '</p>
-=======
-                    if ($dataTugas && mysqli_num_rows($dataTugas) > 0 ) {
-                        while ($row = mysqli_fetch_assoc( $dataTugas )) {
-                        echo '
-                        <div class="tmatkul">
-                            <div class="deadline">
-                                <p><strong>Deadline:</strong> ' . htmlspecialchars($row['deadline1']) . htmlspecialchars($row['deadline2']) . '</p>
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
                             </div>
                             <h4><strong>Judul tugas:</strong> ' .($row['judul_tugas']) . '</h4>
                             <p><strong>Mata Kuliah:</strong> ' . ($row['matkul']) . '</p>
@@ -267,9 +258,6 @@ $dataTugas = mysqli_query($conn, $query);
     <script src="../../asset/attributes/Atribute1.js"></script>
     <script src="../../asset/attributes/Atribute2.js"></script>
 </body>
-<<<<<<< HEAD
 
 </html>
-=======
-</html>
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
+

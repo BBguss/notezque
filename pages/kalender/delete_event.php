@@ -4,36 +4,33 @@ include '../../config/koneksi.php';
 
 // Cek apakah user sudah login
 if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] != true) {
-    echo '{"success":false,"message":"Harus login dulu"}';
+    echo '{"Harap login terlebih dahulu"}';
     exit;
 }
 
-// Ambil data dari input
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Pastikan ID acara ada
 if (empty($data['id'])) {
     echo '{"success":false,"message":"ID acara tidak ada"}';
     exit;
 }
 
-// Siapkan query hapus
 $id = $data['id'];
 $user_id = $_SESSION['id_user'];
 
 if ($_SESSION['username'] == 'admin') {
-    $query = "DELETE FROM kalender_acara WHERE id_acara = $id";
+    $sql = "DELETE FROM kalender_acara WHERE id_acara = $id";
 }
 else {
-    $query = "DELETE FROM kalender_acara WHERE id_acara = $id AND id_user = $user_id";
+    $sql = "DELETE FROM kalender_acara WHERE id_acara = $id AND id_user = $user_id";
 }
 
-$result = mysqli_query($conn, $query);
+$hasil = mysqli_query($conn, $sql);
 
-if ($result) {
-    echo '{"success":true}';
+if ($hasil) {
+    echo '{"Sukses"}';
 } else {
-    echo '{"success":false,"message":"Gagal menghapus"}';
+    echo '{"Gagal menghapus acara"}';
 }
 
 // Tutup koneksi

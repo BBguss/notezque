@@ -11,9 +11,8 @@ if (!isset($_SESSION['id_user'])) {
 // Ambil data dari input
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Cek data yang diperlukan
 if (empty($data['id']) || empty($data['judul_acara']) || empty($data['waktu_acara'])) {
-    echo '{"success":false,"message":"Data kurang lengkap"}';
+    echo '{"Data Tidak lengkap"}';
     exit;
 }
 

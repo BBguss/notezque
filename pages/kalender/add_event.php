@@ -15,19 +15,19 @@ $deskripsi = $data['desc_acara'];
 $waktu = $data['waktu_acara'];
 
 if ($_SESSION['username'] == 'admin') {
-    $query = "INSERT INTO kalender_acara (judul_acara, desc_acara, waktu_acara) 
+    $sql = "INSERT INTO kalender_acara (judul_acara, desc_acara, waktu_acara) 
               VALUES ('$judul', '$deskripsi', '$waktu')";
 } else {
-    $query = "INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara) 
+    $sql = "INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara) 
               VALUES ('$user_id', '$judul', '$deskripsi', '$waktu')";
 }
 
-$result = mysqli_query($conn, $query);
+$hasil = mysqli_query($conn, $sql);
 
-if ($result) {
-    echo '{"success":true}';
+if ($hasil) {
+    echo '{"Sukses"}';
 } else {
-    echo '{"success":false,"message":"Gagal menambah acara"}';
+    echo '{"Gagal menambah acara"}';
 }
 
 mysqli_close($conn);

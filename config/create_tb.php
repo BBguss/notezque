@@ -98,11 +98,6 @@ if ($conn->query($sql_reser_password_requests) === TRUE) {
     echo "Tabel reset_password_requests berhasil dibuat.<br>";
 } else {
     echo "Error membuat tabel reset_password_requests: " . $conn->error . "<br>";
-<<<<<<< HEAD
 }
-=======
-}  
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
-
 $conn->close();
 ?>

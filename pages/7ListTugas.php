@@ -12,7 +12,6 @@ if (isset($_POST['simpan'])) {
   $status = "";
   $id_user = $_SESSION['id_user'];
   $now = date('Y-m-d');
-<<<<<<< HEAD
 
   if (date('Y-m-d', strtotime($tanggal)) < date('Y-m-d', strtotime($now))) {
     $status = "Terlambat";
@@ -22,17 +21,6 @@ if (isset($_POST['simpan'])) {
     $status = "Beberapa Hari lagi";
   }
 
-=======
-  
-  if (date('Y-m-d', strtotime($tanggal)) < date('Y-m-d', strtotime($now))) {
-      $status = "Terlambat";
-  } else if (date('Y-m-d', strtotime($tanggal)) == date('Y-m-d', strtotime($now))) {
-      $status = "Hari ini";
-  } else {
-      $status = "Beberapa Hari lagi";
-  }
-  
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
   $sql = "INSERT INTO tugas (id_user, judul_tugas, matkul, desc_tugas, deadline1, deadline2, status) 
             VALUES ('$id_user', '$judul', '$matkul', '$deskripsi', '$tanggal', '$waktu', '$status')";
 
@@ -56,7 +44,6 @@ if (isset($_POST['update'])) {
   $status = "";
   $id_user = $_SESSION['id_user'];
   $now = date('Y-m-d');
-<<<<<<< HEAD
 
   if (date('Y-m-d', strtotime($tanggal)) < date('Y-m-d', strtotime($now))) {
     $status = "Terlambat";
@@ -66,17 +53,6 @@ if (isset($_POST['update'])) {
     $status = "Beberapa Hari lagi";
   }
 
-=======
-  
-  if (date('Y-m-d', strtotime($tanggal)) < date('Y-m-d', strtotime($now))) {
-      $status = "Terlambat";
-  } else if (date('Y-m-d', strtotime($tanggal)) == date('Y-m-d', strtotime($now))) {
-      $status = "Hari ini";
-  } else {
-      $status = "Beberapa Hari lagi";
-  }
-  
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
   $sql = "UPDATE `tugas` SET `judul_tugas`='$judul', `matkul`='$matkul',`desc_tugas`='$deskripsi',
   `deadline1`='$tanggal', `deadline2`='$waktu', `status`='$status' WHERE id_tugas='$id_tugas'";
 
@@ -203,7 +179,6 @@ $dataTugas = mysqli_query($conn, $query);
       </div>
 
       <?php if (isset($editData)): ?>
-<<<<<<< HEAD
         <div id="dialog-2" class="dialog js-dialog" data-animation="on">
           <div class="dialog__content" role="alertdialog" aria-labelledby="dialog-title-2"
             aria-describedby="dialog-description-2">
@@ -224,28 +199,6 @@ $dataTugas = mysqli_query($conn, $query);
             </form>
           </div>
         </div>
-=======
-      <div id="dialog-2" class="dialog js-dialog" data-animation="on">
-        <div class="dialog__content" role="alertdialog" aria-labelledby="dialog-title-2"
-          aria-describedby="dialog-description-2">
-          <h4 id="dialog-title-2" class="dialog__title">Perbarui Tugas</h4>
-          <form action="" method="post">
-            <div id="dialog-description-2 inputMK" class="dialog__description add-task">
-              <input type="hidden" name="id_tugas" value="<?= $editData['id_tugas'] ?>">
-              <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required value="<?= $editData['judul_tugas'] ?>">
-              <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required value="<?= $editData ['matkul']?>">
-              <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas" required><?= $editData['desc_tugas']?></textarea>
-              <input type="date" id="deadline1" name="dl1" required value="<?= $editData['deadline1'] ?>">
-              <input type="time" id="deadline2" name="dl2" required value="<?= $editData['deadline2'] ?>">
-            </div>
-            <footer class="dialog__footer">
-              <button class="cd-btn cd-btn--subtle js-dialog__close">Batalkan</button>
-              <button type="submit" class="cd-btn cd-btn--accent" name="update">Perbarui</button>
-            </footer>
-          </form>
-        </div>
-      </div>
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
       <?php endif; ?>
 
       <div class="task-lists">
@@ -259,11 +212,8 @@ $dataTugas = mysqli_query($conn, $query);
                   <div>
                     <div class="task-header">
                       <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>
-<<<<<<< HEAD
                       <p>' . htmlspecialchars($row['status']) . '</p>
-=======
                       <p>' . htmlspecialchars($row['status']) .'</p>
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
                     </div>
                     <p><strong>Mata Kuliah:</strong> ' . htmlspecialchars($row['matkul']) . '</p>
                     <p><strong>Deskripsi Tugas:</strong> ' . htmlspecialchars($row['desc_tugas']) . '</p>

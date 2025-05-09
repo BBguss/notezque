@@ -1,5 +1,4 @@
 .container {
-<<<<<<< HEAD
     padding: 30px 20px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
@@ -37,57 +36,13 @@ section {
 }
 
 .container .inputbox label {
-=======
-  padding: 30px 20px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-  background-color: white;
-  width: 100%;
-  max-width: 400px;
-}
-
-main {
-  width: 100%;
-  display: fixed;
-  justify-content: center;
-}
-
-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: calc(100vh - 70px); /* kurangi tinggi header */
-  padding: 0px;
-}
-  
-  .container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: black;
-  }
-  
-  .container .inputbox {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
-  
-  .container .inputbox label {
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
     font-size: 15px;
     font-weight: bold;
     margin-bottom: 6px;
     color: black;
-<<<<<<< HEAD
 }
 
 .container .inputbox input {
-=======
-  }
-  
-  .container .inputbox input {
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
     height: 45px;
     padding: 10px;
     border-radius: 10px;
@@ -97,7 +52,6 @@ section {
     border: 1px solid #ccc;
     outline: none;
     font-size: 16px;
-<<<<<<< HEAD
 }
 
 .container .inputbox input::placeholder {
@@ -105,20 +59,10 @@ section {
 }
 
 .container button {
-=======
-  }
-  
-  .container .inputbox input::placeholder {
-    color: black;
-  }
-  
-  .container button {
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
     width: 100%;
     height: 40px;
     border-radius: 40px;
     background: hsl(225, 89%, 48%);
-<<<<<<< HEAD
     color: hsl(0, 0%, 100%);
     box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
         0 1px 3px hsla(240, 89%, 38%, 0.25),
@@ -129,16 +73,3 @@ section {
 .container button:hover {
     background-color: #5a52e0;
 }
-=======
-        color: hsl(0, 0%, 100%);
-        box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
-            0 1px 3px hsla(240, 89%, 38%, 0.25),
-            0 2px 6px hsla(248, 89%, 38%, 0.1),
-            0 6px 10px -2px hsla(246, 89%, 38%, 0.25);
-  }
-  
-  .container button:hover {
-    background-color: #5a52e0;
-  }
-  
->>>>>>> 733210ea08bb1dbd8b3342211cb701952af6c37d
