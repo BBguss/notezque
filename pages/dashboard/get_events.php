@@ -1,10 +1,7 @@
 <?php
 include '../../config/koneksi.php';
 include '../../config/session.php';
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-
-
+    
 // Dapatkan parameter bulan dan tahun
 $bulan = isset($_GET['bulan']) ? (int) $_GET['bulan'] : date('n');
 $tahun = isset($_GET['tahun']) ? (int) $_GET['tahun'] : date('Y');
@@ -24,12 +21,12 @@ if ($admin == 'admin') {
         ORDER BY waktu_acara";
 }
 
-$result = $conn->query($sql);
+$hasil = $conn->query($sql);
 
 // Jika data ditemukan
-if ($result->num_rows > 0) {
+if ($hasil->num_rows > 0) {
     $acara = [];
-    while ($row = $result->fetch_assoc()) {
+    while ($row = $hasil->fetch_assoc()) {
         $acara[$row['tanggal']][] = $row;
     }
     echo json_encode($acara);

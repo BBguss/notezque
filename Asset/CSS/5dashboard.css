@@ -1,163 +1,139 @@
+:root {
+    --primary-color: #4285f4;
+    --secondary-color: #1a73e8;
+    --text-color: #333;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #555;
+    --white: #ffffff;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
 * {
     margin: 0;
-    border: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-/* ============================================================
-                        Main Section
-=============================================================== */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+}
 
+/* ===================== Main Layout ===================== */
 main {
-    /* border: solid red; */
     display: flex;
-    padding: 5px;
-    transition: all .5s ease;
-    height: 100%;
-}
-
-main .mainContainer-db {
-    /* border: solid violet; */
-    width: 100%;
-    padding: 10px;
-    height: 100%;
-}
-
-
-/* ============================================================
-Jadwal Kuliah Section 
-=============================================================== */
-
-.container-atas {
-    /* border: solid red; */
-    display: flex;
+    flex-direction: column;
     gap: 20px;
-    width: 90%;
-    height: 450px;
-    margin: 0px auto 10px auto;
+    padding: 15px;
+    min-height: 100vh;
 }
 
+@media (min-width: 1025px) {
+    main {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+.mainContainer-db {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ===================== Top Container ===================== */
+.container-atas {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .container-atas {
+        flex-direction: row;
+        height: 450px;
+    }
+}
+
+/* ===================== Schedule Section ===================== */
 .jadwalKuliah-db {
-    width: 40%;
-    border: ridge;
-    padding: 10px;
+    flex: 1;
+    min-width: 300px;
+    border: 1px ridge var(--medium-gray);
+    padding: 15px;
     border-radius: 10px;
-    /* border: solid;   */
-    box-shadow: 3px 3px 5px 0 grey, 0.5px 0.5px 0 0 gray inset;
+    box-shadow:
+        3px 3px 5px 0 rgba(0, 0, 0, 0.1),
+        0.5px 0.5px 0 0 rgba(0, 0, 0, 0.1) inset;
+    overflow-y: auto;
+    max-height: 450px;
 }
 
-
-.jadwalKuliah-db a h3 {
-    font-size: 18   px;
-    text-align: left;
-    /* border: solid; */
-    margin: 5px auto;
+.jadwalKuliah-db h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
 }
 
-.jadwalKuliah-db .status {
-    font-size: 16px;
-    /* border: solid; */
-    margin: 5px auto;
-    width: 100%;  
+.status {
+    font-size: 1rem;
+    margin-bottom: 15px;
 }
 
 .keterangan {
     display: flex;
-    justify-content: space-around;
-    padding: 5px;
-    /* border: solid; */
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 0.9rem;
 }
 
-.keterangan h6,p {
-    font-size: 14px;
-}
-
-.nama-matkul{
-    box-shadow: 0 0 3px 1px grey;
-    padding: 10px;
-    width: 95%;
-    margin: 10px auto;
+.nama-matkul {
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    width: 100%;
+    margin: 10px 0;
     border-radius: 10px;
     background: linear-gradient(to left, rgb(192, 221, 244), rgb(81, 162, 249));
+    transition: var(--transition);
+    cursor: pointer;
 }
 
 .nama-matkul:hover {
-    scale: 1.1;
-    transition: all ease 1s;
-    box-shadow: 2px 2px 5px 1px grey;
-    border-radius: 20px;
-    z-index: 1;
+    transform: scale(1.02);
+    box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
 }
 
-.keterangan .waktu, .ruangan, .dosen, p {
-    font-size: 16px
-}
-
-@media (max-width:525px){
-    .container-atas{
-        display: block;
-    }
-
+/* Mobile schedule animation */
+@media (max-width: 525px) {
     .jadwalKuliah-db {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
-        overflow: hidden; 
-        position: relative;
-        border: 1px ridge;
-        margin: 10px auto;
-        width: 100%;
-    }
-    
-    .jadwalKuliah-db .nama-matkul {
-        width: 100%;
-        margin: 10px auto;
-    }
-    .jadwalKuliah-db .nama-matkul{
-        animation: slideShow 10s infinite;
+        display: block;
+        overflow-x: hidden;
     }
 
-    @keyframes slideShow {
-        0% {
-            transform: translateX(0); 
-            margin: 0px 30px;
-            /* width: 100%; */
-        }
-        25% {
-            transform: translateX(-100%);
-            margin: 0px 30px; 
-        }
-        50% {
-            transform: translateX(-200%);
-            margin: 0px 30px;
-        }
-        100% {
-            transform: translateX(0); 
-            margin: 0px 30px;
-        }
+    .nama-matkul {
+        animation: none;
+        width: 100%;
     }
-    
 }
-/* ============================================================
-                        Kalender Section 
-=============================================================== */
 
-/* Gaya Dasar Kalender */
-/* Gaya Dasar Kalender */
+/* ===================== Calendar Section ===================== */
 .kalender-db {
-    border: 1px solid #e0e0e0;
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid var(--medium-gray);
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 550px;
+    box-shadow: var(--shadow);
     padding: 15px;
-    background-color: #ffffff;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    margin: 0 auto;
-    position: relative;
+    background-color: var(--white);
+    max-height: 450px;
+    overflow-y: auto;
 }
 
-/* Header Kalender */
 .kal-nextprev {
     display: flex;
     justify-content: space-between;
@@ -167,14 +143,13 @@ Jadwal Kuliah Section
 
 .tanggal {
     font-size: 1.3rem;
-    color: #333;
     font-weight: 600;
 }
 
 .next,
 .prev {
     cursor: pointer;
-    color: #4285f4;
+    color: var(--primary-color);
     font-size: 1.2rem;
     background: none;
     border: none;
@@ -183,12 +158,6 @@ Jadwal Kuliah Section
     transition: background-color 0.2s;
 }
 
-.next:hover,
-.prev:hover {
-    background-color: #f1f3f4;
-}
-
-/* Hari dalam Minggu */
 .mingguan {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -196,21 +165,16 @@ Jadwal Kuliah Section
     font-weight: 600;
     margin-bottom: 10px;
     padding: 8px 0;
-    background-color: #f5f5f5;
-    color: #555;
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
     border-radius: 8px;
 }
 
-.minggu {
-    padding: 5px;
-}
-
-/* Grid Hari */
 .harian {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 3px;
-    background-color: #f0f0f0;
+    background-color: var(--light-gray);
     padding: 5px;
     border-radius: 8px;
 }
@@ -218,10 +182,10 @@ Jadwal Kuliah Section
 .hari {
     min-height: 45px;
     padding: 8px;
-    background-color: white;
+    background-color: var(--white);
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -230,15 +194,15 @@ Jadwal Kuliah Section
 }
 
 .hari:hover {
-    background-color: #f5f5f5;
+    background-color: var(--light-gray);
     transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow);
 }
 
 .hari-ini {
     background-color: #e8f0fe;
     font-weight: bold;
-    color: #1a73e8;
+    color: var(--secondary-color);
 }
 
 .hariSebelum,
@@ -247,7 +211,6 @@ Jadwal Kuliah Section
     background-color: #fafafa;
 }
 
-/* Event Dot Styles */
 .titik-container {
     display: flex;
     justify-content: center;
@@ -292,266 +255,159 @@ Jadwal Kuliah Section
     border-color: #333 transparent transparent transparent;
 }
 
-/* Item Acara */
-.item-acara {
-    padding: 12px;
-    margin-bottom: 12px;
-    background-color: #f9f9f9;
-    border-left: 3px solid #4285f4;
-    border-radius: 6px;
-    transition: transform 0.2s;
-}
-
-.item-acara:hover {
-    transform: translateX(2px);
-}
-
-.waktu-acara {
-    color: #4285f4;
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-}
-
-.judul-acara {
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #333;
-}
-
-.deskripsi-acara {
-    font-size: 0.9rem;
-    color: #555;
-    line-height: 1.5;
-}
-
-/* Responsif */
-@media (max-width: 600px) {
-    .kalender-db {
-        padding: 10px;
-    }
-
-    .hari {
-        min-height: 50px;
-        font-size: 0.9rem;
-        padding: 5px;
-    }
-
-    .popup-content {
-        width: 90%;
-        max-width: 280px;
-        left: 5% !important;
-        transform: none !important;
-    }
-
-    .popup-content::before {
-        display: none;
-    }
-}
-/* ============================================================
-                        Quick Matkul
-=============================================================== */
-
+/* ===================== Quick Access Section ===================== */
 .aksesCepat {
-    width: 90%;
-    margin: 20px auto 10px auto;
-    box-shadow: 3px 3px 5px 0 grey, 0.5px 0.5px 0 0 gray inset;
-    padding: 10px;
-    /* border: solid; */
-    justify-items: center;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow:
+        3px 3px 5px 0 rgba(0, 0, 0, 0.1),
+        0.5px 0.5px 0 0 rgba(0, 0, 0, 0.1) inset;
+    padding: 15px;
     border-radius: 10px;
 }
 
-.q-pilihanMatkul {
-    /* border: solid; */
-    margin: 5px 0;
+.q-pilihanMatkul h3 {
+    margin-bottom: 15px;
 }
 
-.q-matkulContainer{
-    /* border: solid; */
+.q-matkulContainer {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
     padding: 10px;
 }
 
 .q-matkul {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    /* border: solid; */
-    width: 95%;
     border-radius: 10px;
-    padding: 5px;
-    background-color: rgb(241, 241, 241);
+    overflow: hidden;
+    background-color: var(--light-gray);
     cursor: pointer;
+    transition: var(--transition);
 }
 
 .q-matkul:hover {
-    scale: 1.1;
-    transition: all ease 1.2s;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.q-matkul .matkulImg{
-    /* border: solid; */
+.matkulImg {
     width: 100%;
-    height: 65%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-} 
-
-.q-matkul a img {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    width: 100%;
-    height: 100%;
+    height: 150px;
+    object-fit: cover;
 }
 
-.q-matkul .q-namaMatkul {
-    /* border: solid red; */
-    padding-left: 5px;
-    align-content: center;
-    margin-top: 10px;
-} 
+.q-namaMatkul {
+    padding: 12px;
+}
 
 .q-namaMatkul a {
     text-decoration: none;
-    color: black;
-    font-size: 20px;
-    font-weight:bolder;
+    color: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
-.q-matkul p {
-    font-size: 16px;
-}
-  
-
-@media(max-width : 1025px) {
-    main{
-       border: none;
-       display: block;
-    }
-}
-
-@media(max-width: 525px){
-    main {
-        display: contents;
-    }
-
-    .q-matkulContainer{
-        display: grid;
-        grid-template-columns: 1fr;
-        justify-items: center;
-    }
-}
-
-/* ============================================================
-                    List Tugas Section
-=============================================================== */
+/* ===================== Tasks Section ===================== */
 aside {
-    /* border: solid green; */
-    background: linear-gradient(to bottom, rgb(22, 137, 231), rgb(135, 168, 235) 70%);
+    background: linear-gradient(to bottom, #1689e7, #87a8eb 70%);
     border-radius: 10px;
-    box-shadow: 3px 3px 5px 0 grey, 0.5px 0.5px 0 0 gray inset;
-    width: 30%;
+    box-shadow:
+        3px 3px 5px 0 rgba(0, 0, 0, 0.1),
+        0.5px 0.5px 0 0 rgba(0, 0, 0, 0.1) inset;
+    width: 100%;
 }
 
-aside .aside-container {
-    text-align: center;
-    padding: 10px;
+@media (min-width: 1025px) {
+    aside {
+        width: 350px;
+    }
 }
 
 .listTugas-db {
-    /* border: solid yellow; */
     display: grid;
-    grid-template-columns: 100%;
+    grid-template-columns: 1fr;
     gap: 10px;
     padding: 10px;
 }
 
+@media (min-width: 1025px) {
+    .listTugas-db {
+        grid-template-columns: 1fr;
+    }
+}
+
 .tmatkul {
-    /* border: solid red; */
-    padding: 10px;
-    list-style-type: decimal;
-    color: rgb(0, 0, 0);
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.951);
-    text-align: left;
+    padding: 15px;
+    color: var(--text-color);
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 5px;
+    transition: var(--transition);
     position: relative;
+    list-style-position: inside;
 }
 
 .tmatkul:hover {
-    border-left: 10px solid rgb(24, 130, 217);
-    background-color:  rgba(122, 178, 241, 0.751) ;
-    h4 {
-    color: white;
-    transition: all ease 0.5s;
-    }
-    .deadline {
-    color: rgb(149, 0, 0);
+    border-left: 8px solid #1882d9;
+    background-color: rgba(122, 178, 241, 0.75);
+}
+
+.tmatkul:hover h4 {
+    color: var(--white);
+}
+
+.tmatkul:hover .deadline {
+    color: #950000;
     font-weight: bold;
-    font-size: 16px;
-    transition: all ease 0.5s;
-    }
-    transition: all ease 0.4s;
 }
 
 .deadline {
-    color: rgb(255, 0, 0);
+    color: #ff0000;
     font-weight: bold;
-    font-size: 16px;
+    display: block;
+    margin-top: 5px;
 }
 
 .cancel-btn {
     position: absolute;
     right: 10px;
-    bottom: 20px;
+    bottom: 15px;
     cursor: pointer;
-    color: black;
+    transition: var(--transition);
 }
 
 .cancel-btn:hover {
-    color: red;
+    color: #ff0000;
+    transform: scale(1.2);
 }
 
-@media(max-width : 1025px) {
-    main aside{
-       width: 90%;
-       margin: 10px auto;
-    }
-
-    .listTugas-db {
-        /* border: solid yellow; */
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media(max-width: 525px){
-    main aside {
-        width: 85%;
-        margin: 5px auto;
-    }
-    .listTugas-db {
-        /* border: solid yellow; */
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-}
-
+/* ===================== Utility Classes ===================== */
 .greeting {
     background-color: #aed3fb;
-    padding: 20px 10px;
+    padding: 15px;
     margin-bottom: 20px;
+    border-radius: 8px;
 }
 
 .no-events {
     font-style: italic;
     text-align: center;
-    position: relative;
-    padding: 0px 0px 10px 0;
-    margin: 0;
+    padding: 10px 0;
+    color: var(--dark-gray);
 }
 
+/* ===================== Animations ===================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
 
+    to {
+        opacity: 1;
+    }
+}
+
+/* Apply animation to main content */
+main {
+    animation: fadeIn 0.5s ease-out; }

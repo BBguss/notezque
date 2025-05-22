@@ -12,6 +12,8 @@ if (isset($_GET['id'])) {
 
 $query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] ORDER BY deadline1 ASC ";
 $dataTugas = mysqli_query($conn, $query);
+$query1 = "SELECT judul_acara, desc_acara, waktu_acara FROM kalender_acara WHERE id_user = $_SESSION[id_user]";
+$dataAcara = mysqli_query($conn, $query1);
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +31,8 @@ $dataTugas = mysqli_query($conn, $query);
     <link rel="stylesheet" href="../../Asset/attributes/Atribute3.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -84,72 +87,36 @@ $dataTugas = mysqli_query($conn, $query);
             </div>
         </aside>
     </header>
-
     <main id="main">
         <div class="mainContainer-db">
             <h1 class="greeting">Halo <?= $_SESSION['username'] ?> selamat datang</h1>
             <div class="container-atas">
                 <div class="jadwalKuliah-db">
                     <h2>Acara hari ini</h2>
-                    <div class="nama-matkul">
-                        <a href="#" style="text-decoration: none;color: black;">
-                            <h3>DESAIN ANTARMUKA PENGGUNA</h3>
-                        </a>
-                        <div class="keterangan">
-                            <div class="waktu">
-                                <h4>Waktu</h4>
-                                <p>07:30 - 10:30</p>
-                            </div>
-                            <div class="ruangan">
-                                <h4>Ruangan</h4>
-                                <p>D4-40</p>
-                            </div>
-                            <div class="dosen">
-                                <h4>Dosen</h4>
-                                <p>Bu Ais</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nama-matkul">
-                        <a href="#" style="text-decoration: none;color: black;">
-                            <h3>JARINGAN KOMPUTER</h3>
-                        </a>
-                        <div class="keterangan">
-                            <div class="waktu">
-                                <h4>Waktu</h4>
-                                <p>10:30 - 12:30</p>
-                            </div>
-                            <div class="ruangan">
-                                <h4>Ruangan</h4>
-                                <p>B3</p>
-                            </div>
-                            <div class="dosen">
-                                <h4>Dosen</h4>
-                                <p>Pak Tedi</p>
+                    <?php 
+                    if ($dataAcara && mysqli_num_rows($dataAcara) > 0) {
+                        while ($row = mysqli_fetch_assoc($dataAcara)) {
+                            echo '
+                            <div class="nama-matkul">
+                            <a href="#" style="text-decoration: none;color: black;">
+                            <h2>' . ($row['judul_acara']) . '</h2>
+                            </a>
+                            <div class="keterangan">
+                                <div class="waktu">
+                                    <h4>Waktu</h4>
+                                    <p>'. ($row['waktu_acara']).'</p>
+                                </div>
+                                <div class="ruangan">
+                                    <h4>Deskripsi</h4>
+                                    <p>'.($row['desc_acara']).'</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="nama-matkul">
-                        <a href="#" style="text-decoration: none;color: black;">
-                            <h3>ALGORITMA dan PEMOGRAMAN</h3>
-                        </a>
-                        <div class="keterangan">
-                            <div class="waktu">
-                                <h4>Waktu</h4>
-                                <p>13:30 - 15:30</p>
-                            </div>
-                            <div class="ruangan">
-                                <h4>Ruangan</h4>
-                                <p>C3</p>
-                            </div>
-                            <div class="dosen">
-                                <h4>Dosen</h4>
-                                <p>Pak Patrick</p>
-                            </div>
-                        </div>
-                    </div>
+                            ';
+                        }
+                    }
+                    ?>
+                    
                 </div>
 
                 <div class="kalender-db">
@@ -181,6 +148,7 @@ $dataTugas = mysqli_query($conn, $query);
                 <div class="q-pilihanMatkul">
                     <h2 style="font-size: 24px; text-align: center;">Mata Kuliah</h2>
                     <div class="q-matkulContainer">
+
                         <div class="q-matkul">
                             <div class="matkulImg"><a href="#"><img
                                         src="https://engineering.jhu.edu/ams/wp-content/uploads/2021/06/hero-image-research-500x282.jpeg"
@@ -188,26 +156,6 @@ $dataTugas = mysqli_query($conn, $query);
                             <div class="q-namaMatkul">
                                 <a href="#">Matematika Diskrit</a>
                                 <p>Pak Hanung</p>
-                            </div>
-                        </div>
-
-                        <div class="q-matkul">
-                            <div class="matkulImg"><a href="#"><img
-                                        src="https://blog-static.userpilot.com/blog/wp-content/uploads/2024/07/what-is-a-user-interface-design-key-ui-principles_03a96dbb6560de961f7a43a349ab9814_2000.png"
-                                        alt="diskrit.jpg"></a></div>
-                            <div class="q-namaMatkul">
-                                <a href="#">User Interface Design</a>
-                                <p>Bu Ais</p>
-                            </div>
-                        </div>
-
-                        <div class="q-matkul">
-                            <div class="matkulImg"><a href="page9_File Mata Kuliah.php"><img
-                                        src="https://images.shiksha.com/mediadata/ugcDocuments/images/wordpressImages/2021_12_Difference-Between-Algorithm-and-Program_480x360.jpg"
-                                        alt="diskrit.jpg"></a></div>
-                            <div class="q-namaMatkul">
-                                <a href="page9_File Mata Kuliah.php">Algoritma dan Pemograman</a>
-                                <p>Pak Patrick</p>
                             </div>
                         </div>
                     </div>
@@ -227,9 +175,9 @@ $dataTugas = mysqli_query($conn, $query);
                             echo '
                         <div class="tmatkul">
                             <div class="deadline">
-                                <p><strong>Deadline:</strong> ' . htmlspecialchars($row['deadline1']) ." [". htmlspecialchars($row['deadline2']) ."]". '</p>
+                                <p><strong>Deadline:</strong> ' .($row['deadline1']) . " [" .($row['deadline2']) . "]" . '</p>
                             </div>
-                            <h4><strong>Judul tugas:</strong> ' .($row['judul_tugas']) . '</h4>
+                            <h4><strong>Judul tugas:</strong> ' . ($row['judul_tugas']) . '</h4>
                             <p><strong>Mata Kuliah:</strong> ' . ($row['matkul']) . '</p>
                             <a href="?id=' . $row['id_tugas'] . '" onclick="return confirm(\'Yakin hapus?\')" class="hapus">
                                 <iconify-icon class="cancel-btn" icon="material-symbols:cancel-outline-rounded" width="32" height="32"></iconify-icon>
@@ -254,4 +202,3 @@ $dataTugas = mysqli_query($conn, $query);
 </body>
 
 </html>
-

@@ -2,8 +2,6 @@
 include '../../config/koneksi.php';
 include '../../config/session.php';
 
-header('Content-Type: application/json');
-
 // Ambil id_user dari session
 $id_user = $_SESSION['id_user'];
 $admin = $_SESSION['username']; // Nama pengguna yang login

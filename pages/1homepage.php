@@ -29,7 +29,7 @@ session_start();
                 </div>
                 <div class="loginRegist">
                     <a href="2loginpage.php"><button type="button" class="login">Masuk</button></a>
-                    <a href="3register.php"><button type="button" class="login">Daftar</button></a>
+                    <a href="3registerpage.php"><button type="button" class="login">Daftar</button></a>
                 </div>
             </nav>
         </div>

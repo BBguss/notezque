@@ -1,6 +1,6 @@
 <?php
 // hapus_user.php
-include './config/koneksi.php';
+include '../config/koneksi.php';
 
 // Ambil ID dari URL
 $id = $_GET['id'];
@@ -10,8 +10,9 @@ mysqli_query($conn, "DELETE FROM reset_password_requests WHERE id_user = $id");
 $hasil = mysqli_query($conn, "DELETE FROM users WHERE id_user = $id");
 
 if ($hasil) {
-    header("Location: http://localhost/Kelompok_3/admin_dashboard.php");
+    echo "<script>alert('Berhasil hapus');window.location.href = 'admin_dashboard.php'</script>";
 } else {
-    header("Location: http://localhost/Kelompok_3/admin_dashboard.php");
+    echo "<script>alert('Gagal hapus');window.location.href = 'admin_dashboard.php</script>";
 }
+
 ?>

@@ -457,3 +457,90 @@ svg {
 .dialog[data-animation=on].dialog--sticky.dialog--is-visible .dialog__content {
     transform: translateY(0);
 }
+
+/* ------------------------------
+   Responsive Layout
+------------------------------ */
+
+/* Tablet (max-width: 992px) */
+@media (max-width: 992px) {
+    main {
+        flex-direction: column;
+        padding: 10px;
+        height: auto;
+    }
+
+    .task-lists {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .task-category {
+        width: 100%;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .add-task {
+        width: 100%;
+    }
+
+    .task {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .task button {
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+}
+
+/* Mobile (max-width: 576px) */
+@media (max-width: 576px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .task-lists {
+        gap: 10px;
+        width: 100%;
+    }
+
+    .task {
+        font-size: 0.9rem;
+    }
+
+    .cd-btn {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .dialog__content {
+        padding: 1rem;
+    }
+
+    .dialog__title {
+        font-size: 1.2rem;
+    }
+
+    .dialog__description {
+        font-size: 0.875rem;
+    }
+}
+

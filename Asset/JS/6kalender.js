@@ -328,19 +328,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function updateAcara(id, judul, deskripsi, waktu) {
-    try {
-        const response = await fetch('edit_event.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, judul_acara: judul, desc_acara: deskripsi, waktu_acara: waktu })
-        });
-
-        const result = await response.json();
-        if (!result.success) throw new Error(result.message);
+    const response = await fetch('edit_event.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: id,
+            judul_acara: judul,
+            desc_acara: deskripsi,
+            waktu_acara: waktu
+        })
+    });
+    
+    const result = await response.json();
+    if (result.status === "sukses") {
+        alert(result.pesan);
         return true;
-
-    } catch (error) {
-        alert(error.message);
+    } else {
+        alert(result.pesan);
         return false;
     }
 }

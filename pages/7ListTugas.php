@@ -95,10 +95,13 @@ $dataTugas = mysqli_query($conn, $query);
   <link rel="stylesheet" href="../Asset/attributes/Atribute1.css">
   <link rel="stylesheet" href="../Asset/attributes/Atribute2.css">
   <link rel="stylesheet" href="../Asset/attributes/Atribute3.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
 
 </head>
 
@@ -110,7 +113,8 @@ $dataTugas = mysqli_query($conn, $query);
           <a href="../pages/dashboard/5Dashboard.php"><img src="../asset/images/logoNotezQue.svg" alt=""></a>
         </div>
         <div class="dropdown">
-          <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
+          <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36"
+              height="36"></iconify-icon></i>
           <div class="dropdown-content">
             <form action="" method="post">
               <button type="submit" name="profile">Profile</button>
@@ -124,8 +128,10 @@ $dataTugas = mysqli_query($conn, $query);
     <aside>
       <input type="checkbox" name="" id="check">
       <label for="check">
-        <i id="tombol" style="color: white;"><iconify-icon icon="tabler:menu-2" width="32" height="32"></iconify-icon></i>
-        <i id="batal" style="color: white;"><iconify-icon icon="tabler:menu-3" width="32" height="32"></iconify-icon></i>
+        <i id="tombol" style="color: white;"><iconify-icon icon="tabler:menu-2" width="32"
+            height="32"></iconify-icon></i>
+        <i id="batal" style="color: white;"><iconify-icon icon="tabler:menu-3" width="32"
+            height="32"></iconify-icon></i>
       </label>
       <div class="sideNav-db">
         <nav>
@@ -186,9 +192,12 @@ $dataTugas = mysqli_query($conn, $query);
             <form action="" method="post">
               <div id="dialog-description-2 inputMK" class="dialog__description add-task">
                 <input type="hidden" name="id_tugas" value="<?= $editData['id_tugas'] ?>">
-                <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required value="<?= $editData['judul_tugas'] ?>">
-                <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required value="<?= $editData['matkul'] ?>">
-                <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas" required><?= $editData['desc_tugas'] ?></textarea>
+                <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required
+                  value="<?= $editData['judul_tugas'] ?>">
+                <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required
+                  value="<?= $editData['matkul'] ?>">
+                <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas"
+                  required><?= $editData['desc_tugas'] ?></textarea>
                 <input type="date" id="deadline1" name="dl1" required value="<?= $editData['deadline1'] ?>">
                 <input type="time" id="deadline2" name="dl2" required value="<?= $editData['deadline2'] ?>">
               </div>
@@ -213,7 +222,7 @@ $dataTugas = mysqli_query($conn, $query);
                     <table>
                       <tr>
                       <div class="task-header">
-                        <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>
+                        <h3>' . ($row['judul_tugas']) . '</h3>
                       </div>
                       </tr>
                       <tr>
@@ -221,7 +230,7 @@ $dataTugas = mysqli_query($conn, $query);
                       <p><strong>Status</strong></p>
                       </td>
                       <td>
-                      <p>' . ": " . htmlspecialchars($row['status']) . '</p>
+                      <p>' . ": " . ($row['status']) . '</p>
                       </td>
                       </tr>
                       <tr>
@@ -229,7 +238,7 @@ $dataTugas = mysqli_query($conn, $query);
                       <p><strong>Mata Kuliah</strong> </p>
                       </td>
                       <td>
-                      <p>' . ": " . htmlspecialchars($row['matkul']) . '</p>
+                      <p>' . ": " . ($row['matkul']) . '</p>
                       </td>
                       </tr>
                       <tr>
@@ -237,7 +246,7 @@ $dataTugas = mysqli_query($conn, $query);
                       <p><strong>Deskripsi Tugas</strong> </p>
                       </td>
                       <td>
-                      <p>' . ": " . htmlspecialchars($row['desc_tugas']) . '</p>
+                      <p>' . ": " . ($row['desc_tugas']) . '</p>
                       </td>
                       </tr>
                       <tr class="deadline">
@@ -246,7 +255,7 @@ $dataTugas = mysqli_query($conn, $query);
                       <p><strong>Deadline</strong> </p>
                       </td>
                       <td>
-                      <p>' . ": " . htmlspecialchars($row['deadline1']) . " [" . htmlspecialchars($row['deadline2']) . "]" . '</p>
+                      <p>' . ": " . ($row['deadline1']) . " [" . ($row['deadline2']) . "]" . '</p>
                       </td>
                       </div>
                       </tr>
@@ -277,9 +286,8 @@ $dataTugas = mysqli_query($conn, $query);
   <?php include 'footer.php' ?>
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous">
-  </script>
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   <script src="../asset/attributes/Atribute1.js"></script>
   <script src="../asset/attributes/Atribute2.js"></script>

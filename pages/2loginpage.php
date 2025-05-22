@@ -25,7 +25,7 @@ if (isset($_POST['login'])) {
             $_SESSION["aktivitas"] = time();
 
             if ($_SESSION['username'] == 'admin') {
-                header("location: /Kelompok_3/admin_dashboard.php");
+                header("location: /Kelompok_3/admin/admin_dashboard.php");
             } else
             header("Location: dashboard/5Dashboard.php");
             exit();
