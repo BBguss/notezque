@@ -87,17 +87,33 @@ if ($conn->query($sql_tambahFile) === TRUE) {
     echo "Error membuat tabel tambahFile: " . $conn->error . "<br>";
 }
 
-$sql_reser_password_requests = "CREATE TABLE IF NOT EXISTS `reset_password_requests` (
+$sql_reset_password_requests = "CREATE TABLE IF NOT EXISTS `reset_password_requests` (
     `id_user` int(11) NOT NULL,
     `token` int(255) NOT NULL,
     `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     FOREIGN KEY (id_user) REFERENCES users(id_user)
   )";
 
-if ($conn->query($sql_reser_password_requests) === TRUE) {
+if ($conn->query($sql_reset_password_requests) === TRUE) {
     echo "Tabel reset_password_requests berhasil dibuat.<br>";
 } else {
     echo "Error membuat tabel reset_password_requests: " . $conn->error . "<br>";
+}  
+
+$sql_kolaborasi = "CREATE TABLE IF NOT EXISTS kolaborasi (
+    id_collab INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL,
+    id_tugas INT NOT NULL,
+    collaborator VARCHAR(225) NOT NULL,
+    FOREIGN KEY (id_user) REFERENCES user(id_user),
+    FOREIGN KEY (id_tugas) REFERENCES tugas(id_tugas)
+  )";
+
+if ($conn->query($sql_kolaborasi) === TRUE) {
+    echo "Tabel kolaborasi berhasil dibuat.<br>";
+} else {
+    echo "Error membuat tabel kolaborasi: " . $conn->error . "<br>";
 }
+
 $conn->close();
 ?>
