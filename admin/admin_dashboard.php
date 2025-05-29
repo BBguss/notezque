@@ -47,6 +47,9 @@ $pengguna_aktif = mysqli_fetch_assoc($pengguna_aktif)['count'];
 
 $pengguna_baru = mysqli_query($conn, "SELECT COUNT(*) as count FROM users WHERE created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)");
 $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
+
+// Ambil data konten statis
+
 ?>
 
 <!DOCTYPE html>
@@ -100,9 +103,9 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-sticky-note sidebar-icon"></i>
-                            Catatan
+                        <a href="kelola_konten.php" class="sidebar-link">
+                            <i class="fas fa-file-alt sidebar-icon"></i>
+                            Kelola Konten
                         </a>
                     </li>
                     <li class="sidebar-item">

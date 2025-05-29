@@ -1,6 +1,7 @@
 <?php
+include '../config/koneksi.php';
 session_start();
-
+$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,10 +9,9 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Notezque</title>
+    <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../asset/css/1homepage.css">
     <link rel="stylesheet" href="../asset/attributes/Atribute3.css">
     <link rel="stylesheet" href="../asset/font/Font.css">
@@ -23,10 +23,7 @@ session_start();
     <header>
         <div class="top-navbar">
             <nav>
-                <div class="logo">
-                    <img src="../asset/images/logoNotezque.svg" alt="404logo" title="NotzQue">
-                    <h2 style="color: white;">NotzQue</h2>
-                </div>
+            <img src="../uploads/<?= $logo['gambar'] ?>" alt="Logo">
                 <div class="loginRegist">
                     <a href="2loginpage.php"><button type="button" class="login">Masuk</button></a>
                     <a href="3registerpage.php"><button type="button" class="login">Daftar</button></a>

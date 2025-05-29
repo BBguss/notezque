@@ -1,6 +1,8 @@
 <?php
 include '../config/koneksi.php';
 include '../config/session.php';
+
+$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +11,7 @@ include '../config/session.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
-    <link rel="icon" type="image/x-icon" href="../asset/images/logoNotezQue.svg">
+    <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
     <link rel="stylesheet" href="../asset/css/8tambahMateri.css">
     <link rel="stylesheet" href="../asset/font/Font.css">
     <link rel="stylesheet" href="../asset/attributes/Atribute1.css">
@@ -25,9 +27,7 @@ include '../config/session.php';
     <header>
         <div class="topNav-db">
             <nav>
-                <div class="logo">
-                    <a href="../pages/dashboard/5Dashboard.php"><img src="../asset/images/logoNotezQue.svg" alt=""></a>
-                </div>
+            <a href="../pages/dashboard/5Dashboard.php"><img src="../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
                     <div class="dropdown-content">

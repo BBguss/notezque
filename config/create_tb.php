@@ -99,5 +99,21 @@ if ($conn->query($sql_reser_password_requests) === TRUE) {
 } else {
     echo "Error membuat tabel reset_password_requests: " . $conn->error . "<br>";
 }
+
+// Buat tabel tambahFile
+$sql_konten_statis = "CREATE TABLE IF NOT EXISTS konten_statis (
+    id_konten INT AUTO_INCREMENT PRIMARY KEY,
+    nama_halaman VARCHAR(100) NOT NULL,
+    section VARCHAR(100),
+    deskripsi TEXT,
+    gambar VARCHAR(255),
+    keterangan VARCHAR(225)
+)";
+
+if ($conn->query($sql_konten_statis) === TRUE) {
+    echo "Tabel konten_statis berhasil dibuat.<br>";
+} else {
+    echo "Error membuat tabel konten_statis: " . $conn->error . "<br>";
+}
 $conn->close();
 ?>

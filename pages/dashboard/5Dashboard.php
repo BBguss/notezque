@@ -14,6 +14,9 @@ $query = "SELECT * FROM tugas WHERE id_user = $_SESSION[id_user] ORDER BY deadli
 $dataTugas = mysqli_query($conn, $query);
 $query1 = "SELECT judul_acara, desc_acara, waktu_acara FROM kalender_acara WHERE id_user = $_SESSION[id_user]";
 $dataAcara = mysqli_query($conn, $query1);
+$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
+
+
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +26,7 @@ $dataAcara = mysqli_query($conn, $query1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
-    <link rel="icon" type="image/x-icon" href="../Asset/images/logoNotezQue.svg">
+    <link rel="icon" type="image/x-icon" href="../../uploads/<?= $logo['gambar'] ?>">
     <link rel="stylesheet" href="../../Asset/css/5dashboard.css">
     <link rel="stylesheet" href="../../Asset/font/Font.css">
     <link rel="stylesheet" href="../../Asset/attributes/Atribute1.css">
@@ -39,9 +42,7 @@ $dataAcara = mysqli_query($conn, $query1);
     <header>
         <div class="topNav-db">
             <nav>
-                <div class="logo">
-                    <a href="5Dashboard.php"><img src="../../asset/images/logoNotezQue.svg" alt=""></a>
-                </div>
+                <a href="5Dashboard.php"><img src="../../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light"
                             width="36" height="36"></iconify-icon></i>

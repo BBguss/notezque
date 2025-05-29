@@ -36,6 +36,7 @@ if (isset($_POST['login'])) {
         $login_message = "Akun tidak ditemukan!";
     }
 }
+$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +46,7 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
-    <link rel="icon" type="image/x-icon" href="Logo NotezQue.svg">
+    <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
     <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
     <link rel="stylesheet" href="../asset/font/Font.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">

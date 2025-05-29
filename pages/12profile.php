@@ -28,6 +28,8 @@ if (isset($_POST['update'])) {
 // Ambil data user
 $query = mysqli_query($conn, "SELECT username, email FROM users WHERE id_user=$id_user");
 $user = mysqli_fetch_assoc($query);
+
+$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +40,7 @@ $user = mysqli_fetch_assoc($query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil - NotezQue</title>
+    <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
     <link rel="stylesheet" href="../Asset/css/7listTugas.css">
     <link rel="stylesheet" href="../Asset/font/Font.css">
     <link rel="stylesheet" href="../Asset/Attributes/Atribute1.css">
@@ -50,9 +53,7 @@ $user = mysqli_fetch_assoc($query);
     <header>
         <div class="topNav-db">
             <nav>
-                <div class="logo">
-                    <a href="../pages/dashboard/5Dashboard.php"><img src="../asset/images/logoNotezQue.svg" alt=""></a>
-                </div>
+            <a href="../pages/dashboard/5Dashboard.php"><img src="../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
                 <div class="dropdown">
                     <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light"
                             width="36" height="36"></iconify-icon></i>

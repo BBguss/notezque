@@ -52,6 +52,8 @@ if (isset($_GET['token'])) {
 } else {
     $reset_message = "Token tidak ditemukan!";
 }
+$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
+
 ?>
 
 <!DOCTYPE html>
@@ -61,6 +63,7 @@ if (isset($_GET['token'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue - Reset Kata Sandi</title>
+    <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
     <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
 </head>
 

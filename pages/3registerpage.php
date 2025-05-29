@@ -35,6 +35,7 @@ if (isset($_POST['register'])) {
         }
     }
 }
+$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +44,7 @@ if (isset($_POST['register'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotezQue</title>
-    <link rel="icon" type="image/x-icon" href="Logo NotezQue.svg">
+    <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
     <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
 </head>
 <body>
