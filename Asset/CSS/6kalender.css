@@ -2,7 +2,7 @@
    Professional Calendar Application Styles
    Project: NotezQue Calendar
    Author: nouvem-88
-   Last Updated: 2025-05-29
+   Last Updated: 2025-06-03
    ========================================================================== */
 
 /* ==========================================================================
@@ -21,10 +21,19 @@
   --primary-800: #075985;
   --primary-900: #0c4a6e;
 
+  /* Priority Colors */
+  --priority-high: #f44336;
+  --priority-high-hover: #d32f2f;
+  --priority-medium: #ff9800;
+  --priority-medium-hover: #f57c00;
+  --priority-low: #4caf50;
+  --priority-low-hover: #388e3c;
+
   /* Semantic Colors */
   --success-color: #10b981;
   --warning-color: #f59e0b;
-  --error-color: #ef4444;
+  --error-color: hsl(0, 89%, 48%);
+  --error-hover: rgb(174, 6, 6);
   --info-color: #3b82f6;
 
   /* Neutral Palette */
@@ -58,25 +67,15 @@
 
   /* Spacing Scale */
   --space-1: 0.25rem;
-  /* 4px */
   --space-2: 0.5rem;
-  /* 8px */
   --space-3: 0.75rem;
-  /* 12px */
   --space-4: 1rem;
-  /* 16px */
   --space-5: 1.25rem;
-  /* 20px */
   --space-6: 1.5rem;
-  /* 24px */
   --space-8: 2rem;
-  /* 32px */
   --space-10: 2.5rem;
-  /* 40px */
   --space-12: 3rem;
-  /* 48px */
   --space-16: 4rem;
-  /* 64px */
 
   /* Border Radius */
   --radius-sm: 0.375rem;
@@ -131,8 +130,8 @@
 }
 
 /* ==========================================================================
-     Modern Reset & Base Styles
-     ========================================================================== */
+       Modern Reset & Base Styles
+       ========================================================================== */
 *,
 *::before,
 *::after {
@@ -153,7 +152,6 @@ body {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
   color: var(--text-primary);
-  /* background-color: var(--bg-secondary); */
   min-height: 100vh;
 }
 
@@ -168,8 +166,8 @@ body {
 }
 
 /* ==========================================================================
-     Layout System
-     ========================================================================== */
+       Layout System
+       ========================================================================== */
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -180,18 +178,24 @@ main#main {
   flex: 1;
   padding: var(--space-6);
   display: grid;
-  grid-template-columns: minmax(320px, 380px) 1fr;
+  grid-template-columns: 1fr minmax(320px, 380px);
   gap: var(--space-6);
   max-width: 1400px;
   margin: 0 auto;
-  width: 100%;
 }
 
 /* Responsive Layout */
 @media (max-width: 1200px) {
+  body{
+    bottom: 0;
+    height: max-content;
+  }
+
   main#main {
-    grid-template-columns: minmax(300px, 350px) 1fr;
+    grid-template-columns: 1fr minmax(300px, 350px);
     gap: var(--space-5);
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -211,8 +215,8 @@ main#main {
 }
 
 /* ==========================================================================
-     Calendar Component
-     ========================================================================== */
+       Calendar Component
+       ========================================================================== */
 .main-container {
   background: var(--bg-elevated);
   border-radius: var(--radius-xl);
@@ -223,6 +227,7 @@ main#main {
 
 /* Calendar Header */
 .jadwal {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -275,10 +280,8 @@ main#main {
 }
 
 .hari {
-  display: grid;
-  grid-template-columns: repeat(7, 13%);
-  gap: var(--space-1);
-  
+  display: inline-flex;
+  width: 100%;
 }
 
 .hari>div {
@@ -289,6 +292,7 @@ main#main {
   padding: var(--space-3) var(--space-2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  width: 100%;
 }
 
 .tglBln {
@@ -306,22 +310,20 @@ main#main {
   cursor: pointer;
   transition: all var(--transition-fast);
   border: 1px solid transparent;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   gap: var(--space-1);
-
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   color: var(--text-primary);
-
-  max-width: 35px;
+  min-height: 50px;
+  width: 100%;
 }
 
 .tgl:hover {
-  background: var(--primary-600);
+  background: var(--primary-50);
   border-color: var(--primary-200);
   transform: translateY(-1px);
 }
@@ -354,48 +356,88 @@ main#main {
   border-color: transparent;
 }
 
-/* Event Indicators */
-.event-indicator {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-full);
-  background: var(--primary-500);
-  position: absolute;
-  bottom: var(--space-1);
-  right: var(--space-1);
+/* Event Indicators di Calendar */
+.acr {
+  width: 90%;
+  height: 15px;
+  border-radius: var(--radius-sm);
+  margin: 1px;
+  transition: all var(--transition-fast);
+  overflow: hidden;
+  padding: 0 5px;
 }
 
-.tglSkrg .event-indicator {
-  background: var(--text-inverse);
+.acrjudul {
+  font-size: 10px;
+  overflow: hidden;
+  color: var(--text-inverse);
 }
+
+.acr:hover {
+  transform: scale(1.2);
+  box-shadow: var(--shadow-sm);
+}
+
+
 
 /* ==========================================================================
-     Events Sidebar
-     ========================================================================== */
+       Events Sidebar
+       ========================================================================== */
 .side-listAcara {
   background: var(--bg-elevated);
   border-radius: var(--radius-xl);
-  padding: var(--space-8);
   box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-light);
+  padding: var(--space-8);
   height: fit-content;
+  max-height: 100%;
+  overflow-y: auto;
   position: sticky;
   top: 100px;
+  z-index: 100;
 }
 
-.side-title {
-  font-family: var(--font-family-display);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+.side-listAcara .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: var(--space-6);
-  text-align: center;
   padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--border-light);
 }
 
+.side-listAcara .header h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+#btnTambahAcara {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--info-color);
+  color: white;
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+#btnTambahAcara:hover {
+  background-color: var(--primary-700);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Event Cards */
 .acara {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: var(--primary-500);
   color: var(--text-inverse);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
@@ -404,11 +446,18 @@ main#main {
   transition: all var(--transition-normal);
   border: 1px solid var(--primary-600);
   box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .acara:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+}
+
+.acara.selected {
+  background: var(--primary-50) !important;
+  border-color: var(--primary-300) !important;
+  box-shadow: var(--shadow-md);
 }
 
 .acara:last-child {
@@ -420,143 +469,457 @@ main#main {
   font-weight: var(--font-weight-semibold);
   margin-bottom: var(--space-2);
   line-height: var(--leading-tight);
+  color: var(--text-primary);
 }
 
 .event-desc {
   font-size: var(--font-size-sm);
-  opacity: 0.9;
+  color: var(--text-secondary);
   margin-bottom: var(--space-3);
   line-height: var(--leading-normal);
+  color: inherit;
 }
 
 .event-date {
   font-size: var(--font-size-xs);
-  opacity: 0.8;
+  color: var(--text-muted);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+  color: inherit;
 }
 
-.hapus {
+/* Action buttons dalam event card */
+.acara-actions {
   position: absolute;
   top: var(--space-3);
   right: var(--space-3);
-  width: 24px;
-  height: 24px;
+  display: flex;
+  gap: var(--space-1);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.acara:hover .acara-actions {
+  opacity: 1;
+}
+
+.action-btn {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-md);
   cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-xs);
+}
+
+.select-btn {
+  background: var(--gray-500);
+  color: white;
+}
+
+.select-btn:hover {
+  background: var(--gray-600);
+  transform: scale(1.1);
+}
+
+.detail-btn {
+  background: var(--info-color);
+  color: white;
+}
+
+.detail-btn:hover {
+  background: var(--primary-700);
+  transform: scale(1.1);
+}
+
+/* Delete icon dalam event card */
+.hapus {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-12);
   opacity: 0.7;
   transition: all var(--transition-fast);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  color: var(--error-color);
 }
 
 .hapus:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.2);
+  color: var(--error-hover);
   transform: scale(1.1);
 }
 
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: var(--space-8) var(--space-4);
-  color: var(--text-muted);
-}
-
-.empty-state svg {
-  width: 48px;
-  height: 48px;
-  margin-bottom: var(--space-4);
-  opacity: 0.5;
-}
-
-.empty-state h3 {
-  font-size: var(--font-size-lg);
+/* Priority Badge */
+.prioritas-badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: white;
 }
 
-.empty-state p {
-  font-size: var(--font-size-sm);
-  line-height: var(--leading-relaxed);
+/* No events message */
+.no-events {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: var(--font-size-base);
 }
 
 /* ==========================================================================
-     Modal Component
-     ========================================================================== */
+   Side Detail Modal Styles - Enhanced
+   ========================================================================== */
+.side-modal {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  background-color: var(--bg-elevated);
+  box-shadow: -3px 0 25px rgba(0, 0, 0, 0.15);
+  z-index: var(--z-modal);
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border-light);
+}
+
+.side-modal.open {
+  right: 0;
+}
+
+.side-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-6) var(--space-6) var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+}
+
+.side-modal-header h3 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-display);
+}
+
+.side-modal-close {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+}
+
+.side-modal-close:hover {
+  background: var(--error-color);
+  border-color: var(--error-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.side-modal-body {
+  padding: var(--space-6);
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.side-modal-body .detail-item {
+  margin-bottom: var(--space-5);
+}
+
+.side-modal-body .detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.side-modal-body .detail-item strong {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.side-modal-body .detail-item p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--leading-normal);
+  background: var(--bg-muted);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.prioritas-badge-side {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.side-modal-footer {
+  padding: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  gap: var(--space-3);
+  background: var(--bg-secondary);
+}
+
+.side-modal-footer button {
+  padding: var(--space-3) var(--space-5);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: all var(--transition-fast);
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-edit-side {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.btn-edit-side:hover {
+  background-color: #e0a800;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-hapus-side {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.btn-hapus-side:hover {
+  background-color: var(--error-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Overlay untuk background ketika modal terbuka */
+body.side-modal-open-overlay::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: calc(var(--z-modal) - 10);
+  transition: opacity var(--transition-normal);
+}
+
+/* ==========================================================================
+   Responsive Design untuk Side Modal
+   ========================================================================== */
+@media (max-width: 768px) {
+  .side-modal {
+    width: 100vw;
+    right: -100vw;
+  }
+  
+  .side-modal-header,
+  .side-modal-body,
+  .side-modal-footer {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .side-modal-footer {
+    flex-direction: column;
+  }
+  
+  .side-modal-footer button {
+    width: 100%;
+  }
+
+  .tgl {
+    padding: var(--space-2);
+    font-size: var(--font-size-xs);
+    width: 70%;
+  }
+}
+
+/* ==========================================================================
+   Enhanced Animation & Transitions
+   ========================================================================== */
+@keyframes slideInFromRight {
+  from {
+    right: -100%;
+    opacity: 0;
+  }
+  to {
+    right: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    right: 0;
+    opacity: 1;
+  }
+  to {
+    right: -100%;
+    opacity: 0;
+  }
+}
+
+.side-modal.open {
+  animation: slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth transitions untuk semua interactive elements */
+.acara,
+.action-btn,
+.action-button,
+.btn-edit-side,
+.btn-hapus-side {
+  transition: all var(--transition-fast);
+}
+
+/* Enhanced focus states */
+.action-btn:focus,
+.action-button:focus,
+.btn-edit-side:focus,
+.btn-hapus-side:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Activity Actions Styles (di atas list acara)
+   ========================================================================== */
+.activity-actions {
+  display: none;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  background: var(--bg-muted);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex: 1;
+  justify-content: center;
+}
+
+.edit-button {
+  background: var(--warning-color);
+  color: white;
+}
+
+.edit-button:hover {
+  background: #e0a800;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.delete-button {
+  background: var(--error-color);
+  color: white;
+}
+
+.delete-button:hover {
+  background: var(--error-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   Modal Utama (Tambah/Edit Acara) Styles
+   ========================================================================== */
 .modal {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: var(--z-modal);
-  padding: var(--space-4);
+  backdrop-filter: blur(4px);
 }
 
 .modal.modal-active {
   display: flex;
-  animation: modalBackdropIn 0.2s ease-out;
-}
-
-@keyframes modalBackdropIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
 }
 
 .form {
   background: var(--bg-elevated);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-8);
-  width: 100%;
-  max-width: 480px;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2xl);
-  border: 1px solid var(--border-light);
-  animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: var(--space-8);
+  width: 90%;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all var(--transition-normal);
 }
 
-@keyframes modalIn {
-  from {
-    opacity: 0;
-    transform: translateY(-32px) scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.modal-active .form {
+  transform: scale(1);
+  opacity: 1;
 }
 
-.modalTitle {
+.modalTitle,
+.update-text {
   font-family: var(--font-family-display);
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  text-align: center;
   margin-bottom: var(--space-6);
-}
-
-.update-text {
   text-align: center;
-  margin-bottom: var(--space-6);
-  color: var(--warning-color);
-  font-weight: var(--font-weight-medium);
-  background: #fef3c7;
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  border: 1px solid #fcd34d;
 }
 
 .inputan {
@@ -565,319 +928,207 @@ main#main {
   gap: var(--space-5);
 }
 
-.input-group {
+.input-grup {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-.input-label {
+.input-grup label {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.inputan input,
-.inputan textarea {
-  width: 100%;
+.input-grup input,
+.input-grup textarea {
   padding: var(--space-3) var(--space-4);
-  border: 2px solid var(--border-medium);
-  border-radius: var(--radius-lg);
-  background: var(--bg-muted);
-  font-family: inherit;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
   font-size: var(--font-size-base);
-  color: var(--text-primary);
+  font-family: var(--font-family-base);
   transition: all var(--transition-fast);
-  line-height: var(--leading-normal);
-}
-
-.inputan input:focus,
-.inputan textarea:focus {
-  border-color: var(--primary-500);
-  outline: none;
   background: var(--bg-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.inputan input::placeholder,
-.inputan textarea::placeholder {
-  color: var(--text-muted);
+.input-grup input:focus,
+.input-grup textarea:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px var(--primary-100);
 }
 
-.inputan textarea {
+.input-grup textarea {
+  min-height: 80px;
   resize: vertical;
-  min-height: 120px;
   font-family: inherit;
 }
 
-.btn {
+/* Tombol Grup (Tenggat & Prioritas) */
+.tombol-grup {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--space-3);
-  margin-top: var(--space-8);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--border-light);
+  gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 
-.btn button {
-  padding: var(--space-3) var(--space-6);
-  border: 1px solid transparent;
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-base);
+.tombol-grup button {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--transition-fast);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 100px;
 }
 
-.btn .btl {
-  background: var(--bg-muted);
-  color: var(--text-secondary);
-  border-color: var(--border-medium);
+.tombol-grup button:hover {
+  border-color: var(--primary-300);
+  color: var(--primary-600);
 }
 
-.btn .btl:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border-color: var(--border-strong);
-}
-
-.btn .save {
+.tombol-grup button.aktif {
   background: var(--primary-500);
-  color: var(--text-inverse);
-  border-color: var(--primary-600);
+  border-color: var(--primary-500);
+  color: white;
 }
 
-.btn .save:hover {
+/* Custom Input Container */
+.custom-input-container {
+  display: none;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-muted);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.custom-date-group,
+.custom-time-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.custom-date-group label,
+.custom-time-group label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Tombol Prioritas Khusus */
+.rendah {
+  border-color: var(--priority-low) !important;
+  color: var(--priority-low) !important;
+}
+
+.rendah.aktif {
+  background: var(--priority-low) !important;
+  color: white !important;
+}
+
+.sedang {
+  border-color: var(--priority-medium) !important;
+  color: var(--priority-medium) !important;
+}
+
+.sedang.aktif {
+  background: var(--priority-medium) !important;
+  color: white !important;
+}
+
+.tinggi {
+  border-color: var(--priority-high) !important;
+  color: var(--priority-high) !important;
+}
+
+.tinggi.aktif {
+  background: var(--priority-high) !important;
+  color: white !important;
+}
+
+/* Action Buttons di Modal */
+.btn {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.btn button {
+  flex: 1;
+  padding: var(--space-3) var(--space-5);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btl {
+  background: var(--gray-200);
+  color: var(--text-secondary);
+}
+
+.btl:hover {
+  background: var(--gray-300);
+  transform: translateY(-1px);
+}
+
+.save {
+  background: var(--primary-500);
+  color: white;
+}
+
+.save:hover {
   background: var(--primary-600);
-  border-color: var(--primary-700);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
-.btn .save:active {
-  transform: translateY(0);
-}
-
 /* ==========================================================================
-     Utility Classes
-     ========================================================================== */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-primary {
-  color: var(--primary-500);
-}
-
-.text-success {
-  color: var(--success-color);
-}
-
-.text-warning {
-  color: var(--warning-color);
-}
-
-.text-error {
-  color: var(--error-color);
-}
-
-.text-muted {
-  color: var(--text-muted);
-}
-
-.font-medium {
-  font-weight: var(--font-weight-medium);
-}
-
-.font-semibold {
-  font-weight: var(--font-weight-semibold);
-}
-
-.font-bold {
-  font-weight: var(--font-weight-bold);
-}
-
-/* ==========================================================================
-     Responsive Design Enhancements
-     ========================================================================== */
+   Responsive Design untuk Modal
+   ========================================================================== */
 @media (max-width: 768px) {
-
-  .main-container,
-  .side-listAcara {
-    padding: var(--space-6);
-    border-radius: var(--radius-lg);
-  }
-
   .form {
-    margin: var(--space-3);
+    width: 95%;
     padding: var(--space-6);
-    border-radius: var(--radius-xl);
+    max-height: 95vh;
   }
-
-  .bln-thn {
-    font-size: var(--font-size-xl);
-    min-width: 160px;
+  
+  .custom-input-container {
+    flex-direction: column;
   }
-
-  .tgl {
-    font-size: var(--font-size-xs);
-    min-height: 40px;
-  }
-
+  
   .btn {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
-
+  
   .btn button {
     width: 100%;
-  }
-
-  .side-listAcara {
-    position: static;
   }
 }
 
 @media (max-width: 480px) {
-
-  .main-container,
-  .side-listAcara {
-    padding: var(--space-4);
-  }
-
   .form {
-    padding: var(--space-5);
-  }
-
-  .jadwal {
-    margin-bottom: var(--space-6);
-  }
-
-  .prev,
-  .next {
-    width: 40px;
-    height: 40px;
-  }
-
-  .bln-thn {
-    font-size: var(--font-size-lg);
-  }
-
-  .acara {
     padding: var(--space-4);
   }
-}
-
-/* ==========================================================================
-     Dark Mode Support (Optional)
-     ========================================================================== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-primary: var(--gray-100);
-    --text-secondary: var(--gray-300);
-    --text-muted: var(--gray-400);
-    --text-inverse: var(--gray-900);
-
-    --bg-primary: var(--gray-900);
-    --bg-secondary: var(--gray-800);
-    --bg-muted: var(--gray-700);
-    --bg-elevated: var(--gray-800);
-
-    --border-light: var(--gray-700);
-    --border-medium: var(--gray-600);
-    --border-strong: var(--gray-500);
+  
+  .tombol-grup {
+    flex-direction: column;
   }
-
-  .tglSkrg {
-    color: var(--gray-900) !important;
-  }
-
+  
+  .modalTitle,
   .update-text {
-    background: #451a03;
-    border-color: #92400e;
-    color: #fbbf24;
+    font-size: var(--font-size-xl);
   }
 }
-
-/* ==========================================================================
-     Accessibility Improvements
-     ========================================================================== */
-@media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  :root {
-    --border-light: var(--gray-400);
-    --border-medium: var(--gray-500);
-    --border-strong: var(--gray-600);
-  }
-}
-
-/* ==========================================================================
-     Print Styles
-     ========================================================================== */
-@media print {
-
-  .modal,
-  .btn,
-  .hapus,
-  .prev,
-  .next {
-    display: none !important;
-  }
-
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  .main-container,
-  .side-listAcara {
-    box-shadow: none !important;
-    border: 1px solid #ccc !important;
-    background: white !important;
-  }
-
-  .acara {
-    background: white !important;
-    color: black !important;
-    border: 1px solid #ccc !important;
-  }
-
-  main#main {
-    grid-template-columns: 1fr !important;
-    gap: var(--space-4) !important;
-  } }

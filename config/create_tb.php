@@ -1,7 +1,7 @@
-<?php 
+<?php
 include 'koneksi.php';
 
-// Buat tabel users
+// Tabel users
 $sql_users = "CREATE TABLE IF NOT EXISTS users (
     id_user INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -9,14 +9,9 @@ $sql_users = "CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
+echo $conn->query($sql_users) ? "Tabel users berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_users) === TRUE) {
-    echo "Tabel user berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel user: " . $conn->error . "<br>";
-}
-
-// Buat tabel tugas
+// Tabel tugas
 $sql_tugas = "CREATE TABLE IF NOT EXISTS tugas (
     id_tugas INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
@@ -29,14 +24,9 @@ $sql_tugas = "CREATE TABLE IF NOT EXISTS tugas (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
 )";
+echo $conn->query($sql_tugas) ? "Tabel tugas berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_tugas) === TRUE) {
-    echo "Tabel tugas berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel tugas: " . $conn->error . "<br>";
-}
-
-// Buat tabel kalender_acara
+// Tabel kalender_acara
 $sql_kalender_acara = "CREATE TABLE IF NOT EXISTS kalender_acara (
     id_acara INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
@@ -46,14 +36,9 @@ $sql_kalender_acara = "CREATE TABLE IF NOT EXISTS kalender_acara (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
 )";
+echo $conn->query($sql_kalender_acara) ? "Tabel kalender_acara berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_kalender_acara) === TRUE) {
-    echo "Tabel kalender_acara berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel kalender_acara: " . $conn->error . "<br>";
-}
-
-// Buat tabel tambahFolder
+// Tabel tambahFolder
 $sql_tambahFolder = "CREATE TABLE IF NOT EXISTS tambahFolder (
     id_folder INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
@@ -63,14 +48,9 @@ $sql_tambahFolder = "CREATE TABLE IF NOT EXISTS tambahFolder (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
 )";
+echo $conn->query($sql_tambahFolder) ? "Tabel tambahFolder berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_tambahFolder) === TRUE) {
-    echo "Tabel tambahFolder berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel tambahFolder: " . $conn->error . "<br>";
-}
-
-// Buat tabel tambahFile
+// Tabel tambahFile
 $sql_tambahFile = "CREATE TABLE IF NOT EXISTS tambahFile (
     id_file INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
@@ -80,42 +60,29 @@ $sql_tambahFile = "CREATE TABLE IF NOT EXISTS tambahFile (
     FOREIGN KEY (id_user) REFERENCES users(id_user),
     FOREIGN KEY (id_folder) REFERENCES tambahFolder(id_folder)
 )";
+echo $conn->query($sql_tambahFile) ? "Tabel tambahFile berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_tambahFile) === TRUE) {
-    echo "Tabel tambahFile berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel tambahFile: " . $conn->error . "<br>";
-}
-
-$sql_reset_password_requests = "CREATE TABLE IF NOT EXISTS `reset_password_requests` (
-    `id_user` int(11) NOT NULL,
-    `token` int(255) NOT NULL,
-    `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+// Tabel reset_password_requests
+$sql_reset_password_requests = "CREATE TABLE IF NOT EXISTS reset_password_requests (
+    id_user INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
-  )";
+)";
+echo $conn->query($sql_reset_password_requests) ? "Tabel reset_password_requests berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_reset_password_requests) === TRUE) {
-    echo "Tabel reset_password_requests berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel reset_password_requests: " . $conn->error . "<br>";
-}  
-
+// Tabel kolaborasi
 $sql_kolaborasi = "CREATE TABLE IF NOT EXISTS kolaborasi (
     id_collab INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
     id_tugas INT NOT NULL,
     collaborator VARCHAR(225) NOT NULL,
-    FOREIGN KEY (id_user) REFERENCES user(id_user),
+    FOREIGN KEY (id_user) REFERENCES users(id_user),
     FOREIGN KEY (id_tugas) REFERENCES tugas(id_tugas)
-  )";
+)";
+echo $conn->query($sql_kolaborasi) ? "Tabel kolaborasi berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_kolaborasi) === TRUE) {
-    echo "Tabel kolaborasi berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel kolaborasi: " . $conn->error . "<br>";
-}
-
-// Buat tabel tambahFile
+// Tabel konten_statis
 $sql_konten_statis = "CREATE TABLE IF NOT EXISTS konten_statis (
     id_konten INT AUTO_INCREMENT PRIMARY KEY,
     nama_halaman VARCHAR(100) NOT NULL,
@@ -124,11 +91,7 @@ $sql_konten_statis = "CREATE TABLE IF NOT EXISTS konten_statis (
     gambar VARCHAR(255),
     keterangan VARCHAR(225)
 )";
+echo $conn->query($sql_konten_statis) ? "Tabel konten_statis berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
-if ($conn->query($sql_konten_statis) === TRUE) {
-    echo "Tabel konten_statis berhasil dibuat.<br>";
-} else {
-    echo "Error membuat tabel konten_statis: " . $conn->error . "<br>";
-}
 $conn->close();
 ?>

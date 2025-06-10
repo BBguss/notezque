@@ -1,25 +1,48 @@
 <?php
 include '../../config/koneksi.php';
 
-$data = json_decode(file_get_contents('php://input'), true);
+// Set header untuk JSON response
+header('Content-Type: application/json');
 
-$id = $data['id'];
-$judul = $data['judul_acara'];
-$deskripsi = $data['desc_acara'];
-$waktu = $data['waktu_acara'];
+try {
+    // Ambil data dari request body
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    // Validasi data
+    if (!$data || !isset($data['id']) || !isset($data['judul_acara'])) {
+        throw new Exception('Data tidak valid');
+    }
 
-$query = "UPDATE kalender_acara SET 
-          judul_acara = '$judul', 
-          desc_acara = '$deskripsi', 
-          waktu_acara = '$waktu' 
-          WHERE id_acara = $id";
+    $id = mysqli_real_escape_string($conn, $data['id']);
+    $judul = mysqli_real_escape_string($conn, $data['judul_acara']);
+    $deskripsi = mysqli_real_escape_string($conn, $data['desc_acara']);
+    $waktu = mysqli_real_escape_string($conn, $data['waktu_acara']);
+    $prioritas = isset($data['prioritas']) ? mysqli_real_escape_string($conn, $data['prioritas']) : 'rendah';
 
-$result = mysqli_query($conn, $query);
+    // Query update
+    $query = "UPDATE kalender_acara SET 
+              judul_acara = '$judul', 
+              desc_acara = '$deskripsi', 
+              waktu_acara = '$waktu',
+              prioritas = '$prioritas'
+              WHERE id_acara = $id";
 
-if ($result) {
-    echo '{"status":"sukses", "pesan":"Acara berhasil diupdate"}';
-} else {
-    echo '{"status":"gagal", "pesan":"Gagal mengupdate acara"}';
+    $hasil = mysqli_query($conn, $query);
+
+    if ($hasil) {
+        echo json_encode([
+            'status' => 'sukses',
+            'pesan' => 'Acara berhasil diperbarui!'
+        ]);
+    } else {
+        throw new Exception('Gagal mengupdate acara: ' . mysqli_error($conn));
+    }
+
+} catch (Exception $e) {
+    echo json_encode([
+        'status' => 'error',
+        'pesan' => $e->getMessage()
+    ]);
 }
 
 mysqli_close($conn);

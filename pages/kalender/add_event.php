@@ -13,21 +13,17 @@ $user_id = $_SESSION['id_user'];
 $judul = $data['judul_acara'];
 $deskripsi = $data['desc_acara'];
 $waktu = $data['waktu_acara'];
+$prioritas = isset($data['prioritas']) ? $data['prioritas'] : 'rendah';
 
-if ($_SESSION['username'] == 'admin') {
-    $sql = "INSERT INTO kalender_acara (judul_acara, desc_acara, waktu_acara) 
-              VALUES ('$judul', '$deskripsi', '$waktu')";
-} else {
-    $sql = "INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara) 
-              VALUES ('$user_id', '$judul', '$deskripsi', '$waktu')";
-}
+$sql = "INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara, prioritas) 
+        VALUES ('$user_id', '$judul', '$deskripsi', '$waktu', '$prioritas')";
 
 $hasil = mysqli_query($conn, $sql);
 
 if ($hasil) {
-    echo '{"Sukses"}';
+    echo json_encode(["success" => true, "message" => "Acara berhasil ditambahkan!"]);
 } else {
-    echo '{"Gagal menambah acara"}';
+    echo json_encode(["success" => false, "message" => "Gagal menambahkan acara."]);
 }
 
 mysqli_close($conn);
