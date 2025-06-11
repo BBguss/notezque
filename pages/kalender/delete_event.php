@@ -18,6 +18,12 @@ if (empty($data['id'])) {
 $id = $data['id'];
 $user_id = $_SESSION['id_user'];
 
+// hapus notifikasi acara
+$hapus_notifikasi = $conn->prepare("DELETE FROM notifications WHERE type = 'acara' AND reference_id = ?");
+$hapus_notifikasi->bind_param("i", $id);
+$hapus_notifikasi->execute();
+$hapus_notifikasi->close();
+
 if ($_SESSION['username'] == 'admin') {
     $sql = "DELETE FROM kalender_acara WHERE id_acara = $id";
 }

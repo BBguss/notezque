@@ -5,11 +5,13 @@ session_start();
 $register_message = '';
 
 if (isset($_POST['register'])) {
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $password_confirm = $_POST['password_confirm'];
-    $quiz_answer = trim($_POST['quiz_answer']); // Jawaban quiz
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $password_confirm = $_POST['password_confirm'] ?? '';
+    $quiz_question = trim($_POST['quiz_question'] ?? '');
+    $quiz_answer = trim($_POST['quiz_answer'] ?? '');
+
 
     // Validasi password cocok
     if ($password !== $password_confirm) {
@@ -22,8 +24,8 @@ if (isset($_POST['register'])) {
 
         try {
             // Buat query
-            $sql = "INSERT INTO users (username, email, password, quiz_answer) 
-                    VALUES ('$username', '$email', '$hashed_password', '$quiz_answer')";
+            $sql = "INSERT INTO users (username, email, password, quiz_question, quiz_answer) 
+                    VALUES ('$username', '$email', '$hashed_password', '$quiz_question', '$quiz_answer')";
 
             if ($conn->query($sql)) {
                 $register_message = "Berhasil daftar, silakan login.";
@@ -71,9 +73,17 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
                 <label>Tulis ulang kata sandi</label>
             </div>
             <div class="inputbox">
-                <input type="text" name="quiz_answer" required>
-                <label>Siapa nama panggilan masa kecilmu?</label>
-            </div>
+    <select name="quiz_question" required>
+        <option value="" disabled selected>Pilih pertanyaan keamanan</option>
+        <option value="Siapa nama ibumu?">Siapa nama ibumu?</option>
+        <option value="Di mana kota kelahiran ibumu?">Di mana kota kelahiran ibumu?</option>
+        <option value="Apa film kesukaanmu?">Apa film kesukaanmu?</option>
+    </select>
+</div>
+<div class="inputbox">
+    <input type="text" name="quiz_answer" required>
+    <label>Jawaban pertanyaan keamanan</label>
+</div>
             <button type="submit" name="register">Daftar</button>
             <div class="register">
                 <p>Saya sudah mempunyai akun <a href="2loginpage.php">Masuk</a></p>

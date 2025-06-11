@@ -42,6 +42,98 @@ if (isset($_GET['sukses']) && isset($success_messages[$_GET['sukses']])) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        /* styling */
+        .reminder-section {
+            margin: 15px 0;
+        }
+        
+        .reminder-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .reminder-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            accent-color: #4285f4;
+        }
+        
+        .reminder-toggle label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .reminder-options {
+            display: none;
+        }
+        
+        .reminder-options.active {
+            display: block;
+        }
+        
+        .reminder-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            background-color: #fff;
+            color: #333;
+            box-sizing: border-box;
+        }
+        
+        .reminder-select:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.1);
+        }
+        
+        .custom-reminder {
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .custom-reminder.active {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .custom-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            color: #333;
+        }
+        
+        .custom-input:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.1);
+        }
+        
+        .reminder-icon {
+            color: #4285f4;
+            margin-right: 5px;
+        }
+        
+        .custom-reminder span {
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 
 <body>
@@ -56,6 +148,9 @@ if (isset($_GET['sukses']) && isset($success_messages[$_GET['sukses']])) {
                     <i class="dropdown-button" style="color: white;">
                         <iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon>
                     </i>
+                <a href="../../pages/dashboard/5Dashboard.php"><img src="../../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
+                <div class="dropdown">
+                    <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
                     <div class="dropdown-content">
                         <a href="../../pages/12profile.php">
                             <button type="submit" name="profile">Profile</button>
@@ -78,6 +173,11 @@ if (isset($_GET['sukses']) && isset($success_messages[$_GET['sukses']])) {
                 <i id="batal" style="color: white;">
                     <iconify-icon icon="tabler:menu-3" width="32" height="32"></iconify-icon>
                 </i>
+        <aside>
+            <input type="checkbox" name="" id="check">
+            <label for="check">
+                <i id="tombol" style="color: white;"><iconify-icon icon="tabler:menu-2" width="32" height="32"></iconify-icon></i>
+                <i id="batal" style="color: white;"><iconify-icon icon="tabler:menu-3" width="32" height="32"></iconify-icon></i>
             </label>
             <div class="sideNav-db">
                 <nav>
@@ -106,6 +206,10 @@ if (isset($_GET['sukses']) && isset($success_messages[$_GET['sukses']])) {
     <!-- Main Content -->
     <main id="main">
         <!-- Calendar Container -->
+        </aside>
+    </header>
+
+    <main id="main">
         <div class="main-container">
             <!-- Calendar Header -->
             <div class="jadwal">
@@ -119,6 +223,11 @@ if (isset($_GET['sukses']) && isset($success_messages[$_GET['sukses']])) {
                     <i>
                         <iconify-icon icon="mingcute:right-fill" width="32" height="32" style="color: #4285f4"></iconify-icon>
                     </i>
+                    <i><iconify-icon icon="mingcute:left-fill" width="32" height="32" style="color: #4285f4"></iconify-icon></i>
+                </div>
+                <div class="bln-thn"></div>
+                <div class="next">
+                    <i><iconify-icon icon="mingcute:right-fill" width="32" height="32" style="color: #4285f4"></iconify-icon></i>
                 </div>
             </div>
 
@@ -163,6 +272,58 @@ if (isset($_GET['sukses']) && isset($success_messages[$_GET['sukses']])) {
                             <option value="sedang">Sedang</option>
                             <option value="rendah">Rendah</option>
                         </select>
+        <div class="side-listAcara">
+            <h2 class="side-title" style="text-align: center">List acara</h2>
+        </div>
+
+        <div class="acara-container"></div>
+    </main>
+
+    <aside id="modal" class="modal">
+        <div class="form">
+            <form action="" method="post">
+                <h1 class="modalTitle">Buat Acara Baru</h1>
+                <h1 class="update-text"></h1>
+                <div class="inputan">
+                    <label for="title">
+                        <input type="text" name="j.acara" id="title" placeholder="Judul Acara" required>
+                    </label>
+                    <label for="desk">
+                        <textarea id="desk" name="d.acara" placeholder="Deskripsi Acara"></textarea>
+                    </label>
+                    <label for="tenggat">
+                        <input type="time" name="dl.acara" id="tenggat" required>
+                    </label>
+
+                    <!-- Fitur Reminder -->
+<div class="reminder-section">
+    <div class="reminder-toggle">
+        <input type="checkbox" id="reminder_enabled" checked>
+        <label for="reminder_enabled">
+            Aktifkan Pengingat
+        </label>
+    </div>
+                        
+    <div class="reminder-options active" id="reminder_options">
+        <select class="reminder-select" id="reminder_template">
+            <option value="">Pilih waktu pengingat...</option>
+                <?php 
+                    mysqli_data_seek($reminder_templates, 0);
+                    while ($template = mysqli_fetch_assoc($reminder_templates)): ?>
+            <option value="<?= $template['minutes_before'] ?>" 
+                <?= isset($selected_minutes) && $template['minutes_before'] == $selected_minutes ? 'selected' : '' ?>>
+                <?= $template['name'] ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
+
+                        </div>
+                    </div>
+
+                    <div class="btn">
+                        <button type="button" class="btl" id="closeBtn" name="batal">Batal</button>
+                      <button type="button" class="save" id="save" name="save">Simpan</button>
+
                     </div>
                     
                     <!-- Sort Filter -->
@@ -307,6 +468,16 @@ if (isset($_GET['sukses']) && isset($success_messages[$_GET['sukses']])) {
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <script src="../../asset/attributes/Atribute1.js"></script>
     <script src="../../asset/attributes/Atribute2.js"></script>
+
+
+<script>
+document.getElementById("reminder_template").addEventListener("change", function () {
+    const isCustom = this.value === "custom";
+    document.getElementById("custom_reminder").classList.toggle("active", isCustom);
+});
+</script>
     <script src="../../asset/js/6kalender.js"></script>
 </body>
+</html>
+
 </html>

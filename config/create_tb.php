@@ -7,6 +7,9 @@ $sql_users = "CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    quiz_question VARCHAR(255) NOT NULL,
+    quiz_answer VARCHAR(220) NOT NULL,
+    aktivitas_terakhir DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 echo $conn->query($sql_users) ? "Tabel users berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
@@ -21,6 +24,8 @@ $sql_tugas = "CREATE TABLE IF NOT EXISTS tugas (
     deadline1 DATE NOT NULL,
     deadline2 TIME NOT NULL,
     status VARCHAR(20) NOT NULL,
+    reminder_enabled BOOLEAN DEFAULT FALSE,
+    reminder_time DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
 )";
@@ -33,6 +38,8 @@ $sql_kalender_acara = "CREATE TABLE IF NOT EXISTS kalender_acara (
     judul_acara VARCHAR(100) NOT NULL,
     desc_acara TEXT NOT NULL,
     waktu_acara DATETIME NOT NULL,
+    reminder_enabled BOOLEAN DEFAULT FALSE,
+    reminder_time DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
 )";

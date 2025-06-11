@@ -27,6 +27,7 @@ if (isset($_POST['login'])) {
             if ($_SESSION['username'] == 'admin') {
                 header("location: /Kelompok_3/admin/admin_dashboard.php");
             } else
+             $_SESSION['welcome_message'] = "Selamat datang, " . $data['username'] . "!";
             header("Location: dashboard/5Dashboard.php");
             exit();
         } else {
@@ -58,7 +59,6 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
 <body>
     <section>
         
-        <!-- Form harus mengarah ke file INI SENDIRI (bukan dashboard) -->
         <form action="" method="POST">
             <?php if ($login_message): ?>
                 <p class="login_message"><?= $login_message ?></p>
