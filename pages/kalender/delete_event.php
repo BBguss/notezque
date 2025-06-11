@@ -4,7 +4,7 @@ include '../../config/koneksi.php';
 
 // Cek apakah user sudah login
 if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] != true) {
-    echo '{"Harap login terlebih dahulu"}';
+    echo '{"success":false,"message":"Harap login terlebih dahulu"}';
     exit;
 }
 

@@ -36,21 +36,25 @@ $reminder_minutes = isset($data['reminder_minutes']) && is_numeric($data['remind
 $waktu_acara = date('Y-m-d H:i:s', strtotime($waktu_acara_input));
 
 // Debug: Log waktu yang diterima dan yang akan disimpan
-error_log("Waktu diterima: " . $waktu_acara_input);
-error_log("Waktu yang akan disimpan: " . $waktu_acara);
+if (defined('DEBUG') && DEBUG) {
+    error_log("Waktu diterima: " . $waktu_acara_input);
+    error_log("Waktu yang akan disimpan: " . $waktu_acara);
+}
 
 // Hitung reminder_time jika reminder diaktifkan
 $reminder_time = null;
 if ($reminder_enabled && $reminder_minutes > 0) {
     $reminder_timestamp = strtotime($waktu_acara) - ($reminder_minutes * 60);
     $reminder_time = date("Y-m-d H:i:s", $reminder_timestamp);
-    error_log("Reminder time: " . $reminder_time);
+    if (defined('DEBUG') && DEBUG) {
+        error_log("Reminder time: " . $reminder_time);
+    }
 }
 
 // Buat query berdasarkan role
 try {
     if ($_SESSION['username'] == 'admin') {
-        $stmt = $conn->prepare("INSERT INTO kalender_acara (judul_acara, desc_acara, waktu_acara, reminder_enabled, reminder_time) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara, reminder_enabled, reminder_time) VALUES (NULL, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssis", $judul, $deskripsi, $waktu_acara, $reminder_enabled, $reminder_time);
     } else {
         $stmt = $conn->prepare("INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara, reminder_enabled, reminder_time) VALUES (?, ?, ?, ?, ?, ?)");
