@@ -1,3 +1,23 @@
+
+<?php
+// Replace the existing include with:
+$base_path = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok_3/config/koneksi.php';
+include $base_path;
+
+function getKonten($conn, $halaman, $section) {
+    $halaman = mysqli_real_escape_string($conn, $halaman);
+    $section = mysqli_real_escape_string($conn, $section);
+
+    $query = "SELECT deskripsi FROM konten_statis 
+              WHERE nama_halaman = '$halaman' AND section = '$section' 
+              LIMIT 1";
+    $result = mysqli_query($conn, $query);
+    if ($row = mysqli_fetch_assoc($result)) {
+        return $row['deskripsi'];
+    }
+    return '';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,32 +29,27 @@
     <footer id="footer">
         <div class="container">
             <div class="sec aboutus">
-                <h2>Tentang Kami</h2>
-                <p>NotzQue merupakan sebuah aplikasi notes digital 
-                yang bisa digunakan untuk membuat, menyimpan, dan mengelola catatan, serta membuat
-                folder-folder untuk setiap note yang telah dibuat.</p>
-            </div>
-            <div class="sec contactus">
-                <h2>Kontak Kami</h2>
-                <ul class="info">
-                    <li>
-                        <span><i class="fa-solid fa-phone"></i></span> <p><a href="tel: +62 812 3456 7890">+62 812 3456 7890</a></p>
-                    </li>
-                    <li>
-                        <span><i class="fa-solid fa-envelope"></i></i></span> <p><a href="mailto: notzque@gmail.com">notzque@gmail.com</a></p>
-                    </li>
+                <?php 
+                    echo "<h2>". getKonten($conn, 'homepage', 'footer h2'). "</h2>";
+                    echo "<p>". getKonten($conn, 'homepage', 'footer'). "</p>";
+                 ?>`
+                <ul class="satu">
+                <?php
+                    echo getKonten($conn, 'homepage', 'sosmed');
+                ?>
                 </ul>
             </div>
-            <ul class="satu">
-                    <li><a href="#"><i class="fa-brands fa-facebook-f"></i></i></a></li>
-                    <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
-                    <li><a href="#"><i class="fa-brands fa-twitter"></i></a></i></li>
-                    <li><a href="#"><i class="fa-brands fa-youtube"></i></a></li>
-            </ul>
+            <div class="sec contactus">
+            <?php
+                echo getKonten($conn, 'homepage', 'kontak');
+            ?>
+            </div>
         </div>
 
         <div class="copyrightText">
-        <p>&copy; NotzQue 2025 Digital Notes. <strong>All Rights Reserved.</strong></p>
+        <?php
+            echo getKonten($conn, 'homepage', 'haki');
+        ?>
         </div>
     </footer>
 </body>

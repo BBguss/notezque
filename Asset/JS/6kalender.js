@@ -1,1153 +1,1330 @@
-// ================================================
-//              SISTEM KALENDER SEDERHANA
-// ================================================
-
-document.addEventListener("DOMContentLoaded", function () {
-  
-  // =============== DATA KONFIGURASI ===============
-  const data = {
-    tanggalSekarang: new Date(),
-    tanggalDipilih: null,
-    daftarAcara: [],
-    acaraTerpilih: null,
-    namaBulan: [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ],
-    prioritas: {
-      rendah: { nilai: 1, warna: "#4caf50", label: "Rendah" },
-      sedang: { nilai: 2, warna: "#ff9800", label: "Sedang" },
-      tinggi: { nilai: 3, warna: "#f44336", label: "Tinggi" }
-    },
-    prioritasDefault: "rendah"
-  };
-
-  // =============== KONFIGURASI ELEMEN HTML ===============
-  const elemen = {
-    tampilanTanggal: document.querySelector(".tglBln"),
-    tampilanBulanTahun: document.querySelector(".bln-thn"),
-    tombolNext: document.querySelector(".next"),
-    tombolPrev: document.querySelector(".prev"),
-    popup: document.getElementById("modal"),
-    modalTitle: document.querySelector(".modalTitle"),
-    inputJudul: document.getElementById("title"),
-    inputDeskripsi: document.getElementById("desk"),
-    tombolTutup: document.getElementById("closeBtn"),
-    tombolSimpan: document.getElementById("save"),
-    inputTanggalCustom: document.getElementById("tanggalCustom"),
-    inputWaktuCustom: document.getElementById("waktuCustom"),
-    containerAcara: document.querySelector(".acara-container"),
-    daftarAcara: document.querySelector(".acara-container"),
-    btnTambahAcara: document.getElementById("btnTambahAcara"),
-    activityActions: document.querySelector(".activity-actions"),
-    btnEdit: document.querySelector(".edit-button"),
-    btnHapus: document.querySelector(".delete-button"),
-    sideModal: document.getElementById("sideModalDetail"),
-    btnTutupSideModal: document.getElementById("closeSideModalBtn"),
-    btnEditSideAcara: document.getElementById("editSideAcaraBtn"),
-    btnHapusSideAcara: document.getElementById("hapusSideAcaraBtn"),
-    sideDetailJudul: document.getElementById("sideDetailJudul"),
-    sideDetailDeskripsi: document.getElementById("sideDetailDeskripsi"),
-    sideDetailTanggalMulai: document.getElementById("sideDetailTanggalMulai"),
-    sideDetailTanggalBerakhir: document.getElementById("sideDetailTanggalBerakhir"),
-    sideDetailDurasi: document.getElementById("sideDetailDurasi"),
-    sideDetailPrioritas: document.getElementById("sideDetailPrioritas")
-  };
-
-  // =============== FUNGSI HELPER ===============
-  
-  function formatTanggalToISO(date) {
-    return date.toISOString().split('T')[0];
-  }
-
-  function formatTanggal(waktuDatabase) {
-    const tanggal = new Date(waktuDatabase);
-    return formatTanggalToISO(tanggal);
-  }
-
-  function formatWaktu(waktuDatabase) {
-    const waktu = new Date(waktuDatabase);
-    return waktu.toTimeString().slice(0, 5);
-  }
-
-  function formatTanggalTampilan(tanggalStr) {
-    const tanggal = new Date(tanggalStr);
-    const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-    const bulan = data.namaBulan;
-    
-    return `${hari[tanggal.getDay()]}, ${tanggal.getDate()} ${bulan[tanggal.getMonth()]} ${tanggal.getFullYear()}`;
-  }
-
-  function hitungDurasi(mulai, akhir) {
-    const tanggalMulai = new Date(mulai);
-    const tanggalAkhir = new Date(akhir);
-    const selisih = tanggalAkhir - tanggalMulai;
-    const hari = Math.ceil(selisih / (1000 * 60 * 60 * 24));
-    return hari <= 1 ? "1 hari" : `${hari} hari`;
-  }
-
-  function getWaktuDipilih() {
-    const tombolKustom = document.getElementById('kustom');
-    if (tombolKustom && tombolKustom.classList.contains('aktif') && elemen.inputWaktuCustom) {
-      return elemen.inputWaktuCustom.value || "23:00";
-    }
-    return "23:00";
-  }
-
-  // =============== FUNGSI BADGE DAN UI ===============
-  
-  function updateEventBadge(count) {
-    const badge = document.getElementById('eventBadge');
-    if (badge) {
-      badge.textContent = count;
-      badge.style.display = count > 0 ? 'inline-block' : 'none';
-    }
-  }
-
-  function getSortBadge(sortType, acara) {
-    switch (sortType) {
-      case 'tanggal_desc':
-        return `<small style="color: #6c757d; font-size: 0.75em;"><iconify-icon icon="mdi:clock-outline" width="12" height="12"></iconify-icon> Terbaru</small>`;
-      case 'tanggal_asc':
-        return `<small style="color: #6c757d; font-size: 0.75em;"><iconify-icon icon="mdi:clock-outline" width="12" height="12"></iconify-icon> Terlama</small>`;
-      case 'prioritas':
-        return `<small style="color: ${data.prioritas[acara.prioritas]?.warna}; font-size: 0.75em; font-weight: 600;"><iconify-icon icon="mdi:flag" width="12" height="12"></iconify-icon> Prioritas</small>`;
-      case 'judul':
-        return `<small style="color: #6c757d; font-size: 0.75em;"><iconify-icon icon="mdi:sort-alphabetical-ascending" width="12" height="12"></iconify-icon> A-Z</small>`;
-      default:
-        return '';
-    }
-  }
-
-  // =============== FUNGSI PRIORITAS ===============
-  
-  function inisialisasiPrioritas() {
-    const tombolPrioritas = document.querySelectorAll('.tombol-grup button');
-    tombolPrioritas.forEach(tombol => {
-      if (tombol.classList.contains('rendah') || tombol.classList.contains('sedang') || tombol.classList.contains('tinggi')) {
-        tombol.addEventListener('click', function() {
-          document.querySelectorAll('.tombol-grup button').forEach(t => {
-            if (t.classList.contains('rendah') || t.classList.contains('sedang') || t.classList.contains('tinggi')) {
-              t.classList.remove('aktif');
-            }
-          });
-          this.classList.add('aktif');
-        });
-      }
-    });
-  }
-
-  function setPrioritasDefault() {
-    const tombolRendah = document.querySelector('.tombol-grup .rendah');
-    if (tombolRendah) {
-      document.querySelectorAll('.tombol-grup button').forEach(t => {
-        if (t.classList.contains('rendah') || t.classList.contains('sedang') || t.classList.contains('tinggi')) {
-          t.classList.remove('aktif');
-        }
-      });
-      tombolRendah.classList.add('aktif');
-    }
-  }
-
-  function getPrioritasDipilih() {
-    const tombolAktif = document.querySelector('.tombol-grup button.aktif');
-    if (!tombolAktif) return 'rendah';
-    
-    if (tombolAktif.classList.contains('tinggi')) return 'tinggi';
-    if (tombolAktif.classList.contains('sedang')) return 'sedang';
-    return 'rendah';
-  }
-
-  function setPrioritasDipilih(prioritasKey) {
-    document.querySelectorAll('.tombol-grup button').forEach(tombol => {
-      if (tombol.classList.contains('rendah') || tombol.classList.contains('sedang') || tombol.classList.contains('tinggi')) {
-        tombol.classList.remove('aktif');
-      }
-    });
-    
-    const tombolTarget = document.querySelector(`.tombol-grup .${prioritasKey}`);
-    if (tombolTarget) {
-      tombolTarget.classList.add('aktif');
-    }
-  }
-
-  // =============== FUNGSI TENGGAT ===============
-  
-  function inisialisasiTenggat() {
-    const tombolTenggat = {
-      skrg: document.getElementById('skrg'),
-      besok: document.getElementById('besok'), 
-      kustom: document.getElementById('kustom')
-    };
-
-    const customInputContainer = document.querySelector('.custom-input-container');
-
-    // Setup event listeners untuk tombol tenggat
-    Object.entries(tombolTenggat).forEach(([key, btn]) => {
-      if (btn) {
-        btn.addEventListener('click', function() {
-          // Reset semua tombol
-          Object.values(tombolTenggat).forEach(b => {
-            if (b) b.classList.remove('aktif');
-          });
-          
-          // Set tombol aktif
-          this.classList.add('aktif');
-          
-          // Atur tanggal berdasarkan pilihan
-          const today = new Date();
-          let targetDate = new Date(today);
-          
-          if (key === 'besok') {
-            targetDate.setDate(today.getDate() + 1);
-          } else if (key === 'kustom') {
-            if (customInputContainer) {
-              customInputContainer.style.display = 'flex';
-            }
-            return;
-          }
-          
-          if (key !== 'kustom' && customInputContainer) {
-            customInputContainer.style.display = 'none';
-          }
-          
-          data.tanggalDipilih = formatTanggalToISO(targetDate);
-        });
-      }
-    });
-
-    // Set default hari ini
-    if (tombolTenggat.skrg) {
-      tombolTenggat.skrg.classList.add('aktif');
-    }
-    
-    const today = new Date();
-    data.tanggalDipilih = formatTanggalToISO(today);
-
-    // Setup input custom
-    if (elemen.inputTanggalCustom) {
-      elemen.inputTanggalCustom.addEventListener('change', function() {
-        data.tanggalDipilih = this.value;
-      });
-      elemen.inputTanggalCustom.value = formatTanggalToISO(today);
-    }
-
-    if (elemen.inputWaktuCustom) {
-      elemen.inputWaktuCustom.value = "23:00";
-    }
-  }
-
-  // =============== FUNGSI FILTER SEDERHANA ===============
-  
-  function inisialisasiFilter() {
-    const priorityFilter = document.getElementById('priorityFilter');
-    const sortFilter = document.getElementById('sortFilter');
-    const clearBtn = document.getElementById('clearFilters');
-
-    // Event listeners
-    if (priorityFilter) {
-      priorityFilter.addEventListener('change', applyFilters);
-    }
-    
-    if (sortFilter) {
-      sortFilter.addEventListener('change', applyFilters);
-    }
-
-    if (clearBtn) {
-      clearBtn.addEventListener('click', clearFilters);
-    }
-  }
-
-  async function applyFilters() {
-    const priorityFilter = document.getElementById('priorityFilter');
-    const sortFilter = document.getElementById('sortFilter');
-    
-    const prioritas = priorityFilter ? priorityFilter.value : '';
-    const sort = sortFilter ? sortFilter.value : 'prioritas';
-
-    try {
-      const url = `filter_events.php?prioritas=${prioritas}&sort=${sort}`;
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error('Gagal mengambil data filter');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Update data global dengan hasil filter
-        data.daftarAcara = result.data.map((item) => ({
-          id: item.id_acara,
-          judul: item.judul_acara,
-          deskripsi: item.desc_acara,
-          tanggal: formatTanggal(item.waktu_acara),
-          waktu: formatWaktu(item.waktu_acara),
-          tanggalMulai: formatTanggal(item.waktu_acara),
-          tanggalAkhir: formatTanggal(item.waktu_acara),
-          waktuMulai: formatWaktu(item.waktu_acara),
-          waktuAkhir: formatWaktu(item.waktu_acara),
-          prioritas: item.prioritas || 'rendah',
-          warna: data.prioritas[item.prioritas || 'rendah'].warna
-        }));
-
-        // Update tampilan dengan sorting yang diterapkan
-        tampilkanDaftarAcaraTerurut(sort);
-        tampilkanKalender();
-        updateEventBadge(result.total);
-
-        console.log(`Filter applied: ${result.total} events found with sort: ${sort}`);
-        
-      } else {
-        throw new Error('Filter gagal dijalankan');
-      }
-
-    } catch (error) {
-      console.error('Error applying filters:', error);
-      alert('Gagal menerapkan filter: ' + error.message);
-    }
-  }
-
-  function clearFilters() {
-    const priorityFilter = document.getElementById('priorityFilter');
-    const sortFilter = document.getElementById('sortFilter');
-    
-    if (priorityFilter) priorityFilter.value = '';
-    if (sortFilter) sortFilter.value = 'prioritas';
-    
-    // Load semua data dengan sort prioritas
-    ambilAcaraDariDatabase();
-  }
-
-  // =============== FUNGSI TAMPILAN ===============
-
-  function tampilkanDaftarAcaraTerurut(sortType = 'prioritas') {
-    const container = elemen.containerAcara || elemen.daftarAcara;
-    
-    if (!container) {
-      console.error('Container acara tidak ditemukan');
-      return;
-    }
-
-    container.innerHTML = "";
-
-    if (data.daftarAcara.length === 0) {
-      const noEventsMsg = document.createElement('p');
-      noEventsMsg.className = 'no-events';
-      noEventsMsg.style.cssText = 'text-align: center; padding: 2rem; color: #999; font-style: italic;';
-      noEventsMsg.textContent = 'Belum ada acara';
-      container.appendChild(noEventsMsg);
-      return;
-    }
-
-    // Sort berdasarkan tipe yang dipilih
-    let acaraTerurut = [...data.daftarAcara];
-    
-    switch (sortType) {
-      case 'tanggal_desc':
-        acaraTerurut.sort((a, b) => {
-          const dateA = new Date(a.tanggal + ' ' + a.waktu);
-          const dateB = new Date(b.tanggal + ' ' + b.waktu);
-          return dateB - dateA; // Terbaru ke terlama
-        });
-        break;
-        
-      case 'tanggal_asc':
-        acaraTerurut.sort((a, b) => {
-          const dateA = new Date(a.tanggal + ' ' + a.waktu);
-          const dateB = new Date(b.tanggal + ' ' + b.waktu);
-          return dateA - dateB; // Terlama ke terbaru
-        });
-        break;
-        
-      case 'judul':
-        acaraTerurut.sort((a, b) => {
-          return a.judul.localeCompare(b.judul); // A-Z
-        });
-        break;
-        
-      default: // prioritas (default)
-        acaraTerurut.sort((a, b) => {
-          const prioritasA = data.prioritas[a.prioritas]?.nilai || 1;
-          const prioritasB = data.prioritas[b.prioritas]?.nilai || 1;
-          if (prioritasB !== prioritasA) return prioritasB - prioritasA; // Tinggi ke rendah
-          
-          // Jika prioritas sama, sort berdasarkan tanggal
-          const dateA = new Date(a.tanggal + ' ' + a.waktu);
-          const dateB = new Date(b.tanggal + ' ' + b.waktu);
-          return dateA - dateB;
-        });
-        break;
-    }
-
-    // Render acara yang sudah diurutkan
-    acaraTerurut.forEach((acara, index) => {
-      const elemenAcara = document.createElement("div");
-      elemenAcara.className = "acara";
-      elemenAcara.style.cssText = `border-left: 4px solid ${data.prioritas[acara.prioritas]?.warna || data.prioritas.rendah.warna}; cursor: pointer; position: relative; margin-bottom: 10px; padding: 15px; background: #f9f9f9; border-radius: 8px; transition: all 0.2s ease;`;
-      elemenAcara.dataset.idAcara = acara.id;
-      
-      const prioritasInfo = data.prioritas[acara.prioritas] || data.prioritas.rendah;
-      
-      // Tambahkan indikator urutan untuk prioritas (default sort)
-      let sortIndicator = '';
-      if (sortType === 'prioritas') {
-        sortIndicator = `<span class="sort-indicator" style="position: absolute; top: 8px; left: 8px; background: ${prioritasInfo.warna}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">#${index + 1}</span>`;
-      }
-      
-      elemenAcara.innerHTML = `
-        ${sortIndicator}
-        <div class="acara-content" style="${sortIndicator ? 'margin-top: 20px;' : ''}">
-          <h4 style="margin-bottom: 8px; color: #333; font-size: 1.05rem; font-weight: 600;">${acara.judul}</h4>
-          <p class="event-desc" style="color: #666; margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;">${acara.deskripsi || "Tidak ada deskripsi"}</p>
-          <p class="event-date" style="color: #555; margin-bottom: 8px; font-size: 0.85rem; font-weight: 500;">${formatTanggalTampilan(acara.tanggal)} pukul ${acara.waktu}</p>
-          <div class="event-meta" style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="prioritas-badge" style="background-color: ${prioritasInfo.warna}; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.8em; font-weight: 500; display: inline-block;">
-              ${prioritasInfo.label}
-            </span>
-            ${getSortBadge(sortType, acara)}
-          </div>
-        </div>
-        <div class="acara-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; opacity: 0; transition: opacity 0.2s ease;">
-          <button class="action-btn select-btn" title="Pilih acara" style="background: #6c757d; color: white; border: none; padding: 6px 9px; border-radius: 4px; cursor: pointer; font-size: 12px;">
-            <iconify-icon icon="mdi:check-circle-outline" width="16" height="16"></iconify-icon>
-          </button>
-          <button class="action-btn detail-btn" title="Detail" style="background: #007bff; color: white; border: none; padding: 6px 9px; border-radius: 4px; cursor: pointer; font-size: 12px;">
-             <iconify-icon icon="mdi:eye-outline" width="16" height="16"></iconify-icon>
-          </button>
-        </div>
-       `;
-
-      // Show actions on hover
-      elemenAcara.addEventListener('mouseenter', () => {
-        const actions = elemenAcara.querySelector('.acara-actions');
-        if (actions) actions.style.opacity = '1';
-      });
-      
-      elemenAcara.addEventListener('mouseleave', () => {
-        const actions = elemenAcara.querySelector('.acara-actions');
-        if (actions && !elemenAcara.classList.contains('selected')) actions.style.opacity = '0';
-      });
-      
-      container.appendChild(elemenAcara);
-    });
-  }
-
-  function tampilkanDaftarAcara() {
-    const sortFilter = document.getElementById('sortFilter');
-    const currentSort = sortFilter ? sortFilter.value : 'prioritas';
-    tampilkanDaftarAcaraTerurut(currentSort);
-  }
-
-  function tampilkanKalender() {
-    if (!elemen.tampilanTanggal) {
-      console.error('Element tampilanTanggal tidak ditemukan');
-      return;
-    }
-
-    elemen.tampilanTanggal.innerHTML = "";
-
-    const tahun = data.tanggalSekarang.getFullYear();
-    const bulan = data.tanggalSekarang.getMonth();
-    const hariPertama = new Date(tahun, bulan, 1);
-    const hariTerakhir = new Date(tahun, bulan + 1, 0);
-    const jumlahHari = hariTerakhir.getDate();
-    const hariAwal = hariPertama.getDay();
-    const hariTerakhirBulanLalu = new Date(tahun, bulan, 0).getDate();
-
-    if (elemen.tampilanBulanTahun) {
-      elemen.tampilanBulanTahun.textContent = `${data.namaBulan[bulan]} ${tahun}`;
-    }
-
-    let hitungHari = 1;
-    let hitungHariBulanDepan = 1;
-
-    for (let i = 0; i < 42; i++) {
-      const kotakHari = document.createElement("div");
-      kotakHari.className = "tgl";
-
-      if (i < hariAwal) {
-        const hariBulanLalu = hariTerakhirBulanLalu - (hariAwal - i - 1);
-        kotakHari.textContent = hariBulanLalu;
-        kotakHari.classList.add("tglSblm");
-        
-        const bulanSebelum = bulan === 0 ? 11 : bulan - 1;
-        const tahunSebelum = bulan === 0 ? tahun - 1 : tahun;
-        kotakHari.dataset.tanggal = `${tahunSebelum}-${String(bulanSebelum + 1).padStart(2, "0")}-${String(hariBulanLalu).padStart(2, "0")}`;
-      } else if (hitungHari <= jumlahHari) {
-        kotakHari.textContent = hitungHari;
-        kotakHari.dataset.tanggal = `${tahun}-${String(bulan + 1).padStart(2, "0")}-${String(hitungHari).padStart(2, "0")}`;
-        
-        const today = new Date();
-        if (today.getDate() === hitungHari && today.getMonth() === bulan && today.getFullYear() === tahun) {
-          kotakHari.classList.add("tglSkrg");
-        }
-        
-        tampilkanAcaraPerHari(kotakHari, kotakHari.dataset.tanggal);
-        hitungHari++;
-      } else {
-        kotakHari.textContent = hitungHariBulanDepan;
-        kotakHari.classList.add("tglStlh");
-        
-        const bulanDepan = bulan === 11 ? 0 : bulan + 1;
-        const tahunDepan = bulan === 11 ? tahun + 1 : tahun;
-        kotakHari.dataset.tanggal = `${tahunDepan}-${String(bulanDepan + 1).padStart(2, "0")}-${String(hitungHariBulanDepan).padStart(2, "0")}`;
-        hitungHariBulanDepan++;
-      }
-
-      elemen.tampilanTanggal.appendChild(kotakHari);
-    }
-  }
-
-  function tampilkanAcaraPerHari(kotakHari, tanggal) {
-    const acaraHariIni = data.daftarAcara.filter(
-      (acara) => acara.tanggal === tanggal
-    );
-
-    acaraHariIni.forEach((acara) => {
-      const elemenAcara = document.createElement("div");
-      elemenAcara.className = "acr";
-      elemenAcara.style.backgroundColor = data.prioritas[acara.prioritas]?.warna || data.prioritas.rendah.warna;
-      elemenAcara.style.cursor = "pointer";
-      elemenAcara.style.margin = "2px 0";
-      elemenAcara.style.padding = "2px 4px";
-      elemenAcara.style.borderRadius = "3px";
-      elemenAcara.style.fontSize = "10px";
-      elemenAcara.style.color = "white";
-      elemenAcara.style.fontWeight = "500";
-      elemenAcara.style.textShadow = "0 1px 1px rgba(0,0,0,0.3)";
-      elemenAcara.style.transition = "all 0.2s ease";
-      elemenAcara.style.overflow = "hidden";
-      elemenAcara.style.textOverflow = "ellipsis";
-      elemenAcara.style.whiteSpace = "nowrap";
-      elemenAcara.style.maxWidth = "100%";
-      
-      elemenAcara.dataset.idAcara = acara.id;
-      
-      // Potong judul jika terlalu panjang
-      const maxKarakter = 12;
-      const judulPendek = acara.judul.length > maxKarakter ? 
-                         acara.judul.substring(0, maxKarakter) + '...' : 
-                         acara.judul;
-      
-      elemenAcara.textContent = judulPendek;
-      elemenAcara.title = `${acara.judul} (${data.prioritas[acara.prioritas]?.label || 'Rendah'}) - ${acara.waktu}`;
-      
-      // Event listeners
-      elemenAcara.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.05)';
-        this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
-        this.style.zIndex = '10';
-      });
-      
-      elemenAcara.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-        this.style.boxShadow = 'none';
-        this.style.zIndex = '1';
-      });
-      
-      elemenAcara.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const idAcara = this.dataset.idAcara;
-        const acara = data.daftarAcara.find(a => a.id == idAcara);
-        
-        if (acara) {
-          bukaSideModalDetail(acara);
-        }
-      });
-      
-      elemenAcara.addEventListener('dblclick', function(e) {
-        e.stopPropagation();
-        const idAcara = this.dataset.idAcara;
-        const acara = data.daftarAcara.find(a => a.id == idAcara);
-        
-        if (acara) {
-          bukaPopup(acara.tanggal, acara);
-        }
-      });
-      
-      kotakHari.appendChild(elemenAcara);
-    });
-  }
-
-  // =============== FUNGSI DATABASE ===============
-
-  async function ambilAcaraDariDatabase() {
-    try {
-      const response = await fetch("get_events.php");
-      
-      if (!response.ok) {
-        throw new Error("Gagal mengambil data acara");
-      }
-
-      const acara = await response.json();
-
-      if (acara.error) {
-        console.error("Error dari server:", acara.error);
-        alert("Gagal mengambil data acara: " + acara.error);
-        data.daftarAcara = [];
-      } else {
-        data.daftarAcara = acara.map((item) => ({
-          id: item.id_acara,
-          judul: item.judul_acara,
-          deskripsi: item.desc_acara,
-          tanggal: formatTanggal(item.waktu_acara),
-          waktu: formatWaktu(item.waktu_acara),
-          tanggalMulai: formatTanggal(item.waktu_acara),
-          tanggalAkhir: formatTanggal(item.waktu_acara),
-          waktuMulai: formatWaktu(item.waktu_acara),
-          waktuAkhir: formatWaktu(item.waktu_acara),
-          prioritas: item.prioritas || 'rendah',
-          warna: data.prioritas[item.prioritas || 'rendah'].warna
-        }));
-
-        updateEventBadge(data.daftarAcara.length);
-      }
-
-      tampilkanKalender();
-      
-      // Tampilkan dengan sorting prioritas sebagai default
-      const sortFilter = document.getElementById('sortFilter');
-      const currentSort = sortFilter ? sortFilter.value : 'prioritas';
-      tampilkanDaftarAcaraTerurut(currentSort);
-      
-    } catch (error) {
-      console.error('Error:', error);
-      alert("Terjadi masalah saat mengambil data acara. Cek konsol untuk detail.");
-      data.daftarAcara = [];
-      tampilkanKalender();
-      tampilkanDaftarAcara();
-    }
-  }
-
-  async function simpanAcara() {
-    if (!elemen.inputJudul.value.trim()) {
-      alert("Judul acara harus diisi!");
-      return;
-    }
-
-    const tombolKustom = document.getElementById('kustom');
-    if (tombolKustom && tombolKustom.classList.contains('aktif')) {
-      if (!elemen.inputTanggalCustom?.value) {
-        alert("Tanggal harus dipilih untuk tenggat kustom!");
-        return;
-      }
-      data.tanggalDipilih = elemen.inputTanggalCustom.value;
-    }
-
-    const prioritas = getPrioritasDipilih();
-    const waktu = getWaktuDipilih();
-    const waktuAcara = `${data.tanggalDipilih} ${waktu}`;
-
-    try {
-      const response = await fetch("add_event.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          judul_acara: elemen.inputJudul.value.trim(),
-          desc_acara: elemen.inputDeskripsi.value.trim(),
-          waktu_acara: waktuAcara,
-          prioritas: prioritas
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Gagal menyimpan acara");
-      }
-
-      const result = await response.json();
-      
-      if (result.success) {
-        alert("Acara berhasil ditambahkan!");
-        tutupPopup();
-        ambilAcaraDariDatabase();
-      } else {
-        alert("Gagal menambahkan acara: " + result.message);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert("Maaf, ada masalah saat menyimpan acara. Silakan coba lagi.");
-    }
-  }
-
-  async function updateAcara(id, judul, deskripsi, prioritas) {
-    const waktu = getWaktuDipilih();
-    const waktuAcara = `${data.tanggalDipilih} ${waktu}`;
-    
-    try {
-      const response = await fetch("edit_event.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: id,
-          judul_acara: judul,
-          desc_acara: deskripsi,
-          waktu_acara: waktuAcara,
-          prioritas: prioritas
-        }),
-      });
-
-      const result = await response.json();
-      if (result.status === "sukses") {
-        alert("Acara berhasil diperbarui!");
-        return true;
-      } else {
-        alert("Gagal memperbarui acara: " + (result.pesan || "Unknown error"));
-        return false;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert("Maaf, ada masalah saat mengupdate acara.");
-      return false;
-    }
-  }
-
-  async function hapusAcara(idAcara) {
-    if (confirm("Apakah Anda yakin ingin menghapus acara ini?")) {
-      try {
-        const response = await fetch("delete_event.php", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: idAcara }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Gagal menghapus acara");
-        }
-
-        ambilAcaraDariDatabase();
-        alert("Acara berhasil dihapus!");
-        tutupSideModalDetail();
-        sembunyikanActivityActions();
-        data.acaraTerpilih = null;
-      } catch (error) {
-        console.error('Error:', error);
-        alert("Maaf, ada masalah saat menghapus acara. Silakan coba lagi.");
-      }
-    }
-  }
-
-  // =============== FUNGSI MODAL & SIDE MODAL ===============
-
-  function bukaPopup(tanggal, acara = null) {
-    if (!elemen.popup) {
-      console.error('Element popup tidak ditemukan');
-      return;
-    }
-
-    data.tanggalDipilih = tanggal;
-    elemen.popup.style.display = "flex";
-    elemen.popup.classList.add("modal-active");
-
-    let updateText = elemen.popup.querySelector(".update-text");
-    if (!updateText && elemen.modalTitle) {
-      updateText = document.createElement("h1");
-      updateText.className = "update-text";
-      updateText.style.display = "none";
-      elemen.modalTitle.parentNode.insertBefore(updateText, elemen.modalTitle.nextSibling);
-    }
-
-    if (acara) {
-      // Mode Edit
-      console.log('Mode Edit - Data acara:', acara);
-      data.acaraTerpilih = acara;
-      
-      if (elemen.modalTitle) elemen.modalTitle.style.display = "none";
-      if (updateText) {
-        updateText.textContent = "Update Acara";
-        updateText.style.display = "block";
-      }
-
-      // Isi form dengan data acara
-      if (elemen.inputJudul) elemen.inputJudul.value = acara.judul || "";
-      if (elemen.inputDeskripsi) elemen.inputDeskripsi.value = acara.deskripsi || "";
-      if (elemen.tombolSimpan) elemen.tombolSimpan.dataset.editId = acara.id;
-      
-      // Set tanggal dan waktu untuk mode edit
-      data.tanggalDipilih = acara.tanggal;
-      setTenggatUntukEdit(acara.tanggal, acara.waktu);
-      setPrioritasDipilih(acara.prioritas || 'rendah');
-      
-    } else {
-      // Mode Tambah Baru
-      data.acaraTerpilih = null;
-      if (elemen.modalTitle) elemen.modalTitle.style.display = "block";
-      if (updateText) updateText.style.display = "none";
-      bersihkanForm();
-      setPrioritasDefault();
-      if (elemen.tombolSimpan) delete elemen.tombolSimpan.dataset.editId;
-    }
-
-    if (elemen.inputJudul) elemen.inputJudul.focus();
-  }
-
-  function setTenggatUntukEdit(tanggal, waktu) {
-    const tombolTenggat = {
-      skrg: document.getElementById('skrg'),
-      besok: document.getElementById('besok'), 
-      kustom: document.getElementById('kustom')
-    };
-    const customInputContainer = document.querySelector('.custom-input-container');
-
-    // Cek apakah tanggal acara sama dengan hari ini atau besok
-    const hariIni = formatTanggalToISO(new Date());
-    const besokDate = new Date();
-    besokDate.setDate(besokDate.getDate() + 1);
-    const besok = formatTanggalToISO(besokDate);
-
-    // Reset semua tombol
-    Object.values(tombolTenggat).forEach(btn => {
-      if (btn) btn.classList.remove('aktif');
-    });
-
-    if (tanggal === hariIni) {
-      if (tombolTenggat.skrg) tombolTenggat.skrg.classList.add('aktif');
-      if (customInputContainer) customInputContainer.style.display = 'none';
-    } else if (tanggal === besok) {
-      if (tombolTenggat.besok) tombolTenggat.besok.classList.add('aktif');
-      if (customInputContainer) customInputContainer.style.display = 'none';
-    } else {
-      if (tombolTenggat.kustom) tombolTenggat.kustom.classList.add('aktif');
-      if (customInputContainer) {
-        customInputContainer.style.display = 'flex';
-      }
-      if (elemen.inputTanggalCustom) elemen.inputTanggalCustom.value = tanggal;
-    }
-
-    // Set waktu
-    if (elemen.inputWaktuCustom && waktu) {
-      const waktuFormatted = waktu.length === 5 ? waktu : waktu.substring(0, 5);
-      elemen.inputWaktuCustom.value = waktuFormatted;
-    }
-  }
-
-  function tutupPopup() {
-    if (elemen.popup) {
-      elemen.popup.style.display = "none";
-      elemen.popup.classList.remove("modal-active");
-    }
-    bersihkanForm();
-    data.acaraTerpilih = null;
-  }
-
-  function bukaSideModalDetail(acara) {
-    if (!elemen.sideModal) return;
-
-    console.log('Membuka side modal dengan data:', acara);
-    data.acaraTerpilih = acara;
-    
-    if (elemen.sideDetailJudul) elemen.sideDetailJudul.textContent = acara.judul;
-    if (elemen.sideDetailDeskripsi) elemen.sideDetailDeskripsi.textContent = acara.deskripsi || "Tidak ada deskripsi";
-    if (elemen.sideDetailTanggalMulai) elemen.sideDetailTanggalMulai.textContent = `${formatTanggalTampilan(acara.tanggalMulai || acara.tanggal)} pukul ${acara.waktuMulai || acara.waktu}`;
-    if (elemen.sideDetailTanggalBerakhir) elemen.sideDetailTanggalBerakhir.textContent = `${formatTanggalTampilan(acara.tanggalAkhir || acara.tanggal)} pukul ${acara.waktuAkhir || acara.waktu}`;
-    if (elemen.sideDetailDurasi) elemen.sideDetailDurasi.textContent = hitungDurasi(acara.tanggalMulai || acara.tanggal, acara.tanggalAkhir || acara.tanggal) || "1 hari";
-    
-    const priorityInfo = data.prioritas[acara.prioritas] || data.prioritas.rendah;
-    if (elemen.sideDetailPrioritas) {
-      elemen.sideDetailPrioritas.textContent = priorityInfo.label;
-      elemen.sideDetailPrioritas.style.backgroundColor = priorityInfo.warna;
-    }
-
-    elemen.sideModal.classList.add("open");
-    document.body.classList.add("side-modal-open-overlay");
-  }
-
-  function tutupSideModalDetail() {
-    if (elemen.sideModal) {
-        elemen.sideModal.classList.remove("open");
-    }
-    document.body.classList.remove("side-modal-open-overlay");
-  }
-
-  function tampilkanActivityActions(acara) {
-    if (!elemen.activityActions) return;
-    
-    data.acaraTerpilih = acara;
-    elemen.activityActions.style.display = 'flex';
-  }
-
-  function sembunyikanActivityActions() {
-    if (elemen.activityActions) elemen.activityActions.style.display = 'none';
-    // Reset selected state
-    document.querySelectorAll('.acara.selected').forEach(el => {
-      el.classList.remove('selected');
-      el.style.background = '#f9f9f9';
-      const actions = el.querySelector('.acara-actions');
-      if(actions) actions.style.opacity = '0';
-    });
-    data.acaraTerpilih = null;
-  }
-
-  function bersihkanForm() {
-    if (elemen.inputJudul) elemen.inputJudul.value = "";
-    if (elemen.inputDeskripsi) elemen.inputDeskripsi.value = "";
-    
-    if (elemen.inputTanggalCustom) {
-      const today = new Date();
-      const todayFormatted = formatTanggalToISO(today);
-      elemen.inputTanggalCustom.value = todayFormatted;
-    }
-    
-    if (elemen.inputWaktuCustom) {
-      elemen.inputWaktuCustom.value = "23:00";
-    }
-    
-    const customInputContainer = document.querySelector('.custom-input-container');
-    if (customInputContainer) {
-      customInputContainer.style.display = 'none';
-    }
-    
-    const tombolSkrg = document.getElementById('skrg');
-    const tombolBesok = document.getElementById('besok');
-    const tombolKustom = document.getElementById('kustom');
-    
-    if (tombolSkrg) tombolSkrg.classList.add('aktif');
-    if (tombolBesok) tombolBesok.classList.remove('aktif');
-    if (tombolKustom) tombolKustom.classList.remove('aktif');
-    
-    const today = new Date();
-    data.tanggalDipilih = formatTanggalToISO(today);
-  }
-
-  // =============== FUNGSI NAVIGASI ===============
-
-  function pindahBulan(arah) {
-    data.tanggalSekarang.setMonth(
-      data.tanggalSekarang.getMonth() + (arah === "prev" ? -1 : 1)
-    );
+/**
+ * ==============================================
+ * SISTEM KALENDER AKTIVITAS - DENGAN FORMAT MM/DD/YY
+ * ==============================================
+ */
+
+// Data yang digunakan dalam kalender
+var tanggalHariIni = new Date();
+var bulanSekarang = tanggalHariIni.getMonth();
+var tahunSekarang = tanggalHariIni.getFullYear();
+var daftarAktivitas = window.phpEvents || [];
+var idAktivitasYangDiedit = null;
+
+// Nama-nama bulan dalam bahasa Indonesia
+var namaBulan = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+];
+
+// Nama-nama hari dalam bahasa Indonesia
+var namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+// Fungsi utama untuk menjalankan kalender
+function jalankanSistemKalender() {
+    ambilElemenHTML();
+    buatTombolKalender();
+    tambahkanEventListener();
     tampilkanKalender();
-  }
+    tampilkanDaftarAktivitas();
+}
 
-  // =============== EVENT LISTENERS ===============
+// Fungsi untuk mengambil elemen-elemen HTML yang diperlukan
+function ambilElemenHTML() {
+    // Elemen kalender - sesuaikan dengan CSS
+    window.tempatTanggal = document.querySelector('.tglBln');
+    window.judulBulanTahun = document.querySelector('.bln-thn');
+    window.containerAktivitas = document.querySelector('.acara-container');
+    
+    // Elemen-elemen modal
+    window.modalUtama = document.getElementById('modal');
+    window.modalDetail = document.getElementById('sideModalDetail');
+    
+    // Tombol-tombol
+    window.tombolTambah = document.getElementById('btnTambahAcara');
+    window.badgeJumlahEvent = document.getElementById('eventBadge');
+    window.tombolBatal = document.querySelector('.btl');
+    window.tombolSimpan = document.querySelector('.save');
+    window.sortFilter = document.getElementById('sortFilter');
+    
+    // Form dan input
+    window.formEvent = document.getElementById('eventForm');
+    window.inputJudul = document.getElementById('title');
+    window.inputDeskripsi = document.getElementById('desk');
+    window.inputTanggal = document.getElementById('tanggal');
+    window.inputWaktu = document.getElementById('waktu');
+    window.inputIdAcara = document.getElementById('id_acara');
+}
 
-  function aturEventListeners() {
-    // Navigation
-    if (elemen.tombolNext) {
-      elemen.tombolNext.addEventListener("click", () => pindahBulan("next"));
+// Fungsi untuk membuat tombol navigasi dan interaksi kalender
+function buatTombolKalender() {
+    // Tombol navigasi bulan
+    var prevBtn = document.querySelector('.prev');
+    var nextBtn = document.querySelector('.next');
+    
+    if (prevBtn) prevBtn.onclick = bulanSebelumnya;
+    if (nextBtn) nextBtn.onclick = bulanSelanjutnya;
+    
+    // Tombol tambah acara
+    if (window.tombolTambah) {
+        window.tombolTambah.onclick = bukaModalTambahAcara;
     }
-    if (elemen.tombolPrev) {
-      elemen.tombolPrev.addEventListener("click", () => pindahBulan("prev"));
-    }
+}
 
-    // Add button
-    if (elemen.btnTambahAcara) {
-      elemen.btnTambahAcara.addEventListener('click', () => {
-        const today = new Date();
-        bukaPopup(formatTanggalToISO(today));
-        sembunyikanActivityActions();
-      });
-    }
-
-    // Activity buttons
-    if (elemen.btnEdit) {
-      elemen.btnEdit.addEventListener('click', () => {
-        if (data.acaraTerpilih) {
-          console.log('Edit button clicked, data:', data.acaraTerpilih);
-          bukaPopup(data.acaraTerpilih.tanggal, data.acaraTerpilih);
-          sembunyikanActivityActions();
-        } else {
-          alert("Tidak ada acara yang dipilih untuk diedit.");
-        }
-      });
-    }
-
-    if (elemen.btnHapus) {
-      elemen.btnHapus.addEventListener('click', () => {
-        if (data.acaraTerpilih) {
-          hapusAcara(data.acaraTerpilih.id);
-          sembunyikanActivityActions();
-        }
-      });
-    }
-
-    // Calendar clicks
-    if (elemen.tampilanTanggal) {
-      elemen.tampilanTanggal.addEventListener("click", (e) => {
-        const kotakHari = e.target.closest(".tgl");
-        const acaraElement = e.target.closest(".acr");
-        
-        // Jika klik pada acara, jangan buka popup tambah acara baru
-        if (acaraElement) {
-          return; // Event sudah dihandle oleh acara element
-        }
-        
-        // Jika klik pada kotak hari (bukan acara), buka popup tambah acara baru
-        if (kotakHari) {
-          const tanggal = kotakHari.dataset.tanggal;
-          if (tanggal) {
-            bukaPopup(tanggal);
-            sembunyikanActivityActions();
-          }
-        }
-      });
-    }
-
-    // Event list clicks
-    const container = elemen.containerAcara || elemen.daftarAcara;
-    if (container) {
-      container.addEventListener("click", (e) => {
-        const selectBtn = e.target.closest('.select-btn');
-        const detailBtn = e.target.closest('.detail-btn');
-        const hapusBtn = e.target.closest('.hapus');
-        const elemenAcara = e.target.closest(".acara");
-        
-        if (!elemenAcara) return;
-
-        const idAcara = elemenAcara.dataset.idAcara;
-        const acara = data.daftarAcara.find((a) => a.id == idAcara);
-
-        if (hapusBtn) {
-          e.stopPropagation();
-          if (acara) hapusAcara(acara.id);
-        } else if (selectBtn) {
-          e.stopPropagation();
-          
-          // Reset semua selection
-          document.querySelectorAll('.acara').forEach(item => {
-            item.classList.remove('selected');
-            item.style.background = '#f9f9f9';
-            const actions = item.querySelector('.acara-actions');
-            if(actions) actions.style.opacity = '0';
-          });
-          
-          // Set selection untuk item yang dipilih
-          elemenAcara.classList.add('selected');
-          elemenAcara.style.background = '#e3f2fd';
-          const actions = elemenAcara.querySelector('.acara-actions');
-          if(actions) actions.style.opacity = '1';
-          
-          if (acara) tampilkanActivityActions(acara);
-          
-        } else if (detailBtn) {
-          e.stopPropagation();
-          if (acara) bukaSideModalDetail(acara);
-        } else if (!e.target.classList.contains("hapus")) {
-          if (acara) bukaSideModalDetail(acara);
-        }
-      });
-    }
-
-    // Modal buttons
-    if (elemen.tombolTutup) {
-      elemen.tombolTutup.addEventListener("click", tutupPopup);
-    }
-
-    if (elemen.tombolSimpan) {
-      elemen.tombolSimpan.addEventListener("click", async (e) => {
-        if (!elemen.inputJudul || !elemen.inputJudul.value.trim()) {
-          alert("Judul acara harus diisi!");
-          return;
-        }
-
-        const prioritas = getPrioritasDipilih();
-
-        if (elemen.tombolSimpan.dataset.editId) {
-          console.log('Updating acara with ID:', elemen.tombolSimpan.dataset.editId);
-          const berhasil = await updateAcara(
-            elemen.tombolSimpan.dataset.editId,
-            elemen.inputJudul.value.trim(),
-            elemen.inputDeskripsi ? elemen.inputDeskripsi.value.trim() : "",
-            prioritas
-          );
-
-          if (berhasil) {
-            tutupPopup();
-            ambilAcaraDariDatabase();
-            sembunyikanActivityActions();
-          }
-        } else {
-          await simpanAcara();
-        }
-      });
-    }
-
-    // Side modal buttons
-    if (elemen.btnTutupSideModal) {
-        elemen.btnTutupSideModal.addEventListener("click", () => {
-          tutupSideModalDetail();
-          data.acaraTerpilih = null;
-        });
-    }
-
-    if (elemen.btnEditSideAcara) {
-        elemen.btnEditSideAcara.addEventListener("click", () => {
-            console.log('Side modal edit clicked, acaraTerpilih:', data.acaraTerpilih);
-            
-            if (data.acaraTerpilih) {
-                const acaraUntukEdit = { ...data.acaraTerpilih };
-                console.log('Data acara yang akan diedit:', acaraUntukEdit);
-                
-                if (elemen.sideModal) {
-                    elemen.sideModal.classList.remove("open");
+// Fungsi untuk menambahkan event listener
+function tambahkanEventListener() {
+    // Klik pada tanggal di kalender
+    if (window.tempatTanggal) {
+        window.tempatTanggal.addEventListener('click', function(e) {
+            var targetTanggal = e.target.closest('.tgl');
+            if (targetTanggal && !targetTanggal.classList.contains('tglSblm') && !targetTanggal.classList.contains('tglStlh')) {
+                var tanggal = targetTanggal.dataset.tanggal;
+                if (tanggal) {
+                    bukaAktivitasTanggal(tanggal);
                 }
-                document.body.classList.remove("side-modal-open-overlay");
-                
-                setTimeout(() => {
-                  if (acaraUntukEdit && acaraUntukEdit.tanggal) {
-                    bukaPopup(acaraUntukEdit.tanggal, acaraUntukEdit);
-                  } else {
-                    console.error('Data acara tidak valid:', acaraUntukEdit);
-                    alert("Data acara tidak valid. Silakan coba lagi.");
-                  }
-                }, 100);
-            } else {
-                alert("Tidak ada acara yang dipilih untuk diedit.");
             }
         });
     }
 
-    if (elemen.btnHapusSideAcara) {
-        elemen.btnHapusSideAcara.addEventListener("click", () => {
-            if (data.acaraTerpilih) {
-                const idAcara = data.acaraTerpilih.id;
-                data.acaraTerpilih = null;
-                hapusAcara(idAcara);
-            } else {
-                alert("Tidak ada acara yang dipilih untuk dihapus.");
+    // Tombol ESC untuk tutup modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (window.modalUtama && window.modalUtama.classList.contains('modal-active')) {
+                tutupModal();
             }
-        });
-    }
-
-    // Click outside to close
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.acara') && !e.target.closest('.activity-actions') && !e.target.closest('.side-modal') && !e.target.closest('.modal')) {
-        sembunyikanActivityActions();
-      }
-    });
-
-    // Close modals on outside click
-    if (elemen.popup) {
-      elemen.popup.addEventListener("click", (e) => {
-        if (e.target === elemen.popup) tutupPopup();
-      });
-    }
-
-    // Close side modal on outside click
-    document.addEventListener('click', (e) => {
-      if (elemen.sideModal && elemen.sideModal.classList.contains('open')) {
-        if (!e.target.closest('.side-modal') && !e.target.closest('.detail-btn') && !e.target.closest('.acara') && !e.target.closest('.acr')) {
-          tutupSideModalDetail();
-          data.acaraTerpilih = null;
+            if (window.modalDetail && window.modalDetail.style.display === 'block') {
+                closeSideModal();
+            }
         }
-      }
     });
-  }
+    
+    // Tombol batal di modal
+    if (window.tombolBatal) {
+        window.tombolBatal.addEventListener('click', function() {
+            tutupModal();
+        });
+    }
+    
+    // Tombol simpan di modal
+    if (window.tombolSimpan) {
+        window.tombolSimpan.addEventListener('click', function() {
+            simpanAktivitas();
+        });
+    }
+    
+    // Form submit
+    if (window.formEvent) {
+        window.formEvent.addEventListener('submit', function(e) {
+            e.preventDefault();
+            simpanAktivitas();
+        });
+    }
+    
+    // Filter dan sort
+    if (window.sortFilter) {
+        window.sortFilter.addEventListener('change', function() {
+            tampilkanDaftarAktivitas();
+        });
+    }
+    
+    // Tombol reset filter
+    var clearFiltersBtn = document.getElementById('clearFilters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            if (window.sortFilter) window.sortFilter.value = 'tanggal_asc';
+            tampilkanDaftarAktivitas();
+        });
+    }
+    
+    // Tombol close pada modal detail
+    var closeDetailBtn = document.querySelector('.side-modal-close');
+    if (closeDetailBtn) {
+        closeDetailBtn.addEventListener('click', closeSideModal);
+    }
+    
+    // Tombol edit dan hapus di modal detail
+    var editDetailBtn = document.getElementById('editSideAcaraBtn');
+    var hapusDetailBtn = document.getElementById('hapusSideAcaraBtn');
+    
+    if (editDetailBtn) editDetailBtn.onclick = editFromSide;
+    if (hapusDetailBtn) hapusDetailBtn.onclick = deleteFromSide;
+    
+    // Overlay modal
+    window.modalUtama?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            tutupModal();
+        }
+    });
+}
 
-  // =============== INISIALISASI ===============
+// Fungsi untuk membuat tampilan kalender
+function tampilkanKalender() {
+    if (!window.tempatTanggal || !window.judulBulanTahun) return;
+    
+    // Kosongkan tempat tanggal
+    window.tempatTanggal.innerHTML = '';
+    
+    var tahun = tahunSekarang;
+    var bulan = bulanSekarang;
+    
+    // Buat tanggal pertama bulan ini
+    var tanggalPertama = new Date(tahun, bulan, 1);
+    var tanggalTerakhir = new Date(tahun, bulan + 1, 0);
+    var jumlahHari = tanggalTerakhir.getDate();
+    var hariPertama = tanggalPertama.getDay();
+    
+    // Set judul bulan dan tahun dalam format MM/DD/YY style
+    var tahunPendek = tahun.toString().substr(-2);
+    window.judulBulanTahun.textContent = namaBulan[bulan] + ' ' + tahunPendek;
+    
+    // Tambahkan tanggal dari bulan sebelumnya
+    var hariTerakhirBulanSebelum = new Date(tahun, bulan, 0).getDate();
+    for (var i = hariPertama; i > 0; i--) {
+        var kotakHari = document.createElement('div');
+        kotakHari.className = 'tgl tglSblm';
+        kotakHari.textContent = hariTerakhirBulanSebelum - i + 1;
+        window.tempatTanggal.appendChild(kotakHari);
+    }
+    
+    // Tambahkan tanggal-tanggal bulan ini
+    var hariIni = new Date();
+    for (var i = 1; i <= jumlahHari; i++) {
+        var kotakHari = document.createElement('div');
+        kotakHari.className = 'tgl';
+        kotakHari.textContent = i;
+        
+        // Set atribut data-tanggal dengan format MM/DD/YY
+        var tanggalFormat = formatTanggalMMDDYY(tahun, bulan + 1, i);
+        kotakHari.dataset.tanggal = tanggalFormat;
+        
+        // Tandai jika hari ini
+        if (tahun === hariIni.getFullYear() && bulan === hariIni.getMonth() && i === hariIni.getDate()) {
+            kotakHari.classList.add('tglSkrg');
+        }
+        
+        // Tambahkan indikator aktivitas
+        tambahIndikatorAktivitas(kotakHari, tanggalFormat);
+        
+        window.tempatTanggal.appendChild(kotakHari);
+    }
+    
+    // Tambahkan tanggal awal bulan depan
+    var totalKotak = window.tempatTanggal.children.length;
+    var sisaKotak = 42 - totalKotak; // 6 baris x 7 kolom = 42 kotak
+    
+    for (var i = 1; i <= sisaKotak; i++) {
+        var kotakHari = document.createElement('div');
+        kotakHari.className = 'tgl tglStlh';
+        kotakHari.textContent = i;
+        window.tempatTanggal.appendChild(kotakHari);
+    }
+}
 
-  function mulaiKalender() {
-    inisialisasiPrioritas();
-    inisialisasiTenggat(); 
-    inisialisasiFilter();
-    aturEventListeners();
-    ambilAcaraDariDatabase();
-  }
+// Fungsi untuk format tanggal ke MM/DD/YY
+function formatTanggalMMDDYY(tahun, bulan, hari) {
+    // Format MM/DD/YY
+    hari = hari < 10 ? '0' + hari : hari;
+    bulan = bulan < 10 ? '0' + bulan : bulan;
+    var tahunPendek = tahun.toString().substr(-2);
+    
+    return bulan + '/' + hari + '/' + tahunPendek;
+}
 
-  mulaiKalender();
+// PERBAIKAN 1: Fungsi konversi format yang benar
+function konversiKeFormatDatabase(tanggalMMDDYY) {
+    if (!tanggalMMDDYY) return '';
+    
+    var parts = tanggalMMDDYY.split('/');
+    if (parts.length !== 3) return '';
+    
+    var bulan = parts[0];
+    var hari = parts[1]; 
+    var tahunPendek = parts[2];
+    
+    // Konversi tahun 2 digit ke 4 digit (asumsi 20xx)
+    var tahunPenuh = '20' + tahunPendek;
+    
+    // Return format YYYY-MM-DD untuk database
+    return tahunPenuh + '-' + bulan + '-' + hari;
+}
+
+// PERBAIKAN 2: Fungsi konversi dari database yang benar
+function konversiDariDatabase(tanggalDatabase) {
+    if (!tanggalDatabase) return '';
+    
+    var parts = tanggalDatabase.split(' ')[0].split('-'); // Ambil bagian tanggal saja
+    if (parts.length !== 3) return '';
+    
+    var tahun = parts[0];
+    var bulan = parts[1];
+    var hari = parts[2];
+    
+    var tahunPendek = tahun.substr(-2);
+    
+    // Return format MM/DD/YY untuk tampilan
+    return bulan + '/' + hari + '/' + tahunPendek;
+}
+
+// Fungsi untuk menambah indikator aktivitas pada kotak tanggal
+function tambahIndikatorAktivitas(kotakHari, tanggalMMDDYY) {
+    // Filter aktivitas untuk tanggal ini
+    var aktivitasHariIni = [];
+    
+    for (var i = 0; i < daftarAktivitas.length; i++) {
+        var aktivitas = daftarAktivitas[i];
+        // Konversi waktu_acara database ke format MM/DD/YY untuk perbandingan
+        var tanggalAktivitas = konversiDariDatabase(aktivitas.waktu_acara);
+        if (tanggalAktivitas === tanggalMMDDYY) {
+            aktivitasHariIni.push(aktivitas);
+        }
+    }
+    
+    // Tampilkan maksimal 2 indikator
+    var maksIndikator = 2;
+    
+    for (var i = 0; i < Math.min(aktivitasHariIni.length, maksIndikator); i++) {
+        var indikator = document.createElement('div');
+        indikator.className = 'acr';
+        indikator.style.backgroundColor = '#0ea5e9';
+        
+        // Potong judul jika terlalu panjang
+        var judul = aktivitasHariIni[i].judul_acara;
+        var judulPendek = judul.length > 10 ? judul.substring(0, 10) + '...' : judul;
+        
+        indikator.textContent = judulPendek;
+        indikator.title = judul;
+        kotakHari.appendChild(indikator);
+    }
+    
+    // Jika ada lebih banyak aktivitas, tampilkan "+X lagi"
+    if (aktivitasHariIni.length > maksIndikator) {
+        var indikatorLebih = document.createElement('div');
+        indikatorLebih.className = 'acr more-acr';
+        indikatorLebih.textContent = '+' + (aktivitasHariIni.length - maksIndikator) + ' lagi';
+        indikatorLebih.style.backgroundColor = '#6b7280';
+        kotakHari.appendChild(indikatorLebih);
+    }
+}
+
+// Fungsi untuk menampilkan daftar aktivitas
+function tampilkanDaftarAktivitas() {
+    if (!window.containerAktivitas) return;
+    
+    // Hitung total aktivitas bulan ini
+    var totalAktivitasBulanIni = 0;
+    var aktivitasBulanIni = [];
+    
+    console.log("Menampilkan aktivitas bulan:", namaBulan[bulanSekarang], tahunSekarang);
+    
+    // Loop semua aktivitas dan filter untuk bulan ini
+    for (var i = 0; i < daftarAktivitas.length; i++) {
+        var aktivitas = daftarAktivitas[i];
+        if (!aktivitas.waktu_acara) continue;
+        
+        // Parse tanggal dari aktivitas (format YYYY-MM-DD HH:MM:SS dari database)
+        var tanggalAktivitas = new Date(aktivitas.waktu_acara);
+        
+        // Cek apakah aktivitas di bulan dan tahun saat ini
+        if (tanggalAktivitas.getMonth() === bulanSekarang && tanggalAktivitas.getFullYear() === tahunSekarang) {
+            totalAktivitasBulanIni++;
+            aktivitasBulanIni.push(aktivitas);
+        }
+    }
+    
+    // Update badge jumlah event
+    if (window.badgeJumlahEvent) {
+        window.badgeJumlahEvent.textContent = totalAktivitasBulanIni;
+        window.badgeJumlahEvent.style.display = totalAktivitasBulanIni > 0 ? 'flex' : 'none';
+    }
+    
+    // Reset dan tampilkan daftar aktivitas bulan ini
+    window.containerAktivitas.innerHTML = '';
+    
+    if (aktivitasBulanIni.length === 0) {
+        var pesanKosong = document.createElement('div');
+        pesanKosong.className = 'no-events';
+        var tahunPendek = tahunSekarang.toString().substr(-2);
+        pesanKosong.innerHTML = `
+            <iconify-icon icon="mdi:calendar-outline" width="64" height="64"></iconify-icon>
+            <h4>Tidak ada acara</h4>
+            <p>Belum ada acara yang dijadwalkan untuk bulan ${namaBulan[bulanSekarang]} ${tahunPendek}</p>
+        `;
+        window.containerAktivitas.appendChild(pesanKosong);
+    } else {
+        // Sort berdasarkan filter
+        if (window.sortFilter) {
+            var sortValue = window.sortFilter.value;
+            
+            if (sortValue === 'tanggal_desc') {
+                aktivitasBulanIni.sort(function(a, b) {
+                    return new Date(b.waktu_acara) - new Date(a.waktu_acara);
+                });
+            } else if (sortValue === 'judul') {
+                aktivitasBulanIni.sort(function(a, b) {
+                    return a.judul_acara.localeCompare(b.judul_acara);
+                });
+            } else { // default: tanggal_asc
+                aktivitasBulanIni.sort(function(a, b) {
+                    return new Date(a.waktu_acara) - new Date(b.waktu_acara);
+                });
+            }
+        }
+        
+        for (var j = 0; j < aktivitasBulanIni.length; j++) {
+            var item = aktivitasBulanIni[j];
+            var tanggalObj = new Date(item.waktu_acara);
+            
+            // Format tanggal dan waktu untuk tampilan dalam MM/DD/YY
+            var tanggalTampilan = formatTanggalTampilanMMDDYY(tanggalObj);
+            var jamTampilan = tanggalObj.getHours().toString().padStart(2, '0') + ':' + tanggalObj.getMinutes().toString().padStart(2, '0');
+            var waktuTampilan = jamTampilan === '00:00' ? 'Sepanjang hari' : jamTampilan;
+            
+            var itemEl = document.createElement('div');
+            itemEl.className = 'acara';
+            itemEl.innerHTML = `
+                <div class="acara-actions">
+                    <button class="action-btn detail-btn" data-id="${item.id_acara}" title="Lihat Detail">
+                        <iconify-icon icon="mdi:eye" width="16" height="16"></iconify-icon>
+                    </button>
+                    <button class="action-btn edit-btn" data-id="${item.id_acara}" title="Edit">
+                        <iconify-icon icon="mdi:pencil" width="16" height="16"></iconify-icon>
+                    </button>
+                    <button class="action-btn hapus-btn" data-id="${item.id_acara}" title="Hapus">
+                        <iconify-icon icon="mdi:trash-can-outline" width="16" height="16"></iconify-icon>
+                    </button>
+                </div>
+                <div class="event-date">
+                    <iconify-icon icon="mdi:calendar" width="14" height="14"></iconify-icon>
+                    ${tanggalTampilan} - ${waktuTampilan}
+                </div>
+                <h4>${item.judul_acara}</h4>
+                <div class="event-desc">${item.desc_acara || 'Tidak ada deskripsi'}</div>
+            `;
+            
+            window.containerAktivitas.appendChild(itemEl);
+        }
+        
+        // Tambahkan event listener untuk tombol-tombol
+        var tombolDetail = window.containerAktivitas.querySelectorAll('.detail-btn');
+        var tombolEdit = window.containerAktivitas.querySelectorAll('.edit-btn');
+        var tombolHapus = window.containerAktivitas.querySelectorAll('.hapus-btn');
+        
+        for (var k = 0; k < tombolDetail.length; k++) {
+            tombolDetail[k].addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idAcara = this.getAttribute('data-id');
+                bukaDetailAktivitas(idAcara);
+            });
+        }
+        
+        for (var l = 0; l < tombolEdit.length; l++) {
+            tombolEdit[l].addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idAcara = this.getAttribute('data-id');
+                editAktivitas(idAcara);
+            });
+        }
+        
+        for (var m = 0; m < tombolHapus.length; m++) {
+            tombolHapus[m].addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idAcara = this.getAttribute('data-id');
+                konfirmasiHapusAktivitas(idAcara);
+            });
+        }
+    }
+}
+
+// Fungsi untuk format tanggal tampilan dalam MM/DD/YY dengan nama bulan
+function formatTanggalTampilanMMDDYY(tanggalObj) {
+    var hari = tanggalObj.getDate();
+    var bulan = tanggalObj.getMonth();
+    var tahun = tanggalObj.getFullYear();
+    var tahunPendek = tahun.toString().substr(-2);
+    
+    return (tanggalObj.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+           hari.toString().padStart(2, '0') + '/' + tahunPendek + 
+           ' (' + namaBulan[bulan] + ')';
+}
+
+// Fungsi untuk navigasi ke bulan sebelumnya
+function bulanSebelumnya() {
+    bulanSekarang--;
+    
+    // Jika bulan menjadi -1 (Desember tahun sebelumnya)
+    if (bulanSekarang < 0) {
+        bulanSekarang = 11;
+        tahunSekarang--;
+    }
+    
+    tampilkanKalender();
+    tampilkanDaftarAktivitas();
+}
+
+// Fungsi untuk navigasi ke bulan selanjutnya
+function bulanSelanjutnya() {
+    bulanSekarang++;
+    
+    // Jika bulan menjadi 12 (Januari tahun berikutnya)
+    if (bulanSekarang > 11) {
+        bulanSekarang = 0;
+        tahunSekarang++;
+    }
+    
+    tampilkanKalender();
+    tampilkanDaftarAktivitas();
+}
+
+// PERBAIKAN: Fungsi untuk membuka modal tambah acara
+function bukaModalTambahAcara(tanggalMMDDYY) {
+    if (!window.modalUtama) {
+        console.log('Modal tidak ditemukan');
+        return;
+    }
+    
+    // Reset form
+    resetForm();
+    
+    // Set tanggal jika ada
+    if (tanggalMMDDYY && window.inputTanggal) {
+        if (typeof tanggalMMDDYY === 'string') {
+            // Konversi MM/DD/YY ke format input (YYYY-MM-DD)
+            var formatDatabase = konversiKeFormatDatabase(tanggalMMDDYY);
+            if (formatDatabase) {
+                window.inputTanggal.value = formatDatabase;
+            }
+        }
+    }
+    
+    // Buka modal
+    window.modalUtama.style.display = 'flex';
+    window.modalUtama.classList.add('modal-active');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus ke judul
+    setTimeout(function() {
+        if (window.inputJudul) {
+            window.inputJudul.focus();
+        }
+    }, 100);
+    
+    // Update judul modal
+    var judulModal = window.modalUtama.querySelector('.modalTitle');
+    var textUpdate = window.modalUtama.querySelector('.update-text');
+    
+    if (judulModal) {
+        judulModal.textContent = 'Buat Acara Baru';
+        judulModal.style.display = 'block';
+    }
+    
+    if (textUpdate) {
+        textUpdate.style.display = 'none';
+    }
+}
+
+// Fungsi untuk menutup modal
+function tutupModal() {
+    if (!window.modalUtama) return;
+    
+    window.modalUtama.style.display = 'none';
+    window.modalUtama.classList.remove('modal-active');
+    document.body.style.overflow = 'auto';
+    resetForm();
+}
+
+// PERBAIKAN 5: Fungsi reset form yang benar
+function resetForm() {
+    if (window.formEvent) {
+        window.formEvent.reset();
+    }
+    
+    idAktivitasYangDiedit = null;
+    
+    if (window.inputJudul) window.inputJudul.value = '';
+    if (window.inputDeskripsi) window.inputDeskripsi.value = '';
+    if (window.inputIdAcara) window.inputIdAcara.value = '';
+    
+    // Set tanggal hari ini dalam format YYYY-MM-DD untuk input
+    if (window.inputTanggal) {
+        var hariIni = new Date();
+        var tahun = hariIni.getFullYear();
+        var bulan = (hariIni.getMonth() + 1).toString().padStart(2, '0');
+        var hari = hariIni.getDate().toString().padStart(2, '0');
+        window.inputTanggal.value = tahun + '-' + bulan + '-' + hari;
+    }
+    
+    // Kosongkan waktu
+    if (window.inputWaktu) {
+        window.inputWaktu.value = '';
+    }
+    
+    // Reset reminder jika ada
+    var reminderEnabled = document.getElementById('reminder_enabled');
+    var reminderOptions = document.getElementById('reminder_options');
+    var reminderTemplate = document.getElementById('reminder_template');
+    var customReminder = document.getElementById('custom_reminder');
+    
+    if (reminderEnabled) reminderEnabled.checked = false;
+    if (reminderOptions) reminderOptions.classList.remove('active');
+    if (reminderTemplate) reminderTemplate.value = '';
+    if (customReminder) customReminder.classList.remove('active');
+}
+
+// PERBAIKAN 6: Fungsi buka modal yang benar
+function bukaModalTambahAcara(tanggalMMDDYY) {
+    if (!window.modalUtama) {
+        console.log('Modal tidak ditemukan');
+        return;
+    }
+    
+    // Reset form
+    resetForm();
+    
+    // Set tanggal jika ada
+    if (tanggalMMDDYY && window.inputTanggal) {
+        if (typeof tanggalMMDDYY === 'string') {
+            // Konversi MM/DD/YY ke format input (YYYY-MM-DD)
+            var formatDatabase = konversiKeFormatDatabase(tanggalMMDDYY);
+            if (formatDatabase) {
+                window.inputTanggal.value = formatDatabase;
+            }
+        }
+    }
+    
+    // Buka modal
+    window.modalUtama.style.display = 'flex';
+    window.modalUtama.classList.add('modal-active');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus ke judul
+    setTimeout(function() {
+        if (window.inputJudul) {
+            window.inputJudul.focus();
+        }
+    }, 100);
+    
+    // Update judul modal
+    var judulModal = window.modalUtama.querySelector('.modalTitle');
+    var textUpdate = window.modalUtama.querySelector('.update-text');
+    
+    if (judulModal) {
+        judulModal.textContent = 'Buat Acara Baru';
+        judulModal.style.display = 'block';
+    }
+    
+    if (textUpdate) {
+        textUpdate.style.display = 'none';
+    }
+}
+
+// Fungsi untuk konversi DD-MM-YYYY ke MM-DD-YYYY untuk database
+function konversiKeFormatDatabase(tanggalDDMMYYYY) {
+    if (!tanggalDDMMYYYY) return '';
+    
+    var parts = tanggalDDMMYYYY.split('-');
+    if (parts.length !== 3) return '';
+    
+    var hari = parts[0];
+    var bulan = parts[1]; 
+    var tahun = parts[2];
+    
+    // Return format MM-DD-YYYY untuk database
+    return bulan + '-' + hari + '-' + tahun;
+}
+
+// Fungsi untuk konversi MM-DD-YYYY dari database ke DD-MM-YYYY untuk display
+function konversiDariDatabase(tanggalDatabase) {
+    if (!tanggalDatabase) return '';
+    
+    var parts = tanggalDatabase.split(' ')[0].split('-'); // Ambil bagian tanggal saja
+    if (parts.length !== 3) return '';
+    
+    var tahun = parts[0];
+    var bulan = parts[1];
+    var hari = parts[2];
+    
+    var tahunPendek = tahun.substr(-2);
+    
+    // Return format MM/DD/YY untuk tampilan
+    return bulan + '/' + hari + '/' + tahunPendek;
+}
+
+// Fungsi untuk menambah indikator aktivitas pada kotak tanggal
+function tambahIndikatorAktivitas(kotakHari, tanggalMMDDYY) {
+    // Filter aktivitas untuk tanggal ini
+    var aktivitasHariIni = [];
+    
+    for (var i = 0; i < daftarAktivitas.length; i++) {
+        var aktivitas = daftarAktivitas[i];
+        // Konversi waktu_acara database ke format MM/DD/YY untuk perbandingan
+        var tanggalAktivitas = konversiDariDatabase(aktivitas.waktu_acara);
+        if (tanggalAktivitas === tanggalMMDDYY) {
+            aktivitasHariIni.push(aktivitas);
+        }
+    }
+    
+    // Tampilkan maksimal 2 indikator
+    var maksIndikator = 2;
+    
+    for (var i = 0; i < Math.min(aktivitasHariIni.length, maksIndikator); i++) {
+        var indikator = document.createElement('div');
+        indikator.className = 'acr';
+        indikator.style.backgroundColor = '#0ea5e9';
+        
+        // Potong judul jika terlalu panjang
+        var judul = aktivitasHariIni[i].judul_acara;
+        var judulPendek = judul.length > 10 ? judul.substring(0, 10) + '...' : judul;
+        
+        indikator.textContent = judulPendek;
+        indikator.title = judul;
+        kotakHari.appendChild(indikator);
+    }
+    
+    // Jika ada lebih banyak aktivitas, tampilkan "+X lagi"
+    if (aktivitasHariIni.length > maksIndikator) {
+        var indikatorLebih = document.createElement('div');
+        indikatorLebih.className = 'acr more-acr';
+        indikatorLebih.textContent = '+' + (aktivitasHariIni.length - maksIndikator) + ' lagi';
+        indikatorLebih.style.backgroundColor = '#6b7280';
+        kotakHari.appendChild(indikatorLebih);
+    }
+}
+
+// Fungsi untuk menampilkan daftar aktivitas
+function tampilkanDaftarAktivitas() {
+    if (!window.containerAktivitas) return;
+    
+    // Hitung total aktivitas bulan ini
+    var totalAktivitasBulanIni = 0;
+    var aktivitasBulanIni = [];
+    
+    console.log("Menampilkan aktivitas bulan:", namaBulan[bulanSekarang], tahunSekarang);
+    
+    // Loop semua aktivitas dan filter untuk bulan ini
+    for (var i = 0; i < daftarAktivitas.length; i++) {
+        var aktivitas = daftarAktivitas[i];
+        if (!aktivitas.waktu_acara) continue;
+        
+        // Parse tanggal dari aktivitas (format YYYY-MM-DD HH:MM:SS dari database)
+        var tanggalAktivitas = new Date(aktivitas.waktu_acara);
+        
+        // Cek apakah aktivitas di bulan dan tahun saat ini
+        if (tanggalAktivitas.getMonth() === bulanSekarang && tanggalAktivitas.getFullYear() === tahunSekarang) {
+            totalAktivitasBulanIni++;
+            aktivitasBulanIni.push(aktivitas);
+        }
+    }
+    
+    // Update badge jumlah event
+    if (window.badgeJumlahEvent) {
+        window.badgeJumlahEvent.textContent = totalAktivitasBulanIni;
+        window.badgeJumlahEvent.style.display = totalAktivitasBulanIni > 0 ? 'flex' : 'none';
+    }
+    
+    // Reset dan tampilkan daftar aktivitas bulan ini
+    window.containerAktivitas.innerHTML = '';
+    
+    if (aktivitasBulanIni.length === 0) {
+        var pesanKosong = document.createElement('div');
+        pesanKosong.className = 'no-events';
+        var tahunPendek = tahunSekarang.toString().substr(-2);
+        pesanKosong.innerHTML = `
+            <iconify-icon icon="mdi:calendar-outline" width="64" height="64"></iconify-icon>
+            <h4>Tidak ada acara</h4>
+            <p>Belum ada acara yang dijadwalkan untuk bulan ${namaBulan[bulanSekarang]} ${tahunPendek}</p>
+        `;
+        window.containerAktivitas.appendChild(pesanKosong);
+    } else {
+        // Sort berdasarkan filter
+        if (window.sortFilter) {
+            var sortValue = window.sortFilter.value;
+            
+            if (sortValue === 'tanggal_desc') {
+                aktivitasBulanIni.sort(function(a, b) {
+                    return new Date(b.waktu_acara) - new Date(a.waktu_acara);
+                });
+            } else if (sortValue === 'judul') {
+                aktivitasBulanIni.sort(function(a, b) {
+                    return a.judul_acara.localeCompare(b.judul_acara);
+                });
+            } else { // default: tanggal_asc
+                aktivitasBulanIni.sort(function(a, b) {
+                    return new Date(a.waktu_acara) - new Date(b.waktu_acara);
+                });
+            }
+        }
+        
+        for (var j = 0; j < aktivitasBulanIni.length; j++) {
+            var item = aktivitasBulanIni[j];
+            var tanggalObj = new Date(item.waktu_acara);
+            
+            // Format tanggal dan waktu untuk tampilan dalam MM/DD/YY
+            var tanggalTampilan = formatTanggalTampilanMMDDYY(tanggalObj);
+            var jamTampilan = tanggalObj.getHours().toString().padStart(2, '0') + ':' + tanggalObj.getMinutes().toString().padStart(2, '0');
+            var waktuTampilan = jamTampilan === '00:00' ? 'Sepanjang hari' : jamTampilan;
+            
+            var itemEl = document.createElement('div');
+            itemEl.className = 'acara';
+            itemEl.innerHTML = `
+                <div class="acara-actions">
+                    <button class="action-btn detail-btn" data-id="${item.id_acara}" title="Lihat Detail">
+                        <iconify-icon icon="mdi:eye" width="16" height="16"></iconify-icon>
+                    </button>
+                    <button class="action-btn edit-btn" data-id="${item.id_acara}" title="Edit">
+                        <iconify-icon icon="mdi:pencil" width="16" height="16"></iconify-icon>
+                    </button>
+                    <button class="action-btn hapus-btn" data-id="${item.id_acara}" title="Hapus">
+                        <iconify-icon icon="mdi:trash-can-outline" width="16" height="16"></iconify-icon>
+                    </button>
+                </div>
+                <div class="event-date">
+                    <iconify-icon icon="mdi:calendar" width="14" height="14"></iconify-icon>
+                    ${tanggalTampilan} - ${waktuTampilan}
+                </div>
+                <h4>${item.judul_acara}</h4>
+                <div class="event-desc">${item.desc_acara || 'Tidak ada deskripsi'}</div>
+            `;
+            
+            window.containerAktivitas.appendChild(itemEl);
+        }
+        
+        // Tambahkan event listener untuk tombol-tombol
+        var tombolDetail = window.containerAktivitas.querySelectorAll('.detail-btn');
+        var tombolEdit = window.containerAktivitas.querySelectorAll('.edit-btn');
+        var tombolHapus = window.containerAktivitas.querySelectorAll('.hapus-btn');
+        
+        for (var k = 0; k < tombolDetail.length; k++) {
+            tombolDetail[k].addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idAcara = this.getAttribute('data-id');
+                bukaDetailAktivitas(idAcara);
+            });
+        }
+        
+        for (var l = 0; l < tombolEdit.length; l++) {
+            tombolEdit[l].addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idAcara = this.getAttribute('data-id');
+                editAktivitas(idAcara);
+            });
+        }
+        
+        for (var m = 0; m < tombolHapus.length; m++) {
+            tombolHapus[m].addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idAcara = this.getAttribute('data-id');
+                konfirmasiHapusAktivitas(idAcara);
+            });
+        }
+    }
+}
+
+// Fungsi untuk format tanggal tampilan dalam MM/DD/YY dengan nama bulan
+function formatTanggalTampilanMMDDYY(tanggalObj) {
+    var hari = tanggalObj.getDate();
+    var bulan = tanggalObj.getMonth();
+    var tahun = tanggalObj.getFullYear();
+    var tahunPendek = tahun.toString().substr(-2);
+    
+    return (tanggalObj.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+           hari.toString().padStart(2, '0') + '/' + tahunPendek + 
+           ' (' + namaBulan[bulan] + ')';
+}
+
+// Fungsi untuk navigasi ke bulan sebelumnya
+function bulanSebelumnya() {
+    bulanSekarang--;
+    
+    // Jika bulan menjadi -1 (Desember tahun sebelumnya)
+    if (bulanSekarang < 0) {
+        bulanSekarang = 11;
+        tahunSekarang--;
+    }
+    
+    tampilkanKalender();
+    tampilkanDaftarAktivitas();
+}
+
+// Fungsi untuk navigasi ke bulan selanjutnya
+function bulanSelanjutnya() {
+    bulanSekarang++;
+    
+    // Jika bulan menjadi 12 (Januari tahun berikutnya)
+    if (bulanSekarang > 11) {
+        bulanSekarang = 0;
+        tahunSekarang++;
+    }
+    
+    tampilkanKalender();
+    tampilkanDaftarAktivitas();
+}
+
+// PERBAIKAN: Fungsi untuk membuka modal tambah acara
+function bukaModalTambahAcara(tanggalMMDDYY) {
+    if (!window.modalUtama) {
+        console.log('Modal tidak ditemukan');
+        return;
+    }
+    
+    // Reset form
+    resetForm();
+    
+    // Set tanggal jika ada
+    if (tanggalMMDDYY && window.inputTanggal) {
+        if (typeof tanggalMMDDYY === 'string') {
+            // Konversi MM/DD/YY ke format input (YYYY-MM-DD)
+            var formatDatabase = konversiKeFormatDatabase(tanggalMMDDYY);
+            if (formatDatabase) {
+                window.inputTanggal.value = formatDatabase;
+            }
+        }
+    }
+    
+    // Buka modal
+    window.modalUtama.style.display = 'flex';
+    window.modalUtama.classList.add('modal-active');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus ke judul
+    setTimeout(function() {
+        if (window.inputJudul) {
+            window.inputJudul.focus();
+        }
+    }, 100);
+    
+    // Update judul modal
+    var judulModal = window.modalUtama.querySelector('.modalTitle');
+    var textUpdate = window.modalUtama.querySelector('.update-text');
+    
+    if (judulModal) {
+        judulModal.textContent = 'Buat Acara Baru';
+        judulModal.style.display = 'block';
+    }
+    
+    if (textUpdate) {
+        textUpdate.style.display = 'none';
+    }
+}
+
+// Fungsi untuk menutup modal
+function tutupModal() {
+    if (!window.modalUtama) return;
+    
+    window.modalUtama.style.display = 'none';
+    window.modalUtama.classList.remove('modal-active');
+    document.body.style.overflow = 'auto';
+    resetForm();
+}
+
+// PERBAIKAN 3: Fungsi simpan aktivitas yang benar
+function simpanAktivitas() {
+    console.log('Mulai menyimpan aktivitas');
+    
+    if (!window.formEvent || !window.inputJudul || !window.inputTanggal) {
+        console.log('Form tidak lengkap');
+        alert('Error: Form tidak lengkap!');
+        return;
+    }
+    
+    var judul = window.inputJudul.value.trim();
+    var tanggal = window.inputTanggal.value.trim(); // Format YYYY-MM-DD dari input HTML
+    var waktu = window.inputWaktu?.value || '00:00';
+    var deskripsi = window.inputDeskripsi?.value || '';
+    
+    // Validasi input
+    if (!judul) {
+        alert('Judul acara harus diisi!');
+        window.inputJudul.focus();
+        return;
+    }
+    
+    if (!tanggal) {
+        alert('Tanggal harus dipilih!');
+        window.inputTanggal.focus();
+        return;
+    }
+    
+    // Validasi format tanggal (YYYY-MM-DD untuk input type="date")
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(tanggal)) {
+        alert('Format tanggal salah. Pilih tanggal dari calendar.');
+        window.inputTanggal.focus();
+        return;
+    }
+    
+    // Validasi format waktu jika diisi
+    if (waktu && waktu !== '00:00') {
+        if (!/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/.test(waktu)) {
+            alert('Format waktu salah. Gunakan format HH:MM');
+            window.inputWaktu.focus();
+            return;
+        }
+    }
+    
+    // Gabung tanggal dan waktu jadi YYYY-MM-DD HH:MM:SS (format database)
+    var waktuAcara = tanggal + ' ' + waktu + ':00';
+    
+    console.log('Data yang akan disimpan:', {
+        judul: judul,
+        tanggal: tanggal,
+        waktu: waktu,
+        waktuAcara: waktuAcara
+    });
+    
+    // Validasi reminder jika aktif
+    var reminderEnabled = document.getElementById('reminder_enabled');
+    var reminderTemplate = document.getElementById('reminder_template');
+    var customReminder = document.getElementById('custom_reminder');
+    
+    if (reminderEnabled && reminderEnabled.checked && reminderTemplate) {
+        if (!reminderTemplate.value) {
+            alert("Pilih waktu pengingat atau matikan pengingat.");
+            reminderTemplate.focus();
+            return;
+        }
+        
+        if (reminderTemplate.value === 'custom') {
+            var customInput = customReminder ? customReminder.querySelector('input[name="custom_minutes"]') : null;
+            if (!customInput || !customInput.value || parseInt(customInput.value) < 1 || parseInt(customInput.value) > 10080) {
+                alert("Waktu pengingat kustom tidak valid (harus antara 1 menit sampai 7 hari)");
+                if (customInput) customInput.focus();
+                return;
+            }
+        }
+    }
+    
+    // Hapus tombol action lama
+    var tombolLama = window.formEvent.querySelectorAll('input[name="save"], input[name="edit"]');
+    for (var i = 0; i < tombolLama.length; i++) {
+        tombolLama[i].remove();
+    }
+    
+    // Tambah tombol action baru
+    var tombolAction = document.createElement('input');
+    tombolAction.type = 'hidden';
+    
+    if (idAktivitasYangDiedit) {
+        tombolAction.name = 'edit';
+        tombolAction.value = '1';
+        if (window.inputIdAcara) window.inputIdAcara.value = idAktivitasYangDiedit;
+    } else {
+        tombolAction.name = 'save';
+        tombolAction.value = '1';
+    }
+    
+    window.formEvent.appendChild(tombolAction);
+    
+    console.log('Kirim form ke server...');
+    window.formEvent.submit();
+}
+
+// PERBAIKAN 4: Fungsi edit aktivitas yang benar
+function editAktivitas(idAcara) {
+    var aktivitas = null;
+    for (var i = 0; i < daftarAktivitas.length; i++) {
+        if (daftarAktivitas[i].id_acara == idAcara) {
+            aktivitas = daftarAktivitas[i];
+            break;
+        }
+    }
+    
+    if (!aktivitas) {
+        alert("Data aktivitas tidak ditemukan!");
+        return;
+    }
+    
+    idAktivitasYangDiedit = idAcara;
+    
+    resetForm();
+    
+    if (window.inputJudul) window.inputJudul.value = aktivitas.judul_acara;
+    if (window.inputDeskripsi) window.inputDeskripsi.value = aktivitas.desc_acara || '';
+    if (window.inputIdAcara) window.inputIdAcara.value = idAcara;
+    
+    if (aktivitas.waktu_acara) {
+        var tanggalObj = new Date(aktivitas.waktu_acara);
+        
+        // Set tanggal dalam format YYYY-MM-DD untuk input
+        if (window.inputTanggal) {
+            var tahun = tanggalObj.getFullYear();
+            var bulan = (tanggalObj.getMonth() + 1).toString().padStart(2, '0');
+            var hari = tanggalObj.getDate().toString().padStart(2, '0');
+            window.inputTanggal.value = tahun + '-' + bulan + '-' + hari;
+        }
+        
+        // Set waktu dalam format HH:MM
+        if (window.inputWaktu) {
+            var jam = tanggalObj.getHours().toString().padStart(2, '0');
+            var menit = tanggalObj.getMinutes().toString().padStart(2, '0');
+            var waktu = jam + ':' + menit;
+            window.inputWaktu.value = (waktu === '00:00' ? '' : waktu);
+        }
+    }
+    
+    var judulModal = window.modalUtama?.querySelector('.modalTitle');
+    var textUpdate = window.modalUtama?.querySelector('.update-text');
+    
+    if (judulModal) judulModal.style.display = 'none';
+    if (textUpdate) {
+        textUpdate.textContent = 'Edit Aktivitas';
+        textUpdate.style.display = 'block';
+    }
+    
+    if (window.modalUtama) {
+        window.modalUtama.style.display = 'flex';
+        window.modalUtama.classList.add('modal-active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    setTimeout(function() {
+        if (window.inputJudul) window.inputJudul.focus();
+    }, 100);
+}
+
+// Fungsi untuk membuka detail aktivitas
+function bukaDetailAktivitas(idAcara) {
+    var aktivitas = null;
+    for (var i = 0; i < daftarAktivitas.length; i++) {
+        if (daftarAktivitas[i].id_acara == idAcara) {
+            aktivitas = daftarAktivitas[i];
+            break;
+        }
+    }
+    
+    if (!aktivitas) {
+        alert("Data aktivitas tidak ditemukan!");
+        return;
+    }
+    
+    // Jika modal detail tidak ditemukan, tampilkan dalam alert
+    if (!window.modalDetail) {
+        var tanggalObj = new Date(aktivitas.waktu_acara);
+        var tanggalMMDDYY = konversiDariDatabase(aktivitas.waktu_acara);
+        var jamTampilan = tanggalObj.getHours().toString().padStart(2, '0') + ':' + tanggalObj.getMinutes().toString().padStart(2, '0');
+        var waktuTampilan = jamTampilan === '00:00' ? 'Sepanjang hari' : 'jam ' + jamTampilan;
+        
+        alert("Detail Aktivitas:\n\nJudul: " + aktivitas.judul_acara + 
+              "\nTanggal: " + tanggalMMDDYY + ' ' + waktuTampilan + 
+              "\nDeskripsi: " + (aktivitas.desc_acara || 'Tidak ada deskripsi'));
+        return;
+    }
+    
+    // Update konten modal detail
+    var judulDetail = window.modalDetail.querySelector('#sideDetailJudul') || window.modalDetail.querySelector('h3');
+    if (judulDetail) {
+        judulDetail.textContent = aktivitas.judul_acara;
+    }
+    
+    var deskripsiDetail = window.modalDetail.querySelector('#sideDetailDeskripsi');
+    if (deskripsiDetail) {
+        deskripsiDetail.textContent = aktivitas.desc_acara || 'Tidak ada deskripsi';
+    }
+    
+    var tanggalDetail = window.modalDetail.querySelector('#sideDetailTanggalMulai');
+    if (tanggalDetail) {
+        var tanggalMMDDYY = konversiDariDatabase(aktivitas.waktu_acara);
+        tanggalDetail.textContent = tanggalMMDDYY;
+    }
+    
+    var waktuDetail = window.modalDetail.querySelector('#sideDetailTanggalBerakhir');
+    if (waktuDetail) {
+        var tanggalObj = new Date(aktivitas.waktu_acara);
+        var jamTampilan = tanggalObj.getHours().toString().padStart(2, '0') + ':' + tanggalObj.getMinutes().toString().padStart(2, '0');
+        waktuDetail.textContent = jamTampilan === '00:00' ? 'Sepanjang hari' : jamTampilan;
+    }
+    
+    // Set data-id untuk tombol edit dan hapus
+    var editBtn = window.modalDetail.querySelector('#editSideAcaraBtn');
+    var hapusBtn = window.modalDetail.querySelector('#hapusSideAcaraBtn');
+    
+    if (editBtn) editBtn.setAttribute('data-id', aktivitas.id_acara);
+    if (hapusBtn) hapusBtn.setAttribute('data-id', aktivitas.id_acara);
+    
+    // Tampilkan modal
+    window.modalDetail.style.display = 'block';
+    window.modalDetail.classList.add('open');
+}
+
+// Fungsi untuk menutup modal detail
+function closeSideModal() {
+    if (window.modalDetail) {
+        window.modalDetail.style.display = 'none';
+        window.modalDetail.classList.remove('open');
+    }
+}
+
+// Fungsi untuk edit dari modal detail
+function editFromSide() {
+    var btnEdit = document.getElementById('editSideAcaraBtn');
+    if (btnEdit) {
+        var idAcara = btnEdit.getAttribute('data-id');
+        closeSideModal();
+        editAktivitas(idAcara);
+    }
+}
+
+// Fungsi untuk hapus dari modal detail
+function deleteFromSide() {
+    var btnHapus = document.getElementById('hapusSideAcaraBtn');
+    if (btnHapus) {
+        var idAcara = btnHapus.getAttribute('data-id');
+        closeSideModal();
+        konfirmasiHapusAktivitas(idAcara);
+    }
+}
+
+// Fungsi untuk konfirmasi hapus aktivitas
+function konfirmasiHapusAktivitas(idAcara) {
+    var aktivitas = null;
+    for (var i = 0; i < daftarAktivitas.length; i++) {
+        if (daftarAktivitas[i].id_acara == idAcara) {
+            aktivitas = daftarAktivitas[i];
+            break;
+        }
+    }
+    
+    if (!aktivitas) {
+        alert("Data aktivitas tidak ditemukan!");
+        return;
+    }
+    
+    var tanggalMMDDYY = konversiDariDatabase(aktivitas.waktu_acara);
+    
+    if (confirm("Apakah Anda yakin ingin menghapus aktivitas \"" + aktivitas.judul_acara + "\" pada tanggal " + tanggalMMDDYY + "?")) {
+        var formHapus = document.createElement('form');
+        formHapus.method = 'POST';
+        formHapus.action = ''; // Gunakan URL saat ini
+        
+        var inputId = document.createElement('input');
+        inputId.type = 'hidden';
+        inputId.name = 'id_acara';
+        inputId.value = idAcara;
+        
+        var inputHapus = document.createElement('input');
+        inputHapus.type = 'hidden';
+        inputHapus.name = 'hapus';
+        inputHapus.value = '1';
+        
+        formHapus.appendChild(inputId);
+        formHapus.appendChild(inputHapus);
+        document.body.appendChild(formHapus);
+        formHapus.submit();
+    }
+}
+
+// Global functions untuk dipanggil dari HTML
+window.openModal = bukaModalTambahAcara;
+window.closeModal = tutupModal;
+window.saveEvent = simpanAktivitas;
+window.prevMonth = bulanSebelumnya;
+window.nextMonth = bulanSelanjutnya;
+
+// Handler untuk pengingat jika ada
+function toggleReminderOptions() {
+    var reminderEnabled = document.getElementById('reminder_enabled');
+    var reminderOptions = document.getElementById('reminder_options');
+    
+    if (reminderEnabled && reminderOptions) {
+        if (reminderEnabled.checked) {
+            reminderOptions.classList.add('active');
+        } else {
+            reminderOptions.classList.remove('active');
+        }
+    }
+}
+
+// Handler untuk reminder kustom
+function toggleCustomReminder() {
+    var reminderTemplate = document.getElementById('reminder_template');
+    var customReminder = document.getElementById('custom_reminder');
+    
+    if (reminderTemplate && customReminder) {
+        if (reminderTemplate.value === 'custom') {
+            customReminder.classList.add('active');
+        } else {
+            customReminder.classList.remove('active');
+        }
+    }
+}
+
+// Auto-hide alert messages
+function hideAlert() {
+    var alertElement = document.getElementById('alertMessage');
+    if (alertElement) {
+        alertElement.classList.add('show');
+        setTimeout(function() {
+            alertElement.style.opacity = '0';
+            alertElement.style.transform = 'translateX(100%)';
+            setTimeout(function() {
+                if (alertElement.parentNode) {
+                    alertElement.parentNode.removeChild(alertElement);
+                }
+            }, 300);
+        }, 5000);
+    }
+}
+
+// Setup saat DOM loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup reminder handlers
+    var reminderEnabled = document.getElementById('reminder_enabled');
+    var reminderTemplate = document.getElementById('reminder_template');
+    
+    if (reminderEnabled) {
+        reminderEnabled.addEventListener('change', toggleReminderOptions);
+    }
+    
+    if (reminderTemplate) {
+        reminderTemplate.addEventListener('change', toggleCustomReminder);
+    }
+    
+    // Auto-hide alerts
+    hideAlert();
+    
+    // Debug data
+    debugDataAktivitas();
+    
+    // Jalankan sistem kalender
+    jalankanSistemKalender();
+});
+
+// PERBAIKAN 8: Debug console log untuk troubleshooting
+function debugDataAktivitas() {
+    console.log('=== DEBUG DATA AKTIVITAS ===');
+    console.log('Total aktivitas:', daftarAktivitas.length);
+    console.log('Data aktivitas:', daftarAktivitas);
+    console.log('Bulan sekarang:', bulanSekarang);
+    console.log('Tahun sekarang:', tahunSekarang);
+    
+    // Test konversi tanggal
+    if (daftarAktivitas.length > 0) {
+        var contoh = daftarAktivitas[0];
+        console.log('Contoh data:', contoh);
+        console.log('Waktu acara:', contoh.waktu_acara);
+        console.log('Konversi ke MM/DD/YY:', konversiDariDatabase(contoh.waktu_acara));
+    }
+    console.log('=== END DEBUG ===');
+}
+
+// Panggil debug saat load
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup reminder handlers
+    var reminderEnabled = document.getElementById('reminder_enabled');
+    var reminderTemplate = document.getElementById('reminder_template');
+    
+    if (reminderEnabled) {
+        reminderEnabled.addEventListener('change', toggleReminderOptions);
+    }
+    
+    if (reminderTemplate) {
+        reminderTemplate.addEventListener('change', toggleCustomReminder);
+    }
+    
+    // Auto-hide alerts
+    hideAlert();
+    
+    // Debug data
+    debugDataAktivitas();
+    
+    // Jalankan sistem kalender
+    jalankanSistemKalender();
 });

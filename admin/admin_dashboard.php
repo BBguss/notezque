@@ -1,72 +1,70 @@
 <?php
-// 5Dashboard.php
 include '../config/koneksi.php';
 include '../config/session.php';
-include 'filter.php';
-// At the top of the file after session_start()
+
+// Cek apakah user adalah admin
 if (!isset($_SESSION['username']) || $_SESSION['username'] != 'admin') {
     header('location: http://localhost/kelompok_3/pages/2loginpage.php');
     exit();
 }
 
-function waktu_lalu($waktu)
-{
-  if (!$waktu)
-    return "Belum aktif";
-
-  $waktu = new DateTime(datetime: $waktu);
-  $sekarang = new DateTime();
-  $selisih = $sekarang->diff($waktu);
-
-  if ($selisih->y > 0 || $selisih->m > 0) {
-    return $waktu->format("d M Y"); 
-  } elseif ($selisih->d > 0) {
-    return $selisih->d . " hari yang lalu";
-  } elseif ($selisih->h > 0) {
-    return $selisih->h . " jam yang lalu";
-  } elseif ($selisih->i > 0) {
-    return $selisih->i . " menit yang lalu";
-  } else {
-    return "Baru saja";
-  }
+// Logout functionality
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header('location: ../pages/2loginpage.php');
+    exit();
 }
 
-// filter status 
-$status = $_GET['status'] ?? '';
-$sort_by = $_GET['sort_by'] ?? '';
+// Mengambil statistik untuk dashboard
+// Total pengguna
+$total_users = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as count FROM users WHERE username != 'admin'"))['count'];
 
-$where = kondisiFilter($status);
-$order = kondisiUrutan($sort_by);
+// Total konten
+$total_konten = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as count FROM konten_statis"))['count'];
 
-$sql = "SELECT * FROM users WHERE $where ORDER BY $order";
-$result = mysqli_query($conn, $sql);
+// Total kunjungan
+$total_visits = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as count FROM statistik_kunjungan"))['count'];
 
-$jumlahPengguna = mysqli_num_rows($result);
-$pengguna_aktif = mysqli_query($conn, "SELECT COUNT(*) as count FROM users WHERE username != 'admin' AND aktivitas_terakhir > DATE_SUB(NOW(), INTERVAL 1 DAY)");
-$pengguna_aktif = mysqli_fetch_assoc($pengguna_aktif)['count'];
+// Pengguna aktif hari ini
+$active_users = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as count FROM users WHERE aktivitas_terakhir > DATE_SUB(NOW(), INTERVAL 1 DAY)"))['count'];
 
-$pengguna_baru = mysqli_query($conn, "SELECT COUNT(*) as count FROM users WHERE created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)");
-$pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
+// Aktivitas terbaru (gabungan dari berbagai tabel)
+$recent_activity_query = "
+    (SELECT 'user_baru' as tipe, username as subjek, created_at as waktu, NULL as detail 
+     FROM users 
+     WHERE created_at > DATE_SUB(NOW(), INTERVAL 7 DAY) AND username != 'admin')
+    UNION
+    (SELECT 'konten_baru' as tipe, nama_halaman as subjek, section as detail 
+     FROM konten_statis 
+     WHERE created_at > DATE_SUB(NOW(), INTERVAL 7 DAY))
+    ORDER BY waktu DESC
+    LIMIT 10
+";
 
-// Ambil data konten statis
-
+$recent_activity = mysqli_query($conn, $recent_activity_query);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin NotezQue</title>
-  <link rel="icon" type="image/x-icon" href="../Asset/images/Logo NotezQue.svg">
-  <link rel="stylesheet" href="../Asset/css/style.css">
-  <link rel="stylesheet" href="../Asset/font/Font.css">
-  <link rel="stylesheet" href="../Asset/attributes/Atribute3.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - NotezQue</title>
+    <link rel="icon" type="image/x-icon" href="../asset/images/logoNotezQue.svg">
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../asset/css/style.css">
+    <link rel="stylesheet" href="../asset/css/konten_statis.css">
+    <link rel="stylesheet" href="../asset/font/Font.css">
+    <link rel="stylesheet" href="../asset/attributes/Atribute3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -91,13 +89,13 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
             <nav>
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active">
-                        <a href="5Dashboard.php" class="sidebar-link">
+                        <a href="admin_dashboard.php" class="sidebar-link">
                             <i class="fas fa-tachometer-alt sidebar-icon"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
+                        <a href="pengguna.php" class="sidebar-link">
                             <i class="fas fa-users sidebar-icon"></i>
                             Pengguna
                         </a>
@@ -109,9 +107,9 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
+                        <a href="statistik.php" class="sidebar-link">
                             <i class="fas fa-chart-bar sidebar-icon"></i>
-                            Analitik
+                            Statistik
                         </a>
                     </li>
                     <li class="sidebar-item">
@@ -126,6 +124,12 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
 
         <!-- Main Content -->
         <main class="admin-main">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>Selamat Datang, Admin!</h2>
+                <p>Berikut adalah ringkasan aktivitas pada website NotezQue.</p>
+            </div>
+
             <!-- Dashboard Cards -->
             <div class="dashboard-cards">
                 <div class="dashboard-card">
@@ -135,10 +139,12 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
                             <i class="fas fa-users"></i>
                         </div>
                     </div>
-                    <div class="card-value"><?= $jumlahPengguna ?></div>
-                    <div class="card-footer">Semua pengguna terdaftar</div>
+                    <div class="card-value"><?= $total_users ?></div>
+                    <div class="card-footer">
+                        <a href="pengguna.php">Lihat detail <i class="fas fa-arrow-right"></i></a>
+                    </div>
                 </div>
-                
+
                 <div class="dashboard-card">
                     <div class="card-header">
                         <span class="card-title">Pengguna Aktif</span>
@@ -146,92 +152,132 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
                             <i class="fas fa-user-check"></i>
                         </div>
                     </div>
-                    <div class="card-value"><?= $pengguna_aktif ?></div>
-                    <div class="card-footer">Aktif dalam 24 jam terakhir</div>
+                    <div class="card-value"><?= $active_users ?></div>
+                    <div class="card-footer">
+                        <a href="pengguna.php">Lihat detail <i class="fas fa-arrow-right"></i></a>
+                    </div>
                 </div>
-                
+
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <span class="card-title">Pengguna Baru</span>
+                        <span class="card-title">Total Konten</span>
                         <div class="card-icon icon-warning">
-                            <i class="fas fa-user-plus"></i>
+                            <i class="fas fa-file-alt"></i>
                         </div>
                     </div>
-                    <div class="card-value"><?= $pengguna_baru ?></div>
-                    <div class="card-footer">Bergabung 7 hari terakhir</div>
+                    <div class="card-value"><?= $total_konten ?></div>
+                    <div class="card-footer">
+                        <a href="kelola_konten.php">Lihat detail <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-title">Kunjungan</span>
+                        <div class="card-icon icon-info">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="card-value"><?= $total_visits ?></div>
+                    <div class="card-footer">
+                        <a href="statistik.php">Lihat detail <i class="fas fa-arrow-right"></i></a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Users Table -->
+            <!-- Recent Activity Section -->
             <div class="data-table-container">
                 <div class="table-header">
-                    <h2 class="table-title">Manajemen Pengguna</h2>
-                    <div class="table-actions">
-                    <form method="GET" class="filter-group">
-                        <select name="status" class="filter-control" onchange="this.form.submit()">
-                            <option value="">Filter Berdasarkan Status</option>
-                            <option value="aktif" <?= (isset($_GET['status']) && $_GET['status'] == 'aktif') ? 'selected' : '' ?>>Aktif</option>
-                            <option value="tidak_aktif" <?= (isset($_GET['status']) && $_GET['status'] == 'tidak_aktif') ? 'selected' : '' ?>>Tidak Aktif</option>
-                        </select>
-
-                        <select name="sort_by" class="filter-control" onchange="this.form.submit()">
-                          <option value="">Urut Berdasarkan</option>
-                          <option value="created_at_desc" <?= (isset($_GET['sort_by']) && $_GET['sort_by'] == 'created_at_desc') ? 'selected' : '' ?>>Tanggal Daftar Terbaru</option>
-                          <option value="created_at_asc" <?= (isset($_GET['sort_by']) && $_GET['sort_by'] == 'created_at_asc') ? 'selected' : '' ?>>Tanggal Daftar Terlama</option>
-                      </select>
-                    </form>
-                        <button class="btn btn-primary btn-sm">
-                            <i class="fas fa-download"></i> Ekspor
-                        </button>
-                    </div>
+                    <h2 class="table-title">
+                        <i class="fas fa-history"></i> Aktivitas Terbaru
+                    </h2>
                 </div>
-                
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Pengguna</th>
-                            <th>Email</th>
-                            <th>Tanggal Daftar</th>
-                            <th>Aktivitas Terakhir</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $no = 1;
-                        while ($user = mysqli_fetch_assoc($result)):
-                            $statusClass = (strtotime($user['aktivitas_terakhir']) > strtotime('-1 day')) 
-                                ? 'badge-success' 
-                                : 'badge-warning';
-                            $statusText = (strtotime($user['aktivitas_terakhir']) > strtotime('-1 day')) 
-                                ? 'Aktif' 
-                                : 'Tidak Aktif';
-                        ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= $user['username'] ?></td>
-                            <td><?= $user['email'] ?></td>
-                            <td><?= date('d M Y', strtotime($user['created_at'])) ?></td>
-                            <td><?= waktu_lalu($user['aktivitas_terakhir']) ?></td>
-                            <td><span class="badge <?= $statusClass ?>"><?= $statusText ?></span></td>
-                            <td>
-                                <a href="hapus_user.php?id=<?= $user['id_user'] ?>" 
-                                   class="btn btn-outline btn-sm"
-                                   onclick="return confirm('Hapus pengguna ini?')">
-                                    <i class="fas fa-trash-alt"></i> Hapus
-                                </a>
-                            </td>
-                        </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
+                <div style="padding: 0;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th width="15%">Waktu</th>
+                                <th width="15%">Tipe</th>
+                                <th width="40%">Detail</th>
+                                <th width="30%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (mysqli_num_rows($recent_activity) > 0):
+                                while ($row = mysqli_fetch_assoc($recent_activity)):
+                                    // Tampilan aktivitas berdasarkan tipe
+                                    $icon = '';
+                                    $description = '';
+                                    $action_link = '';
+
+                                    if ($row['tipe'] == 'user_baru') {
+                                        $icon = '<i class="fas fa-user-plus text-success"></i>';
+                                        $description = "Pengguna baru: <strong>{$row['subjek']}</strong> mendaftar";
+                                        $action_link = '<a href="pengguna.php" class="btn btn-sm btn-outline">Lihat Pengguna</a>';
+                                    } elseif ($row['tipe'] == 'konten_baru') {
+                                        $icon = '<i class="fas fa-file-plus text-primary"></i>';
+                                        $description = "Konten baru ditambahkan pada halaman <strong>{$row['subjek']}</strong>";
+                                        if ($row['detail']) {
+                                            $description .= " (Section: {$row['detail']})";
+                                        }
+                                        $action_link = '<a href="kelola_konten.php" class="btn btn-sm btn-outline">Lihat Konten</a>';
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td><?= date('d/m/Y H:i', strtotime($row['waktu'])) ?></td>
+                                        <td>
+                                            <?= $icon ?>
+                                            <?= ucfirst(str_replace('_', ' ', $row['tipe'])) ?>
+                                        </td>
+                                        <td><?= $description ?></td>
+                                        <td><?= $action_link ?></td>
+                                    </tr>
+                                <?php
+                                endwhile;
+                            else:
+                                ?>
+                                <tr>
+                                    <td colspan="4" class="empty-state">
+                                        <i class="fas fa-stream"></i>
+                                        <h4>Belum Ada Aktivitas</h4>
+                                        <p>Belum ada aktivitas terbaru dalam 7 hari terakhir</p>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Access Section -->
+            <div class="quick-access">
+                <h2><i class="fas fa-bolt"></i> Akses Cepat</h2>
+                <div class="quick-access-grid">
+                    <a href="pengguna.php" class="quick-access-card">
+                        <i class="fas fa-users"></i>
+                        <span>Kelola Pengguna</span>
+                    </a>
+                    <a href="kelola_konten.php" class="quick-access-card">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Kelola Konten</span>
+                    </a>
+                    <a href="statistik.php" class="quick-access-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Lihat Statistik</span>
+                    </a>
+                    <a href="#" class="quick-access-card">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </div>
             </div>
         </main>
     </div>
 
+    <!-- JavaScript Files -->
+    <script src="../asset/attributes/Atribute1.js"></script>
     <?php include '../pages/footer.php' ?>
 </body>
-<script src="../asset/attributes/Atribute1.js"></script>
+
 </html>

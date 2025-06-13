@@ -1,96 +1,71 @@
 <?php
+// filepath: c:\xampp\htdocs\Kelompok_3\pages\kalender\add_event.php
 session_start();
-include '../../config/koneksi.php';
-
-// PERBAIKAN: Set timezone untuk PHP dan MySQL
-date_default_timezone_set('Asia/Jakarta');
-mysqli_query($conn, "SET time_zone = '+07:00'");
+require_once '../../config/koneksi.php';
 
 header('Content-Type: application/json');
 
-// Cek login
-if (!isset($_SESSION['is_login']) || !$_SESSION['is_login']) {
-    echo json_encode(['success' => false, 'message' => 'Harus login terlebih dahulu']);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
     exit;
 }
 
-// Ambil data JSON
-$data = json_decode(file_get_contents('php://input'), true);
-
-// Validasi input dasar
-if (
-    empty($data['judul_acara']) ||
-    empty($data['waktu_acara'])
-) {
-    echo json_encode(['success' => false, 'message' => 'Judul dan waktu acara wajib diisi']);
-    exit;
-}
-
-// Ambil data
-$user_id = $_SESSION['id_user'];
-$judul = mysqli_real_escape_string($conn, $data['judul_acara']);
-$deskripsi = mysqli_real_escape_string($conn, $data['desc_acara'] ?? '');
-$waktu_acara_input = $data['waktu_acara'];
-$reminder_enabled = isset($data['reminder_enabled']) && $data['reminder_enabled'] ? 1 : 0;
-$reminder_minutes = isset($data['reminder_minutes']) && is_numeric($data['reminder_minutes']) ? intval($data['reminder_minutes']) : null;
-$waktu_acara = date('Y-m-d H:i:s', strtotime($waktu_acara_input));
-
-// Debug: Log waktu yang diterima dan yang akan disimpan
-if (defined('DEBUG') && DEBUG) {
-    error_log("Waktu diterima: " . $waktu_acara_input);
-    error_log("Waktu yang akan disimpan: " . $waktu_acara);
-}
-
-// Hitung reminder_time jika reminder diaktifkan
-$reminder_time = null;
-if ($reminder_enabled && $reminder_minutes > 0) {
-    $reminder_timestamp = strtotime($waktu_acara) - ($reminder_minutes * 60);
-    $reminder_time = date("Y-m-d H:i:s", $reminder_timestamp);
-    if (defined('DEBUG') && DEBUG) {
-        error_log("Reminder time: " . $reminder_time);
-    }
-}
-
-// Buat query berdasarkan role
 try {
-    if ($_SESSION['username'] == 'admin') {
-        $stmt = $conn->prepare("INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara, reminder_enabled, reminder_time) VALUES (NULL, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssis", $judul, $deskripsi, $waktu_acara, $reminder_enabled, $reminder_time);
-    } else {
-        $stmt = $conn->prepare("INSERT INTO kalender_acara (id_user, judul_acara, desc_acara, waktu_acara, reminder_enabled, reminder_time) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssis", $user_id, $judul, $deskripsi, $waktu_acara, $reminder_enabled, $reminder_time);
+    $judul_acara = trim($_POST['judul_acara'] ?? $_POST['title'] ?? '');
+    $desc_acara = trim($_POST['desc_acara'] ?? $_POST['desk'] ?? '');
+    $tanggal = $_POST['tanggal'] ?? '';
+    $waktu = $_POST['waktu'] ?? '00:00';
+
+    // Validasi input
+    if (empty($judul_acara)) {
+        throw new Exception('Judul acara harus diisi');
     }
 
-    // Eksekusi
-    if ($stmt->execute()) {
-        if ($reminder_enabled && $reminder_time) {
-    $title = "Pengingat Acara";
-    $message = "Acara '$judul' akan dimulai dalam $reminder_minutes menit";
+    if (empty($tanggal)) {
+        throw new Exception('Tanggal harus diisi');
+    }
 
-    $notif_stmt = $conn->prepare("INSERT INTO notifications (id_user, title, message, type, reference_id, scheduled_time) VALUES (?, ?, ?, 'acara', ?, ?)");
-    $inserted_id = $conn->insert_id; // ID dari acara yang baru ditambahkan
-    $notif_stmt->bind_param("issis", $user_id, $title, $message, $inserted_id, $reminder_time);
-    $notif_stmt->execute();
-    $notif_stmt->close();
-}
+    // Konversi format tanggal dari DD-MM-YYYY ke MM-DD-YYYY untuk database
+    $tanggal_parts = explode('-', $tanggal);
+    if (count($tanggal_parts) !== 3) {
+        throw new Exception('Format tanggal tidak valid');
+    }
 
+    $hari = $tanggal_parts[0];
+    $bulan = $tanggal_parts[1];
+    $tahun = $tanggal_parts[2];
+
+    // Format untuk database: MM-DD-YYYY
+    $tanggal_db = $bulan . '-' . $hari . '-' . $tahun;
+
+    // Format waktu lengkap
+    if (empty($waktu) || $waktu === '00:00') {
+        $waktu_acara = $tanggal_db . ' 00:00:00';
+    } else {
+        $waktu_acara = $tanggal_db . ' ' . $waktu . ':00';
+    }
+
+    // Insert ke database
+    $stmt = $pdo->prepare("INSERT INTO acara (judul_acara, desc_acara, waktu_acara, created_at) VALUES (?, ?, ?, NOW())");
+    $result = $stmt->execute([$judul_acara, $desc_acara, $waktu_acara]);
+
+    if ($result) {
+        $id_acara = $pdo->lastInsertId();
         echo json_encode([
-            'success' => true, 
+            'success' => true,
             'message' => 'Acara berhasil ditambahkan',
-            'debug' => [
-                'input_time' => $waktu_acara_input,
-                'saved_time' => $waktu_acara,
-                'reminder_time' => $reminder_time
+            'data' => [
+                'id_acara' => $id_acara,
+                'judul_acara' => $judul_acara,
+                'desc_acara' => $desc_acara,
+                'waktu_acara' => $waktu_acara
             ]
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Gagal menambah acara', 'error' => $stmt->error]);
+        throw new Exception('Gagal menambahkan acara');
     }
 
-    $stmt->close();
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
-
-$conn->close();
 ?>

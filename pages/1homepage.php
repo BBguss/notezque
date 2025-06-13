@@ -1,7 +1,28 @@
 <?php
 include '../config/koneksi.php';
 session_start();
-$logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
+
+function getKonten($conn, $halaman, $section)
+{
+    $halaman = mysqli_real_escape_string($conn, $halaman);
+    $section = mysqli_real_escape_string($conn, $section);
+
+    $query = "SELECT deskripsi FROM konten_statis 
+              WHERE nama_halaman = '$halaman' AND section = '$section' 
+              LIMIT 1";
+    $result = mysqli_query($conn, $query);
+    if ($row = mysqli_fetch_assoc($result)) {
+        return $row['deskripsi'];
+    }
+    return '';
+}
+
+// Track visitor
+if(file_exists("../config/track_visit.php")) {
+    include_once '../config/track_visit.php';
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +31,7 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notezque</title>
-    <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
+    <link rel="icon" type="image/x-icon" href="../uploads/<?= getKonten($conn, 'all', 'all') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../asset/css/1homepage.css">
     <link rel="stylesheet" href="../asset/attributes/Atribute3.css">
@@ -23,16 +44,15 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
     <header>
         <div class="top-navbar">
             <nav>
-            <img src="../uploads/<?= $logo['gambar'] ?>" alt="Logo">
+            <img src="../uploads/<?= getKonten($conn, 'all', 'all') ?>" alt="Logo">
                 <div class="loginRegist">
-                    <a href="2loginpage.php"><button type="button" class="login">Masuk</button></a>
-                    <a href="3registerpage.php"><button type="button" class="login">Daftar</button></a>
+                    <?php echo getKonten($conn, 'homepage', 'header') ?> 
                 </div>
             </nav>
         </div>
     </header>
     <main>
-        <h1 class="apa">Mulai sekarang dan jadikan produktivitas Anda <br> lebih terorganisir bersama NotzQue!</h1>
+        <?php echo getKonten($conn, 'homepage', 'text_header') ?>
         <div class="loginRegist2">
             <a href="3registerpage.php"><button type="button" class="button">Bergabung Sekarang</button></a>
         </div>
@@ -74,34 +94,27 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
     <footer>
         <div class="container">
             <div class="sec aboutus">
-                <h2>Tentang Kami</h2>
-                <p>NotzQue merupakan sebuah aplikasi notes digital
-                    yang bisa digunakan untuk membuat, menyimpan, dan mengelola catatan, serta membuat
-                    folder-folder untuk setiap note yang telah dibuat.</p>
+                <?php 
+                    echo "<h2>". getKonten($conn, 'homepage', 'footer h2'). "</h2>";
+                    echo "<p>". getKonten($conn, 'homepage', 'footer'). "</p>";
+                 ?>
                 <ul class="satu">
-                    <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
-                    <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
-                    <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa-brands fa-youtube"></i></a></li>
+                <?php
+                    echo getKonten($conn, 'homepage', 'sosmed');
+                ?>
                 </ul>
             </div>
             <div class="sec contactus">
-                <h2>Kontak Kami</h2>
-                <ul class="info">
-                    <li>
-                        <span><i class="fa-solid fa-phone"></i></span>
-                        <p><a href="tel: +62 812 3456 7890">+62 812 3456 7890</a></p>
-                    </li>
-                    <li>
-                        <span><i class="fa-solid fa-envelope"></i></span>
-                        <p><a href="mailto: notzque@gmail.com">notzque@gmail.com</a></p>
-                    </li>
-                </ul>
+            <?php
+                echo getKonten($conn, 'homepage', 'kontak');
+            ?>
             </div>
         </div>
 
         <div class="copyrightText">
-            <p>&copy; NotzQue 2024 Digital Notes. All Rights Reserved. </p>
+        <?php
+            echo getKonten($conn, 'homepage', 'haki');
+        ?>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

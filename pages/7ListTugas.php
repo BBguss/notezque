@@ -5,16 +5,17 @@ include '../config/session.php';
 $id_user = $_SESSION['id_user'];
 
 // Fungsi untuk membuat notifikasi
-function createNotification($conn, $id_user, $id_tugas, $judul_tugas, $deadline_datetime, $reminder_minutes) {
-    if ($reminder_minutes > 0) {
-        $scheduled_time = date('Y-m-d H:i:s', strtotime($deadline_datetime) - ($reminder_minutes * 60));
-        $title = "Pengingat Tugas";
-        $message = "Tugas '$judul_tugas' akan berakhir dalam $reminder_minutes menit";
-        
-        $stmt = $conn->prepare("INSERT INTO notifications (id_user, title, message, type, reference_id, scheduled_time) VALUES (?, ?, ?, 'tugas', ?, ?)");
-        $stmt->bind_param("issis", $id_user, $title, $message, $id_tugas, $scheduled_time);
-        $stmt->execute();
-    }
+function createNotification($conn, $id_user, $id_tugas, $judul_tugas, $deadline_datetime, $reminder_minutes)
+{
+  if ($reminder_minutes > 0) {
+    $scheduled_time = date('Y-m-d H:i:s', strtotime($deadline_datetime) - ($reminder_minutes * 60));
+    $title = "Pengingat Tugas";
+    $message = "Tugas '$judul_tugas' akan berakhir dalam $reminder_minutes menit";
+
+    $stmt = $conn->prepare("INSERT INTO notifications (id_user, title, message, type, reference_id, scheduled_time) VALUES (?, ?, ?, 'tugas', ?, ?)");
+    $stmt->bind_param("issis", $id_user, $title, $message, $id_tugas, $scheduled_time);
+    $stmt->execute();
+  }
 }
 
 
@@ -35,11 +36,11 @@ if (isset($_POST['simpan'])) {
   $tanggal = $_POST['dl1'];
   $waktu = $_POST['dl2'];
   $kolaborator_email = $_POST['collab_email'] ?? '';
-  
+
   // Ambil data reminder
   $reminder_enabled = isset($_POST['reminder_enabled']) ? 1 : 0;
-  $reminder_minutes = isset($_POST['reminder_minutes']) ? (int)$_POST['reminder_minutes'] : 0;
-  
+  $reminder_minutes = isset($_POST['reminder_minutes']) ? (int) $_POST['reminder_minutes'] : 0;
+
   $status = "";
   $id_user = $_SESSION['id_user'];
   $now = date('Y-m-d');
@@ -58,18 +59,18 @@ if (isset($_POST['simpan'])) {
 
   if (mysqli_query($conn, $sql)) {
     $id_tugas_baru = mysqli_insert_id($conn);
-    
+
     // Tambah kolaborator jika ada
     if (!empty($kolaborator_email)) {
       tambahKolaborator($conn, $id_tugas_baru, $kolaborator_email);
     }
-    
+
     // Buat notifikasi jika reminder diaktifkan
     if ($reminder_enabled && $reminder_minutes > 0) {
       $deadline_datetime = $tanggal . ' ' . $waktu;
       createNotification($conn, $id_user, $id_tugas_baru, $judul, $deadline_datetime, $reminder_minutes);
     }
-    
+
     $_SESSION['msg'] = "Tugas berhasil ditambahkan";
   } else {
     echo "Error: " . mysqli_error($conn);
@@ -86,10 +87,10 @@ if (isset($_POST['update'])) {
   $tanggal = $_POST['dl1'];
   $waktu = $_POST['dl2'];
   $email_kolaborator = $_POST['collab_email'];
-  
+
   // Ambil data reminder untuk update
   $reminder_enabled = isset($_POST['reminder_enabled']) ? 1 : 0;
-  $reminder_minutes = isset($_POST['reminder_minutes']) ? (int)$_POST['reminder_minutes'] : 0;
+  $reminder_minutes = isset($_POST['reminder_minutes']) ? (int) $_POST['reminder_minutes'] : 0;
 
   $now = date('Y-m-d');
   $status = (strtotime($tanggal) < strtotime($now)) ? "Terlambat!" : ((strtotime($tanggal) == strtotime($now)) ? "Hati-hati!" : "Aman");
@@ -110,7 +111,7 @@ if (isset($_POST['update'])) {
     JOIN kolaborasi k ON t.id_tugas = k.id_tugas
     WHERE k.id_user = '$id_user' AND t.id_tugas = '$id_tugas'
   ");
-  
+
   if (mysqli_num_rows($cekAkses) > 0) {
     // Update tugas dengan reminder
     $update_sql = "UPDATE tugas SET 
@@ -123,12 +124,12 @@ if (isset($_POST['update'])) {
                    reminder_enabled='$reminder_enabled',
                    reminder_time=" . ($reminder_time ? "'$reminder_time'" : "NULL") . "
                    WHERE id_tugas='$id_tugas'";
-    
+
     mysqli_query($conn, $update_sql);
 
     // Hapus notifikasi lama dan buat yang baru jika reminder diaktifkan
     mysqli_query($conn, "DELETE FROM notifications WHERE reference_id='$id_tugas' AND type='tugas'");
-    
+
     if ($reminder_enabled && $reminder_minutes > 0) {
       $deadline_datetime = $tanggal . ' ' . $waktu;
       createNotification($conn, $id_user, $id_tugas, $judul, $deadline_datetime, $reminder_minutes);
@@ -162,21 +163,21 @@ if (isset($_GET['edit'])) {
     WHERE t.id_tugas = '$id_edit' AND (t.id_user = '$id_user' OR k.id_user = '$id_user')
     ");
   $editData = mysqli_fetch_assoc($result);
-  $collab_query= mysqli_query($conn, "SELECT collaborator FROM kolaborasi WHERE id_tugas = $id_edit");
-  $old_collab_email= mysqli_fetch_assoc($collab_query);
+  $collab_query = mysqli_query($conn, "SELECT collaborator FROM kolaborasi WHERE id_tugas = $id_edit");
+  $old_collab_email = mysqli_fetch_assoc($collab_query);
 }
 
 if (isset($_GET['delete'])) {
   $id = $_GET['delete'];
   $id_user = $_SESSION['id_user'];
-  
+
   // Hapus notifikasi terkait tugas
   mysqli_query($conn, "DELETE FROM notifications WHERE reference_id = $id AND type = 'tugas'");
-  
+
   // Hapus tugas dan kolaborasi
   mysqli_query($conn, "DELETE FROM tugas WHERE id_tugas = $id AND id_user = $id_user");
   mysqli_query($conn, "DELETE FROM kolaborasi WHERE id_tugas = $id");
-  
+
   header("Location: " . $_SERVER['PHP_SELF']);
   exit;
 }
@@ -298,8 +299,8 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
                 <div id="reminder_options" style="display: none;">
                   <select name="reminder_minutes" id="reminder_minutes">
                     <option value="">Pilih Waktu Pengingat</option>
-                    <?php while($template = mysqli_fetch_assoc($reminder_templates)): ?>
-                      <option value="<?= $template['minutes_before'] ?>"><?= $template['name'] ?></option>
+                    <?php while ($template = mysqli_fetch_assoc($reminder_templates)): ?>
+                        <option value="<?= $template['minutes_before'] ?>"><?= $template['name'] ?></option>
                     <?php endwhile; ?>
                   </select>
                 </div>
@@ -315,59 +316,59 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
 
       <!-- Dialog Edit Tugas dengan Fitur Reminder -->
       <?php if (isset($editData)): ?>
-        <div id="dialog-2" class="dialog js-dialog" data-animation="on">
-          <div class="dialog__content" role="alertdialog" aria-labelledby="dialog-title-2"
-            aria-describedby="dialog-description-2">
-            <h4 id="dialog-title-2" class="dialog__title">Perbarui Tugas</h4>
-            <form action="" method="post">
-              <div id="dialog-description-2 inputMK" class="dialog__description add-task">
-                <input type="hidden" name="id_tugas" value="<?= $editData['id_tugas'] ?>">
-                <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required value="<?= $editData['judul_tugas'] ?>">
-                <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required value="<?= $editData['matkul'] ?>">
-                <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas" required><?= $editData['desc_tugas'] ?></textarea>
-                <input type="date" id="deadline1" name="dl1" required value="<?= $editData['deadline1'] ?>">
-                <input type="time" id="deadline2" name="dl2" required value="<?= $editData['deadline2'] ?>">
-                <input type="email" name="collab_email" value="<?= $old_collab_email['collaborator'] ?? '' ?>">
+          <div id="dialog-2" class="dialog js-dialog" data-animation="on">
+            <div class="dialog__content" role="alertdialog" aria-labelledby="dialog-title-2"
+              aria-describedby="dialog-description-2">
+              <h4 id="dialog-title-2" class="dialog__title">Perbarui Tugas</h4>
+              <form action="" method="post">
+                <div id="dialog-description-2 inputMK" class="dialog__description add-task">
+                  <input type="hidden" name="id_tugas" value="<?= $editData['id_tugas'] ?>">
+                  <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required value="<?= $editData['judul_tugas'] ?>">
+                  <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required value="<?= $editData['matkul'] ?>">
+                  <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas" required><?= $editData['desc_tugas'] ?></textarea>
+                  <input type="date" id="deadline1" name="dl1" required value="<?= $editData['deadline1'] ?>">
+                  <input type="time" id="deadline2" name="dl2" required value="<?= $editData['deadline2'] ?>">
+                  <input type="email" name="collab_email" value="<?= $old_collab_email['collaborator'] ?? '' ?>">
                 
-                <!-- Bagian Reminder untuk Edit -->
-                <div class="reminder-section" style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;">
-                  <h5>Pengingat</h5>
-                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <input type="checkbox" id="reminder_enabled_edit" name="reminder_enabled" value="1" style="width: 16px; height: 16px; appearance: auto; -webkit-appearance: auto;"
-                           <?= $editData['reminder_enabled'] ? 'checked' : '' ?>>
-                    <label for="reminder_enabled_edit" style="margin-left: 8px;">Aktifkan Pengingat</label>
-                  </div>
-                  <div id="reminder_options_edit" style="<?= $editData['reminder_enabled'] ? '' : 'display: none;' ?>">
-                    <select name="reminder_minutes" id="reminder_minutes_edit">
-                      <option value="">Pilih Waktu Pengingat</option>
-                      <?php 
-                      // Reset pointer untuk template reminder
-                      mysqli_data_seek($reminder_templates, 0);
-                      while($template = mysqli_fetch_assoc($reminder_templates)): 
-                        // Hitung menit dari reminder_time jika ada
-                        $selected_minutes = 0;
-                        if ($editData['reminder_time']) {
-                          $deadline_timestamp = strtotime($editData['deadline1'] . ' ' . $editData['deadline2']);
-                          $reminder_timestamp = strtotime($editData['reminder_time']);
-                          $selected_minutes = ($deadline_timestamp - $reminder_timestamp) / 60;
-                        }
-                      ?>
-                        <option value="<?= $template['minutes_before'] ?>" 
-                                <?= $selected_minutes == $template['minutes_before'] ? 'selected' : '' ?>>
-                          <?= $template['name'] ?>
-                        </option>
-                      <?php endwhile; ?>
-                    </select>
+                  <!-- Bagian Reminder untuk Edit -->
+                  <div class="reminder-section" style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;">
+                    <h5>Pengingat</h5>
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                      <input type="checkbox" id="reminder_enabled_edit" name="reminder_enabled" value="1" style="width: 16px; height: 16px; appearance: auto; -webkit-appearance: auto;"
+                             <?= $editData['reminder_enabled'] ? 'checked' : '' ?>>
+                      <label for="reminder_enabled_edit" style="margin-left: 8px;">Aktifkan Pengingat</label>
+                    </div>
+                    <div id="reminder_options_edit" style="<?= $editData['reminder_enabled'] ? '' : 'display: none;' ?>">
+                      <select name="reminder_minutes" id="reminder_minutes_edit">
+                        <option value="">Pilih Waktu Pengingat</option>
+                        <?php
+                        // Reset pointer untuk template reminder
+                        mysqli_data_seek($reminder_templates, 0);
+                        while ($template = mysqli_fetch_assoc($reminder_templates)):
+                          // Hitung menit dari reminder_time jika ada
+                          $selected_minutes = 0;
+                          if ($editData['reminder_time']) {
+                            $deadline_timestamp = strtotime($editData['deadline1'] . ' ' . $editData['deadline2']);
+                            $reminder_timestamp = strtotime($editData['reminder_time']);
+                            $selected_minutes = ($deadline_timestamp - $reminder_timestamp) / 60;
+                          }
+                          ?>
+                            <option value="<?= $template['minutes_before'] ?>" 
+                                    <?= $selected_minutes == $template['minutes_before'] ? 'selected' : '' ?>>
+                              <?= $template['name'] ?>
+                            </option>
+                        <?php endwhile; ?>
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <footer class="dialog__footer">
-                <button class="cd-btn cd-btn--subtle js-dialog__close">Batalkan</button>
-                <button type="submit" class="cd-btn cd-btn--accent" name="update">Perbarui</button>
-              </footer>
-            </form>
+                <footer class="dialog__footer">
+                  <button class="cd-btn cd-btn--subtle js-dialog__close">Batalkan</button>
+                  <button type="submit" class="cd-btn cd-btn--accent" name="update">Perbarui</button>
+                </footer>
+              </form>
+            </div>
           </div>
-        </div>
       <?php endif; ?>
 
       <div class="task-lists">
@@ -387,13 +388,13 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
                   $kolaboratorList[] = $kolab['collaborator'];
                 }
                 $kolaboratorStr = implode(', ', $kolaboratorList);
-                
+
                 // Format reminder info
                 $reminderInfo = "Tidak ada";
                 if ($row['reminder_enabled'] && $row['reminder_time']) {
                   $reminderInfo = "Aktif - " . date('d/m/Y H:i', strtotime($row['reminder_time']));
                 }
-                
+
                 echo '
                 <div class="task">
                   <div>

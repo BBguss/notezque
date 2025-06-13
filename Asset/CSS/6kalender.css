@@ -1,15 +1,9 @@
 /* ==========================================================================
-   Professional Calendar Application Styles
-   Project: NotezQue Calendar
-   Author: nouvem-88
-   Last Updated: 2025-06-03
+   Professional Calendar Application Styles - MM/DD/YY Format Compatible
    ========================================================================== */
 
-/* ==========================================================================
-   CSS Variables & Modern Theme Configuration
-   ========================================================================== */
 :root {
-  /* Modern Color Palette */
+  /* Color System */
   --primary-50: #f0f9ff;
   --primary-100: #e0f2fe;
   --primary-200: #bae6fd;
@@ -21,22 +15,22 @@
   --primary-800: #075985;
   --primary-900: #0c4a6e;
 
-  /* Priority Colors */
-  --priority-high: #f44336;
-  --priority-high-hover: #d32f2f;
-  --priority-medium: #ff9800;
-  --priority-medium-hover: #f57c00;
-  --priority-low: #4caf50;
-  --priority-low-hover: #388e3c;
-
   /* Semantic Colors */
   --success-color: #10b981;
+  --success-bg: #d1fae5;
+  --success-text: #065f46;
   --warning-color: #f59e0b;
-  --error-color: hsl(0, 89%, 48%);
-  --error-hover: rgb(174, 6, 6);
+  --warning-bg: #fef3c7;
+  --warning-text: #92400e;
+  --error-color: #ef4444;
+  --error-bg: #fee2e2;
+  --error-text: #991b1b;
+  --error-hover: #dc2626;
   --info-color: #3b82f6;
+  --info-bg: #dbeafe;
+  --info-text: #1e40af;
 
-  /* Neutral Palette */
+  /* Neutral Colors */
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
   --gray-200: #e5e7eb;
@@ -51,21 +45,22 @@
   /* Text Colors */
   --text-primary: var(--gray-900);
   --text-secondary: var(--gray-600);
-  --text-muted: var(--gray-500);
+  --text-tertiary: var(--gray-500);
   --text-inverse: #ffffff;
 
   /* Background Colors */
   --bg-primary: #ffffff;
   --bg-secondary: var(--gray-50);
-  --bg-muted: var(--gray-100);
-  --bg-elevated: #ffffff;
+  --bg-tertiary: var(--gray-100);
+  --surface-primary: #ffffff;
+  --surface-secondary: var(--gray-50);
 
   /* Border Colors */
+  --border-color: var(--gray-200);
   --border-light: var(--gray-200);
   --border-medium: var(--gray-300);
-  --border-strong: var(--gray-400);
 
-  /* Spacing Scale */
+  /* Spacing */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -75,7 +70,6 @@
   --space-8: 2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
-  --space-16: 4rem;
 
   /* Border Radius */
   --radius-sm: 0.375rem;
@@ -90,48 +84,18 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-
-  /* Typography */
-  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  --font-family-display: 'Cal Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* Line Heights */
-  --leading-tight: 1.25;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.625;
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Z-Index Scale */
+  /* Z-Index */
   --z-dropdown: 1000;
-  --z-sticky: 1020;
-  --z-fixed: 1030;
-  --z-modal-backdrop: 1040;
   --z-modal: 1050;
-  --z-popover: 1060;
-  --z-tooltip: 1070;
+  --z-toast: 1070;
 }
 
-/* ==========================================================================
-       Modern Reset & Base Styles
-       ========================================================================== */
+/* Reset & Base */
 *,
 *::before,
 *::after {
@@ -141,33 +105,20 @@
 }
 
 html {
-  line-height: var(--leading-normal);
-  -webkit-text-size-adjust: 100%;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1rem;
   color: var(--text-primary);
+  background-color: var(--bg-secondary);
   min-height: 100vh;
 }
 
-/* Focus Management */
-*:focus {
-  outline: 2px solid var(--primary-500);
-  outline-offset: 2px;
-}
-
-*:focus:not(:focus-visible) {
-  outline: none;
-}
-
-/* ==========================================================================
-       Layout System
-       ========================================================================== */
+/* Layout */
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -178,56 +129,24 @@ main#main {
   flex: 1;
   padding: var(--space-6);
   display: grid;
-  grid-template-columns: 1fr minmax(320px, 380px);
+  grid-template-columns: 1fr 400px;
   gap: var(--space-6);
   max-width: 1400px;
   margin: 0 auto;
+  width: 100%;
 }
 
-/* Responsive Layout */
-@media (max-width: 1200px) {
-  body{
-    bottom: 0;
-    height: max-content;
-  }
-
-  main#main {
-    grid-template-columns: 1fr minmax(300px, 350px);
-    gap: var(--space-5);
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 968px) {
-  main#main {
-    grid-template-columns: 1fr;
-    padding: var(--space-4);
-    gap: var(--space-4);
-  }
-}
-
-@media (max-width: 480px) {
-  main#main {
-    padding: var(--space-3);
-    gap: var(--space-3);
-  }
-}
-
-/* ==========================================================================
-       Calendar Component
-       ========================================================================== */
+/* Calendar Container */
 .main-container {
-  background: var(--bg-elevated);
+  background: var(--surface-primary);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   padding: var(--space-8);
   border: 1px solid var(--border-light);
 }
 
-/* Calendar Header */
+/* Calendar Header - Updated for MM/DD/YY format */
 .jadwal {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -237,13 +156,13 @@ main#main {
 }
 
 .bln-thn {
-  font-family: var(--font-family-display);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
   text-align: center;
   min-width: 200px;
-  letter-spacing: -0.025em;
+  /* Support untuk format "Januari 24" (short year format) */
+  font-variant-numeric: tabular-nums;
 }
 
 .prev,
@@ -257,7 +176,7 @@ main#main {
   cursor: pointer;
   transition: all var(--transition-fast);
   color: var(--text-secondary);
-  background: var(--bg-muted);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-light);
 }
 
@@ -269,30 +188,26 @@ main#main {
   transform: translateY(-1px);
 }
 
-.prev:active,
-.next:active {
-  transform: translateY(0);
-}
-
 /* Calendar Grid */
 .weeks {
   width: 100%;
 }
 
 .hari {
-  display: inline-flex;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
 }
 
 .hari>div {
   text-align: center;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
   padding: var(--space-3) var(--space-2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  width: 100%;
 }
 
 .tglBln {
@@ -304,7 +219,7 @@ main#main {
 .tgl {
   position: relative;
   aspect-ratio: 1;
-  background: var(--bg-muted);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-md);
   padding: var(--space-2);
   cursor: pointer;
@@ -315,11 +230,15 @@ main#main {
   align-items: center;
   justify-content: flex-start;
   gap: var(--space-1);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--text-primary);
-  min-height: 50px;
-  width: 100%;
+  min-height: 60px;
+}
+
+/* Data attribute for MM/DD/YY date format */
+.tgl[data-tanggal] {
+  /* Date cells with MM/DD/YY format data attributes */
 }
 
 .tgl:hover {
@@ -332,18 +251,13 @@ main#main {
   background: var(--primary-500) !important;
   color: var(--text-inverse) !important;
   border-color: var(--primary-600) !important;
-  font-weight: var(--font-weight-bold);
+  font-weight: 700;
   box-shadow: var(--shadow-md);
-}
-
-.tglSkrg:hover {
-  background: var(--primary-600) !important;
-  transform: translateY(-1px);
 }
 
 .tglSblm,
 .tglStlh {
-  color: var(--text-muted);
+  color: var(--text-tertiary);
   background: var(--bg-secondary);
   cursor: default;
   opacity: 0.5;
@@ -356,44 +270,45 @@ main#main {
   border-color: transparent;
 }
 
-/* Event Indicators di Calendar */
+/* Event Indicators - Updated for MM/DD/YY events */
 .acr {
   width: 90%;
-  height: 15px;
+  height: 12px;
   border-radius: var(--radius-sm);
-  margin: 1px;
+  margin: 1px 0;
   transition: all var(--transition-fast);
   overflow: hidden;
-  padding: 0 5px;
-}
-
-.acrjudul {
-  font-size: 10px;
-  overflow: hidden;
-  color: var(--text-inverse);
+  font-size: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: var(--primary-500);
 }
 
 .acr:hover {
-  transform: scale(1.2);
-  box-shadow: var(--shadow-sm);
+  transform: scale(1.05);
+  z-index: 10;
 }
 
+.acr.more-acr {
+  background-color: var(--gray-500);
+  font-weight: 600;
+}
 
-
-/* ==========================================================================
-       Events Sidebar
-       ========================================================================== */
+/* Events Sidebar */
 .side-listAcara {
-  background: var(--bg-elevated);
+  background: var(--surface-primary);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   padding: var(--space-8);
   height: fit-content;
-  max-height: 100%;
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
   position: sticky;
   top: 100px;
-  z-index: 100;
 }
 
 .side-listAcara .header {
@@ -409,88 +324,163 @@ main#main {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: 1.125rem;
+  font-weight: 600;
   color: var(--text-primary);
+  margin: 0;
+}
+
+.badge {
+  background: var(--primary-500);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  margin-left: var(--space-2);
+  display: none;
+  /* Hidden by default, shown by JS when events > 0 */
 }
 
 #btnTambahAcara {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  background-color: var(--info-color);
+  background-color: var(--primary-500);
   color: white;
   border: none;
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-md);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-sm);
+  font-weight: 500;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 #btnTambahAcara:hover {
-  background-color: var(--primary-700);
+  background-color: var(--primary-600);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
-/* Event Cards */
+/* Filter Section */
+.filter-section {
+  padding: var(--space-5);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  border: 1px solid var(--border-light);
+}
+
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.filter-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-group select {
+  padding: var(--space-3);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.clear-btn {
+  padding: var(--space-3) var(--space-4);
+  background: var(--gray-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.clear-btn:hover {
+  background: var(--gray-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Event Cards - Updated for MM/DD/YY format */
+.acara-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 .acara {
-  background: var(--primary-500);
-  color: var(--text-inverse);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  margin-bottom: var(--space-4);
   position: relative;
   transition: all var(--transition-normal);
-  border: 1px solid var(--primary-600);
-  box-shadow: var(--shadow-sm);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
 .acara:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-}
-
-.acara.selected {
-  background: var(--primary-50) !important;
-  border-color: var(--primary-300) !important;
-  box-shadow: var(--shadow-md);
-}
-
-.acara:last-child {
-  margin-bottom: 0;
+  border-color: var(--primary-200);
 }
 
 .acara h4 {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: 1.125rem;
+  font-weight: 600;
   margin-bottom: var(--space-2);
-  line-height: var(--leading-tight);
   color: var(--text-primary);
+  line-height: 1.25;
 }
 
 .event-desc {
-  font-size: var(--font-size-sm);
+  font-size: 0.875rem;
   color: var(--text-secondary);
   margin-bottom: var(--space-3);
-  line-height: var(--leading-normal);
-  color: inherit;
+  line-height: 1.5;
 }
 
+/* Event date - Updated to show MM/DD/YY format with month names */
 .event-date {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
   margin-bottom: var(--space-2);
-  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Action buttons dalam event card */
 .acara-actions {
   position: absolute;
   top: var(--space-3);
@@ -515,22 +505,11 @@ main#main {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-size: var(--font-size-xs);
-}
-
-.select-btn {
-  background: var(--gray-500);
   color: white;
-}
-
-.select-btn:hover {
-  background: var(--gray-600);
-  transform: scale(1.1);
 }
 
 .detail-btn {
   background: var(--info-color);
-  color: white;
 }
 
 .detail-btn:hover {
@@ -538,349 +517,110 @@ main#main {
   transform: scale(1.1);
 }
 
-/* Delete icon dalam event card */
-.hapus {
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-12);
-  opacity: 0.7;
-  transition: all var(--transition-fast);
-  cursor: pointer;
-  color: var(--error-color);
+.edit-btn {
+  background: var(--warning-color);
 }
 
-.hapus:hover {
-  opacity: 1;
-  color: var(--error-hover);
+.edit-btn:hover {
+  background: #e0a800;
   transform: scale(1.1);
 }
 
-/* Priority Badge */
-.prioritas-badge {
-  display: inline-block;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: white;
+.hapus-btn {
+  background: var(--error-color);
 }
 
-/* No events message */
+.hapus-btn:hover {
+  background: var(--error-hover);
+  transform: scale(1.1);
+}
+
+/* Date specific view styles - untuk aktivitas pada tanggal tertentu */
+.judul-aktivitas-tanggal {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  background: var(--primary-50);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--primary-500);
+}
+
+.btn-secondary {
+  background: var(--gray-200);
+  color: var(--text-secondary);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.btn-secondary:hover {
+  background: var(--gray-300);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: var(--primary-500);
+  color: white;
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.btn-primary:hover {
+  background: var(--primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* No Events */
 .no-events {
   text-align: center;
   padding: var(--space-8);
-  color: var(--text-muted);
-  font-style: italic;
-  font-size: var(--font-size-base);
+  color: var(--text-tertiary);
 }
 
-/* ==========================================================================
-   Side Detail Modal Styles - Enhanced
-   ========================================================================== */
-.side-modal {
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 400px;
-  max-width: 90vw;
-  height: 100vh;
-  background-color: var(--bg-elevated);
-  box-shadow: -3px 0 25px rgba(0, 0, 0, 0.15);
-  z-index: var(--z-modal);
-  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid var(--border-light);
-}
-
-.side-modal.open {
-  right: 0;
-}
-
-.side-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-6) var(--space-6) var(--space-4) var(--space-6);
-  border-bottom: 1px solid var(--border-light);
-  background: var(--bg-secondary);
-}
-
-.side-modal-header h3 {
-  margin: 0;
-  font-size: var(--font-size-xl);
-  color: var(--text-primary);
-  font-weight: var(--font-weight-semibold);
-  font-family: var(--font-family-display);
-}
-
-.side-modal-close {
-  background: var(--bg-muted);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-full);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  color: var(--text-secondary);
-}
-
-.side-modal-close:hover {
-  background: var(--error-color);
-  border-color: var(--error-color);
-  color: white;
-  transform: scale(1.05);
-}
-
-.side-modal-body {
-  padding: var(--space-6);
-  overflow-y: auto;
-  flex-grow: 1;
-}
-
-.side-modal-body .detail-item {
-  margin-bottom: var(--space-5);
-}
-
-.side-modal-body .detail-item:last-child {
-  margin-bottom: 0;
-}
-
-.side-modal-body .detail-item strong {
-  display: block;
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-2);
-  font-size: var(--font-size-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.side-modal-body .detail-item p {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: var(--font-size-base);
-  line-height: var(--leading-normal);
-  background: var(--bg-muted);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
-}
-
-.prioritas-badge-side {
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-full);
-  color: white;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  display: inline-block;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.side-modal-footer {
-  padding: var(--space-5) var(--space-6);
-  border-top: 1px solid var(--border-light);
-  display: flex;
-  gap: var(--space-3);
-  background: var(--bg-secondary);
-}
-
-.side-modal-footer button {
-  padding: var(--space-3) var(--space-5);
-  border: none;
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  transition: all var(--transition-fast);
-  flex: 1;
-  justify-content: center;
-}
-
-.btn-edit-side {
-  background-color: var(--warning-color);
-  color: white;
-}
-
-.btn-edit-side:hover {
-  background-color: #e0a800;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-hapus-side {
-  background-color: var(--error-color);
-  color: white;
-}
-
-.btn-hapus-side:hover {
-  background-color: var(--error-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Overlay untuk background ketika modal terbuka */
-body.side-modal-open-overlay::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: calc(var(--z-modal) - 10);
-  transition: opacity var(--transition-normal);
-}
-
-/* ==========================================================================
-   Responsive Design untuk Side Modal
-   ========================================================================== */
-@media (max-width: 768px) {
-  .side-modal {
-    width: 100vw;
-    right: -100vw;
-  }
-  
-  .side-modal-header,
-  .side-modal-body,
-  .side-modal-footer {
-    padding-left: var(--space-4);
-    padding-right: var(--space-4);
-  }
-}
-
-@media (max-width: 480px) {
-  .side-modal-footer {
-    flex-direction: column;
-  }
-  
-  .side-modal-footer button {
-    width: 100%;
-  }
-
-  .tgl {
-    padding: var(--space-2);
-    font-size: var(--font-size-xs);
-    width: 70%;
-  }
-}
-
-/* ==========================================================================
-   Enhanced Animation & Transitions
-   ========================================================================== */
-@keyframes slideInFromRight {
-  from {
-    right: -100%;
-    opacity: 0;
-  }
-  to {
-    right: 0;
-    opacity: 1;
-  }
-}
-
-@keyframes slideOutToRight {
-  from {
-    right: 0;
-    opacity: 1;
-  }
-  to {
-    right: -100%;
-    opacity: 0;
-  }
-}
-
-.side-modal.open {
-  animation: slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Smooth transitions untuk semua interactive elements */
-.acara,
-.action-btn,
-.action-button,
-.btn-edit-side,
-.btn-hapus-side {
-  transition: all var(--transition-fast);
-}
-
-/* Enhanced focus states */
-.action-btn:focus,
-.action-button:focus,
-.btn-edit-side:focus,
-.btn-hapus-side:focus {
-  outline: 2px solid var(--primary-500);
-  outline-offset: 2px;
-}
-
-/* ==========================================================================
-   Activity Actions Styles (di atas list acara)
-   ========================================================================== */
-.activity-actions {
-  display: none;
-  gap: var(--space-3);
+.no-events iconify-icon {
+  opacity: 0.3;
   margin-bottom: var(--space-4);
-  padding: var(--space-3);
-  background: var(--bg-muted);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
 }
 
-.action-button {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  flex: 1;
-  justify-content: center;
+.no-events h4 {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
-.edit-button {
-  background: var(--warning-color);
-  color: white;
+.no-events p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
 }
 
-.edit-button:hover {
-  background: #e0a800;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.delete-button {
-  background: var(--error-color);
-  color: white;
-}
-
-.delete-button:hover {
-  background: var(--error-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ==========================================================================
-   Modal Utama (Tambah/Edit Acara) Styles
-   ========================================================================== */
+/* Modal Styles */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: none;
   justify-content: center;
   align-items: center;
@@ -893,30 +633,20 @@ body.side-modal-open-overlay::before {
 }
 
 .form {
-  background: var(--bg-elevated);
+  background: var(--surface-primary);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-2xl);
+  box-shadow: var(--shadow-xl);
   padding: var(--space-8);
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  position: relative;
-  transform: scale(0.9);
-  opacity: 0;
-  transition: all var(--transition-normal);
-}
-
-.modal-active .form {
-  transform: scale(1);
-  opacity: 1;
 }
 
 .modalTitle,
 .update-text {
-  font-family: var(--font-family-display);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-6);
   text-align: center;
@@ -935,11 +665,9 @@ body.side-modal-open-overlay::before {
 }
 
 .input-grup label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  font-size: 0.875rem;
+  font-weight: 600;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .input-grup input,
@@ -947,116 +675,25 @@ body.side-modal-open-overlay::before {
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
-  font-size: var(--font-size-base);
-  font-family: var(--font-family-base);
+  font-size: 1rem;
   transition: all var(--transition-fast);
   background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .input-grup input:focus,
 .input-grup textarea:focus {
   outline: none;
   border-color: var(--primary-500);
-  box-shadow: 0 0 0 3px var(--primary-100);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
 }
 
-.input-grup textarea {
-  min-height: 80px;
-  resize: vertical;
-  font-family: inherit;
+.form-help {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: var(--space-1);
 }
 
-/* Tombol Grup (Tenggat & Prioritas) */
-.tombol-grup {
-  display: flex;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
-}
-
-.tombol-grup button {
-  flex: 1;
-  padding: var(--space-2) var(--space-3);
-  border: 2px solid var(--border-medium);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.tombol-grup button:hover {
-  border-color: var(--primary-300);
-  color: var(--primary-600);
-}
-
-.tombol-grup button.aktif {
-  background: var(--primary-500);
-  border-color: var(--primary-500);
-  color: white;
-}
-
-/* Custom Input Container */
-.custom-input-container {
-  display: none;
-  gap: var(--space-4);
-  margin-top: var(--space-3);
-  padding: var(--space-4);
-  background: var(--bg-muted);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
-}
-
-.custom-date-group,
-.custom-time-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.custom-date-group label,
-.custom-time-group label {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Tombol Prioritas Khusus */
-.rendah {
-  border-color: var(--priority-low) !important;
-  color: var(--priority-low) !important;
-}
-
-.rendah.aktif {
-  background: var(--priority-low) !important;
-  color: white !important;
-}
-
-.sedang {
-  border-color: var(--priority-medium) !important;
-  color: var(--priority-medium) !important;
-}
-
-.sedang.aktif {
-  background: var(--priority-medium) !important;
-  color: white !important;
-}
-
-.tinggi {
-  border-color: var(--priority-high) !important;
-  color: var(--priority-high) !important;
-}
-
-.tinggi.aktif {
-  background: var(--priority-high) !important;
-  color: white !important;
-}
-
-/* Action Buttons di Modal */
 .btn {
   display: flex;
   gap: var(--space-3);
@@ -1068,10 +705,14 @@ body.side-modal-open-overlay::before {
   padding: var(--space-3) var(--space-5);
   border: none;
   border-radius: var(--radius-lg);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
 }
 
 .btl {
@@ -1095,40 +736,486 @@ body.side-modal-open-overlay::before {
   box-shadow: var(--shadow-md);
 }
 
-/* ==========================================================================
-   Responsive Design untuk Modal
-   ========================================================================== */
-@media (max-width: 768px) {
-  .form {
-    width: 95%;
-    padding: var(--space-6);
-    max-height: 95vh;
+/* Side Modal */
+.side-modal {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  background-color: var(--surface-primary);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-modal);
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.side-modal.open {
+  right: 0;
+}
+
+.side-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+}
+
+.side-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.side-modal-close {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+}
+
+.side-modal-close:hover {
+  background: var(--error-color);
+  border-color: var(--error-color);
+  color: white;
+}
+
+.side-modal-body {
+  padding: var(--space-6);
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.detail-item {
+  margin-bottom: var(--space-5);
+}
+
+.detail-item strong {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.detail-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  font-variant-numeric: tabular-nums;
+  /* For better date number display */
+}
+
+.side-modal-footer {
+  padding: var(--space-6);
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  gap: var(--space-3);
+  background: var(--bg-secondary);
+}
+
+.btn-edit-side,
+.btn-hapus-side {
+  flex: 1;
+  padding: var(--space-3) var(--space-5);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  transition: all var(--transition-fast);
+}
+
+.btn-edit-side {
+  background: var(--warning-color);
+  color: white;
+}
+
+.btn-edit-side:hover {
+  background: #e0a800;
+  transform: translateY(-1px);
+}
+
+.btn-hapus-side {
+  background: var(--error-color);
+  color: white;
+}
+
+.btn-hapus-side:hover {
+  background: var(--error-hover);
+  transform: translateY(-1px);
+}
+
+/* Alert Styles */
+.alert {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: var(--surface-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-toast);
+  max-width: 400px;
+  width: calc(100% - 2rem);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-left: 4px solid;
+  transform: translateX(100%);
+  transition: all var(--transition-normal);
+  opacity: 0;
+}
+
+.alert.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.alert-success {
+  border-left-color: var(--success-color);
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.alert-error {
+  border-left-color: var(--error-color);
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.alert i {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+}
+
+.alert span {
+  flex: 1;
+  font-weight: 500;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+}
+
+.alert-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Reminder Section Styles */
+.reminder-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.reminder-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.reminder-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-500);
+}
+
+.reminder-toggle label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.reminder-options {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+.reminder-options.active {
+  display: flex;
+}
+
+.reminder-options label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.reminder-select {
+  padding: var(--space-3);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.reminder-select:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.custom-reminder {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+}
+
+.custom-reminder.active {
+  display: flex;
+}
+
+.custom-input {
+  width: 80px;
+  padding: var(--space-2);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.custom-reminder span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  main#main {
+    grid-template-columns: 1fr 350px;
+    gap: var(--space-5);
   }
-  
-  .custom-input-container {
+}
+
+@media (max-width: 968px) {
+  main#main {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .side-modal {
+    width: 100vw;
+    right: -100vw;
+  }
+}
+
+@media (max-width: 768px) {
+  main#main {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .main-container {
+    padding: var(--space-6);
+  }
+
+  .tgl {
+    min-height: 50px;
+    font-size: 0.75rem;
+  }
+
+  .side-listAcara {
+    padding: var(--space-6);
+  }
+
+  .filter-controls {
     flex-direction: column;
   }
-  
+
   .btn {
     flex-direction: column;
   }
-  
-  .btn button {
-    width: 100%;
+
+  .alert {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: var(--space-4);
+    min-width: auto;
+    max-width: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  /* MM/DD/YY format display adjustments for mobile */
+  .event-date {
+    font-size: 0.7rem;
+  }
+
+  .judul-aktivitas-tanggal {
+    font-size: 1rem;
+    padding: var(--space-3);
   }
 }
 
 @media (max-width: 480px) {
-  .form {
-    padding: var(--space-4);
-  }
-  
-  .tombol-grup {
+  .side-modal-footer {
     flex-direction: column;
   }
-  
-  .modalTitle,
-  .update-text {
-    font-size: var(--font-size-xl);
+
+  .tgl {
+    min-height: 45px;
+    padding: var(--space-1);
+  }
+
+  .acr {
+    height: 10px;
+    font-size: 7px;
+  }
+
+  /* Better MM/DD/YY date display on very small screens */
+  .bln-thn {
+    font-size: 1.25rem;
+    min-width: 180px;
+  }
+
+  .event-date {
+    font-size: 0.65rem;
   }
 }
+
+/* Focus States */
+.tgl:focus,
+.action-btn:focus,
+button:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.tgl:focus:not(:focus-visible),
+.action-btn:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Loading Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Enhanced button states */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-btn:disabled,
+.hapus-btn:disabled,
+.btn-hapus-side:disabled {
+  pointer-events: none;
+  transform: none !important;
+}
+
+.action-btn:disabled:hover,
+.hapus-btn:disabled:hover,
+.btn-hapus-side:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* MM/DD/YY Specific Styles */
+.date-display-mmddyy {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* Format tanggal MM/DD/YY dalam berbagai komponen */
+.calendar-date-mmddyy,
+.event-date-mmddyy,
+.detail-date-mmddyy {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Highlight tanggal hari ini dengan format MM/DD/YY */
+.tglSkrg .date-display-mmddyy {
+  font-weight: 700;
+}
+
+/* Year display dalam format pendek (2 digit) */
+.year-short {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbar Styles */
+.side-listAcara::-webkit-scrollbar,
+.acara-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.side-listAcara::-webkit-scrollbar-track,
+.acara-container::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+.side-listAcara::-webkit-scrollbar-thumb,
+.acara-container::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: var(--radius-sm);
+}
+
+.side-listAcara::-webkit-scrollbar-thumb:hover,
+.acara-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary); }

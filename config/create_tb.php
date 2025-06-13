@@ -100,5 +100,41 @@ $sql_konten_statis = "CREATE TABLE IF NOT EXISTS konten_statis (
 )";
 echo $conn->query($sql_konten_statis) ? "Tabel konten_statis berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
 
+// Tabel notifications
+$sql_notifications = "CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    reference_id INT NULL,
+    scheduled_time DATETIME NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_user) REFERENCES users(id_user)
+)";
+echo $conn->query($sql_notifications) ? "Tabel notifications berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
+
+// Tabel reminder_templates
+$sql_reminder_templates = "CREATE TABLE IF NOT EXISTS reminder_templates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    minutes_before INT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+echo $conn->query($sql_reminder_templates) ? "Tabel reminder_templates berhasil dibuat.<br>" : "Error: " . $conn->error . "<br>";
+
+// Insert data default untuk reminder_templates
+$insert_templates = "INSERT IGNORE INTO reminder_templates (id, name, minutes_before, is_active) VALUES 
+    (1, '5 menit sebelum', 5, 1),
+    (2, '10 menit sebelum', 10, 1),
+    (3, '30 menit sebelum', 30, 1),
+    (4, '1 jam sebelum', 60, 1),
+    (5, '1 hari sebelum', 1440, 1),
+    (6, '1 minggu sebelum', 10080, 1)";
+echo $conn->query($insert_templates) ? "Data reminder_templates berhasil diinsert.<br>" : "Error: " . $conn->error . "<br>";
+
+
 $conn->close();
 ?>

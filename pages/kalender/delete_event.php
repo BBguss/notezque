@@ -1,44 +1,46 @@
 <?php
+// filepath: c:\xampp\htdocs\Kelompok_3\pages\kalender\delete_event.php
 session_start();
-include '../../config/koneksi.php';
+require_once '../../config/database.php';
 
-// Cek apakah user sudah login
-if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] != true) {
-    echo '{"success":false,"message":"Harap login terlebih dahulu"}';
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+try {
+    $id_acara = $_POST['id_acara'] ?? '';
 
-if (empty($data['id'])) {
-    echo '{"success":false,"message":"ID acara tidak ada"}';
-    exit;
+    // Validasi input
+    if (empty($id_acara)) {
+        throw new Exception('ID acara tidak valid');
+    }
+
+    // Cek apakah acara exists
+    $stmt = $pdo->prepare("SELECT id_acara, judul_acara FROM acara WHERE id_acara = ?");
+    $stmt->execute([$id_acara]);
+    $acara = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$acara) {
+        throw new Exception('Acara tidak ditemukan');
+    }
+
+    // Hapus dari database
+    $stmt = $pdo->prepare("DELETE FROM acara WHERE id_acara = ?");
+    $result = $stmt->execute([$id_acara]);
+
+    if ($result) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Acara "' . $acara['judul_acara'] . '" berhasil dihapus'
+        ]);
+    } else {
+        throw new Exception('Gagal menghapus acara');
+    }
+
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
-
-$id = $data['id'];
-$user_id = $_SESSION['id_user'];
-
-// hapus notifikasi acara
-$hapus_notifikasi = $conn->prepare("DELETE FROM notifications WHERE type = 'acara' AND reference_id = ?");
-$hapus_notifikasi->bind_param("i", $id);
-$hapus_notifikasi->execute();
-$hapus_notifikasi->close();
-
-if ($_SESSION['username'] == 'admin') {
-    $sql = "DELETE FROM kalender_acara WHERE id_acara = $id";
-}
-else {
-    $sql = "DELETE FROM kalender_acara WHERE id_acara = $id AND id_user = $user_id";
-}
-
-$hasil = mysqli_query($conn, $sql);
-
-if ($hasil) {
-    echo '{"Sukses"}';
-} else {
-    echo '{"Gagal menghapus acara"}';
-}
-
-// Tutup koneksi
-mysqli_close($conn);
 ?>
