@@ -58,3 +58,4 @@
         // Reset form
         document.getElementById('form').reset();
     }
+
