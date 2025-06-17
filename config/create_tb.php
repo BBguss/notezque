@@ -109,7 +109,9 @@ $sql_notifications = "CREATE TABLE IF NOT EXISTS notifications (
     type VARCHAR(50) NOT NULL,
     reference_id INT NULL,
     scheduled_time DATETIME NOT NULL,
+    is_sent BOOLEAN DEFAULT FALSE,
     is_read BOOLEAN DEFAULT FALSE,
+    sent_at DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user)
 )";

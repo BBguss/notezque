@@ -251,7 +251,6 @@ function tambahIndikatorAktivitas(kotakHari, tanggalMMDDYY) {
     for (var i = 0; i < Math.min(aktivitasHariIni.length, maksIndikator); i++) {
         var indikator = document.createElement('div');
         indikator.className = 'acr';
-        indikator.style.backgroundColor = '#0ea5e9';
         
         var judul = aktivitasHariIni[i].judul_acara;
         var judulPendek = judul.length > 10 ? judul.substring(0, 10) + '...' : judul;

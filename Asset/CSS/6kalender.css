@@ -248,7 +248,7 @@ main#main {
 }
 
 .tglSkrg {
-  background: var(--primary-500) !important;
+  background: var(--primary-200) !important;
   color: var(--text-inverse) !important;
   border-color: var(--primary-600) !important;
   font-weight: 700;
@@ -285,7 +285,7 @@ main#main {
   padding: 0 4px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background-color: var(--primary-500);
+  background-color: var(--info-color);
 }
 
 .acr:hover {

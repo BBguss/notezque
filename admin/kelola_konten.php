@@ -165,7 +165,7 @@ $konten_dengan_gambar = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM konte
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
+                        <a href="statistik.php" class="sidebar-link">
                             <i class="fas fa-chart-bar sidebar-icon"></i>
                             Analitik
                         </a>

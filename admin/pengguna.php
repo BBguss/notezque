@@ -93,13 +93,13 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
         <aside class="admin-sidebar">
             <nav>
                 <ul class="sidebar-menu">
-                    <li class="sidebar-item active">
+                    <li class="sidebar-item">
                         <a href="admin_dashboard.php" class="sidebar-link">
                             <i class="fas fa-tachometer-alt sidebar-icon"></i>
                             Dashboard
                         </a>
                     </li>
-                    <li class="sidebar-item">
+                    <li class="sidebar-item active">
                         <a href="pengguna.php" class="sidebar-link">
                             <i class="fas fa-users sidebar-icon"></i>
                             Pengguna
@@ -112,7 +112,7 @@ $pengguna_baru = mysqli_fetch_assoc($pengguna_baru)['count'];
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
+                        <a href="statistik.php" class="sidebar-link">
                             <i class="fas fa-chart-bar sidebar-icon"></i>
                             Analitik
                         </a>
