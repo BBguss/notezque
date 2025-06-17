@@ -13,8 +13,4 @@ $stmt->bind_param("ii", $notificationId, $id_user);
 $stmt->execute();
 
 echo json_encode(['success' => $stmt->affected_rows > 0]);
-<<<<<<< HEAD
 ?>
-=======
-?>
->>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847

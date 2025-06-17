@@ -11,8 +11,4 @@ $stmt->bind_param("i", $id_user);
 $stmt->execute();
 
 echo json_encode(['success' => true]);
-<<<<<<< HEAD
 ?>
-=======
-?>
->>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847
