@@ -22,6 +22,8 @@ body {
     color: var(--text-color);
 }
 
+
+
 /* ===================== Main Layout ===================== */
 main {
     display: flex;
