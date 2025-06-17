@@ -1,7 +1,11 @@
 <?php
 include '../../config/koneksi.php';
 include '../../config/session.php';
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847
 // Dapatkan parameter bulan dan tahun
 $bulan = isset($_GET['bulan']) ? (int) $_GET['bulan'] : date('n');
 $tahun = isset($_GET['tahun']) ? (int) $_GET['tahun'] : date('Y');
@@ -13,7 +17,11 @@ if ($admin == 'admin') {
     $sql = "SELECT DATE(waktu_acara) as tanggal, judul_acara as judul, desc_acara as deskripsi, DATE_FORMAT(waktu_acara, '%H:%i') as jam
         FROM kalender_acara
         WHERE MONTH(waktu_acara) = $bulan AND YEAR(waktu_acara) = $tahun
+<<<<<<< HEAD
         ORDER BY waktu_acara";
+=======
+        ORDER BY waktu_acara"; 
+>>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847
 } else {
     $sql = "SELECT id_user, DATE(waktu_acara) as tanggal, judul_acara as judul, desc_acara as deskripsi, DATE_FORMAT(waktu_acara, '%H:%i') as jam
         FROM kalender_acara
@@ -35,4 +43,8 @@ if ($hasil->num_rows > 0) {
 }
 
 $conn->close();
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847

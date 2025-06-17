@@ -425,4 +425,8 @@ function markAllNotificationsRead() {
     .catch((error) => {
       console.error("Error:", error);
     });
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847

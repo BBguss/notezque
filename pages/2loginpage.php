@@ -8,64 +8,45 @@ if (isset($_POST['login'])) {
     $userormail = trim($_POST['userormail']);
     $password = $_POST['password'];
 
-    // Validasi input kosong
-    if (empty($userormail) || empty($password)) {
-        $login_message = "Harap isi semua field!";
-    } else {
-        // Query ambil user berdasarkan username atau email (gunakan prepared statement untuk keamanan)
-        $sql = "SELECT * FROM users WHERE username=? OR email=?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $userormail, $userormail);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    // Query ambil user berdasarkan username atau email
+    $sql = "SELECT * FROM users WHERE username='$userormail' OR email='$userormail'";
+    $result = $conn->query($sql);
 
-        if ($result->num_rows > 0) {
-            $data = $result->fetch_assoc();
+// verifikasi login pengguna
+    if ($result->num_rows > 0) {
+        $data = $result->fetch_assoc();
 
-            // Cocokkan password
-            if (password_verify($password, $data['password'])) {
-                // Set session data
-                $_SESSION["id_user"] = $data["id_user"];
-                $_SESSION["username"] = $data["username"];
-                $_SESSION["email"] = $data["email"];
-                $_SESSION["is_login"] = true;
-                $_SESSION["aktivitas"] = time();
+        // Cocokkan password
+        if (password_verify($password, $data['password'])) {
+            $_SESSION ["id_user"] = $data ["id_user"];
+            $_SESSION ["username"] = $data["username"];
+            $_SESSION["email"] = $data["email"];
+            $_SESSION ["is_login"] = true;
+            $_SESSION["aktivitas"] = time();
 
-                // Logika redirect berdasarkan role/username
-                if ($data['username'] === 'admin' || $data['role'] === 'admin') {
-                    // Redirect ke halaman admin
-                    header("Location: /Kelompok_3/admin/admin_dashboard.php");
-                    exit();
-                } else {
-                    // Set welcome message untuk user biasa
-                    $_SESSION['welcome_message'] = "Selamat datang, " . $data['username'] . "!";
-                    // Redirect ke dashboard user
-                    header("Location: dashboard/5Dashboard.php");
-                    exit();
-                }
-            } else {
-                $login_message = "Password salah!";
-            }
+            if ($_SESSION['username'] == 'admin') {
+                header("location: /Kelompok_3/admin/admin_dashboard.php");
+            } else
+             $_SESSION['welcome_message'] = "Selamat datang, " . $data['username'] . "!";
+            header("Location: dashboard/5Dashboard.php");
+            exit();
         } else {
-            $login_message = "Akun tidak ditemukan!";
+            $login_message = "Password salah!";
         }
-        
-        // Tutup prepared statement
-        $stmt->close();
+    } else {
+        $login_message = "Akun tidak ditemukan!";
     }
 }
-
-// Ambil logo
 $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHERE gambar = 'logo-notezque.svg'"));
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk - NotezQue</title>
+    <title>NotezQue</title>
     <link rel="icon" type="image/x-icon" href="../uploads/<?= $logo['gambar'] ?>">
     <link rel="stylesheet" href="../asset/css/2login,regist,forgotpass.css">
     <link rel="stylesheet" href="../asset/font/Font.css">
@@ -77,36 +58,25 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
 
 <body>
     <section>
+        
         <form action="" method="POST">
             <?php if ($login_message): ?>
-                <div class="login_message">
-                    <p><?= htmlspecialchars($login_message) ?></p>
-                </div>
+                <p class="login_message"><?= $login_message ?></p>
             <?php endif; ?>
-            
             <h1>Masuk</h1>
-            
             <div class="inputbox">
-                <input type="text" name="userormail" value="<?= isset($_POST['userormail']) ? htmlspecialchars($_POST['userormail']) : '' ?>" required>
+                <input type="text" name="userormail" required>
                 <label for="">Masukkan Email atau Username</label>
             </div>
-            
             <div class="inputbox">
                 <input type="password" name="password" required>
                 <label for="">Sandi</label>
             </div>
-            
             <div class="forget">
-                <label>
-                    <input type="checkbox" name="remember_me"> Ingatkan saya
-                </label>
-                <span>
-                    <a href="4forgotpass.php">Lupa password?</a>
-                </span>
+                <label><input type="checkbox"> Ingatkan saya</label>
+                <span><a href="4forgotpass.php">Lupa password?</a></span>
             </div>
-            
             <button type="submit" name="login">Masuk</button>
-            
             <div class="register">
                 <p>Saya tidak mempunyai akun <a href="3registerpage.php">Daftar</a></p>
             </div>
@@ -114,38 +84,19 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
     </section>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const loginMessage = document.querySelector('.login_message');
-            if (loginMessage) {
-                // Tampilkan pesan selama 3 detik
+    document.addEventListener("DOMContentLoaded", function () {
+        const loginMessage = document.querySelector('.login_message');
+        if (loginMessage) {
+            setTimeout(() => {
+                loginMessage.style.transition = "opacity 1.5s ease-out";
+                loginMessage.style.opacity = 0;
                 setTimeout(() => {
-                    loginMessage.style.transition = "opacity 1.5s ease-out";
-                    loginMessage.style.opacity = 0;
-                    setTimeout(() => {
-                        loginMessage.remove();
-                    }, 1500);
-                }, 3000);
-            }
-
-            // Auto-focus pada input pertama
-            const firstInput = document.querySelector('input[name="userormail"]');
-            if (firstInput) {
-                firstInput.focus();
-            }
-
-            // Prevent form resubmission on page refresh
-            if (window.history.replaceState) {
-                window.history.replaceState(null, null, window.location.href);
-            }
-        });
-
-        // Show/hide password functionality
-        function togglePassword() {
-            const passwordInput = document.querySelector('input[name="password"]');
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+                    loginMessage.remove();
+                }, 880);
+            }, 880);
         }
-    </script>
+    });
+</script>
 </body>
 
 </html>

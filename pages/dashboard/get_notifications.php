@@ -43,4 +43,8 @@ echo json_encode([
     'unread_count' => $unread_count,
     'notifications' => $notifications
 ]);
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847

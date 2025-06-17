@@ -22,6 +22,8 @@ body {
     color: var(--text-color);
 }
 
+
+
 /* ===================== Main Layout ===================== */
 main {
     display: flex;
@@ -411,6 +413,7 @@ aside {
 /* Apply animation to main content */
 main {
     animation: fadeIn 0.5s ease-out; }
+<<<<<<< HEAD
     
 /* ===================== Notification System Styles ===================== */
 
@@ -994,3 +997,5 @@ main {
     
     
     
+=======
+>>>>>>> 6c5d7d9385f78a3e3584b5690a532acf032aa847
