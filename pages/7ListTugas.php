@@ -212,20 +212,24 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
   <link rel="stylesheet" href="../Asset/attributes/Atribute1.css">
   <link rel="stylesheet" href="../Asset/attributes/Atribute2.css">
   <link rel="stylesheet" href="../Asset/attributes/Atribute3.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
 
 </head>
 
 <body>
   <header>
     <div class="topNav-db">
-      <nav>    
-      <a href="../pages/dashboard/5Dashboard.php"><img src="../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
+      <nav>
+        <a href="../pages/dashboard/5Dashboard.php"><img src="../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
         <div class="dropdown">
-          <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon></i>
+          <i class="dropdown-button" style="color: white;"><iconify-icon icon="iconamoon:profile-light" width="36"
+              height="36"></iconify-icon></i>
           <div class="dropdown-content">
             <form action="" method="post">
               <button type="submit" name="profile">Profile</button>
@@ -239,8 +243,10 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
     <aside>
       <input type="checkbox" name="" id="check">
       <label for="check">
-        <i id="tombol" style="color: white;"><iconify-icon icon="tabler:menu-2" width="32" height="32"></iconify-icon></i>
-        <i id="batal" style="color: white;"><iconify-icon icon="tabler:menu-3" width="32" height="32"></iconify-icon></i>
+        <i id="tombol" style="color: white;"><iconify-icon icon="tabler:menu-2" width="32"
+            height="32"></iconify-icon></i>
+        <i id="batal" style="color: white;"><iconify-icon icon="tabler:menu-3" width="32"
+            height="32"></iconify-icon></i>
       </label>
       <div class="sideNav-db">
         <nav>
@@ -286,21 +292,20 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
               <input type="date" id="deadline1" name="dl1" required>
               <input type="time" id="deadline2" name="dl2" required>
               <input type="email" name="collab_email" placeholder="Email Kolaborator (Opsional)">
-              
+
               <!-- Bagian Reminder -->
               <div class="reminder-section" style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;">
                 <h5>Pengingat</h5>
                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                  <input type="checkbox" id="reminder_enabled" name="reminder_enabled" 
-                  value="1" 
-                  style="width: 16px; height: 16px; appearance: auto; -webkit-appearance: auto;">
+                  <input type="checkbox" id="reminder_enabled" name="reminder_enabled" value="1"
+                    style="width: 16px; height: 16px; appearance: auto; -webkit-appearance: auto;">
                   <label for="reminder_enabled" style="margin-left: 8px;">Aktifkan Pengingat</label>
                 </div>
                 <div id="reminder_options" style="display: none;">
                   <select name="reminder_minutes" id="reminder_minutes">
                     <option value="">Pilih Waktu Pengingat</option>
                     <?php while ($template = mysqli_fetch_assoc($reminder_templates)): ?>
-                        <option value="<?= $template['minutes_before'] ?>"><?= $template['name'] ?></option>
+                      <option value="<?= $template['minutes_before'] ?>"><?= $template['name'] ?></option>
                     <?php endwhile; ?>
                   </select>
                 </div>
@@ -316,59 +321,62 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
 
       <!-- Dialog Edit Tugas dengan Fitur Reminder -->
       <?php if (isset($editData)): ?>
-          <div id="dialog-2" class="dialog js-dialog" data-animation="on">
-            <div class="dialog__content" role="alertdialog" aria-labelledby="dialog-title-2"
-              aria-describedby="dialog-description-2">
-              <h4 id="dialog-title-2" class="dialog__title">Perbarui Tugas</h4>
-              <form action="" method="post">
-                <div id="dialog-description-2 inputMK" class="dialog__description add-task">
-                  <input type="hidden" name="id_tugas" value="<?= $editData['id_tugas'] ?>">
-                  <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required value="<?= $editData['judul_tugas'] ?>">
-                  <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required value="<?= $editData['matkul'] ?>">
-                  <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas" required><?= $editData['desc_tugas'] ?></textarea>
-                  <input type="date" id="deadline1" name="dl1" required value="<?= $editData['deadline1'] ?>">
-                  <input type="time" id="deadline2" name="dl2" required value="<?= $editData['deadline2'] ?>">
-                  <input type="email" name="collab_email" value="<?= $old_collab_email['collaborator'] ?? '' ?>">
-                
-                  <!-- Bagian Reminder untuk Edit -->
-                  <div class="reminder-section" style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;">
-                    <h5>Pengingat</h5>
-                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                      <input type="checkbox" id="reminder_enabled_edit" name="reminder_enabled" value="1" style="width: 16px; height: 16px; appearance: auto; -webkit-appearance: auto;"
-                             <?= $editData['reminder_enabled'] ? 'checked' : '' ?>>
-                      <label for="reminder_enabled_edit" style="margin-left: 8px;">Aktifkan Pengingat</label>
-                    </div>
-                    <div id="reminder_options_edit" style="<?= $editData['reminder_enabled'] ? '' : 'display: none;' ?>">
-                      <select name="reminder_minutes" id="reminder_minutes_edit">
-                        <option value="">Pilih Waktu Pengingat</option>
-                        <?php
-                        // Reset pointer untuk template reminder
-                        mysqli_data_seek($reminder_templates, 0);
-                        while ($template = mysqli_fetch_assoc($reminder_templates)):
-                          // Hitung menit dari reminder_time jika ada
-                          $selected_minutes = 0;
-                          if ($editData['reminder_time']) {
-                            $deadline_timestamp = strtotime($editData['deadline1'] . ' ' . $editData['deadline2']);
-                            $reminder_timestamp = strtotime($editData['reminder_time']);
-                            $selected_minutes = ($deadline_timestamp - $reminder_timestamp) / 60;
-                          }
-                          ?>
-                            <option value="<?= $template['minutes_before'] ?>" 
-                                    <?= $selected_minutes == $template['minutes_before'] ? 'selected' : '' ?>>
-                              <?= $template['name'] ?>
-                            </option>
-                        <?php endwhile; ?>
-                      </select>
-                    </div>
+        <div id="dialog-2" class="dialog js-dialog" data-animation="on">
+          <div class="dialog__content" role="alertdialog" aria-labelledby="dialog-title-2"
+            aria-describedby="dialog-description-2">
+            <h4 id="dialog-title-2" class="dialog__title">Perbarui Tugas</h4>
+            <form action="" method="post">
+              <div id="dialog-description-2 inputMK" class="dialog__description add-task">
+                <input type="hidden" name="id_tugas" value="<?= $editData['id_tugas'] ?>">
+                <input type="text" id="tugas" name="tugas" placeholder="Judul Tugas" required
+                  value="<?= $editData['judul_tugas'] ?>">
+                <input type="text" id="matkul" name="matkul" placeholder="Mata kuliah" required
+                  value="<?= $editData['matkul'] ?>">
+                <textarea id="deskripsi" name="deskripsi" placeholder="Deskripsi Tugas"
+                  required><?= $editData['desc_tugas'] ?></textarea>
+                <input type="date" id="deadline1" name="dl1" required value="<?= $editData['deadline1'] ?>">
+                <input type="time" id="deadline2" name="dl2" required value="<?= $editData['deadline2'] ?>">
+                <input type="email" name="collab_email" value="<?= $old_collab_email['collaborator'] ?? '' ?>">
+
+                <!-- Bagian Reminder untuk Edit -->
+                <div class="reminder-section" style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;">
+                  <h5>Pengingat</h5>
+                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" id="reminder_enabled_edit" name="reminder_enabled" value="1"
+                      style="width: 16px; height: 16px; appearance: auto; -webkit-appearance: auto;"
+                      <?= $editData['reminder_enabled'] ? 'checked' : '' ?>>
+                    <label for="reminder_enabled_edit" style="margin-left: 8px;">Aktifkan Pengingat</label>
+                  </div>
+                  <div id="reminder_options_edit" style="<?= $editData['reminder_enabled'] ? '' : 'display: none;' ?>">
+                    <select name="reminder_minutes" id="reminder_minutes_edit">
+                      <option value="">Pilih Waktu Pengingat</option>
+                      <?php
+                      // Reset pointer untuk template reminder
+                      mysqli_data_seek($reminder_templates, 0);
+                      while ($template = mysqli_fetch_assoc($reminder_templates)):
+                        // Hitung menit dari reminder_time jika ada
+                        $selected_minutes = 0;
+                        if ($editData['reminder_time']) {
+                          $deadline_timestamp = strtotime($editData['deadline1'] . ' ' . $editData['deadline2']);
+                          $reminder_timestamp = strtotime($editData['reminder_time']);
+                          $selected_minutes = ($deadline_timestamp - $reminder_timestamp) / 60;
+                        }
+                        ?>
+                        <option value="<?= $template['minutes_before'] ?>" <?= $selected_minutes == $template['minutes_before'] ? 'selected' : '' ?>>
+                          <?= $template['name'] ?>
+                        </option>
+                      <?php endwhile; ?>
+                    </select>
                   </div>
                 </div>
-                <footer class="dialog__footer">
-                  <button class="cd-btn cd-btn--subtle js-dialog__close">Batalkan</button>
-                  <button type="submit" class="cd-btn cd-btn--accent" name="update">Perbarui</button>
-                </footer>
-              </form>
-            </div>
+              </div>
+              <footer class="dialog__footer">
+                <button class="cd-btn cd-btn--subtle js-dialog__close">Batalkan</button>
+                <button type="submit" class="cd-btn cd-btn--accent" name="update">Perbarui</button>
+              </footer>
+            </form>
           </div>
+        </div>
       <?php endif; ?>
 
       <div class="task-lists">
@@ -479,35 +487,34 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
   </main>
 
   <?php include 'footer.php' ?>
-  
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  // --- Checkbox Tugas Tambah ---
-  const reminderCheckbox = document.getElementById("reminder_enabled");
-  const reminderOptions = document.getElementById("reminder_options");
 
-  if (reminderCheckbox && reminderOptions) {
-    reminderCheckbox.addEventListener("change", function () {
-      reminderOptions.style.display = this.checked ? "block" : "none";
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // --- Checkbox Tugas Tambah ---
+      const reminderCheckbox = document.getElementById("reminder_enabled");
+      const reminderOptions = document.getElementById("reminder_options");
+
+      if (reminderCheckbox && reminderOptions) {
+        reminderCheckbox.addEventListener("change", function () {
+          reminderOptions.style.display = this.checked ? "block" : "none";
+        });
+      }
+
+      // --- Checkbox Tugas Edit ---
+      const reminderCheckboxEdit = document.getElementById("reminder_enabled_edit");
+      const reminderOptionsEdit = document.getElementById("reminder_options_edit");
+
+      if (reminderCheckboxEdit && reminderOptionsEdit) {
+        reminderCheckboxEdit.addEventListener("change", function () {
+          reminderOptionsEdit.style.display = this.checked ? "block" : "none";
+        });
+      }
     });
-  }
-
-  // --- Checkbox Tugas Edit ---
-  const reminderCheckboxEdit = document.getElementById("reminder_enabled_edit");
-  const reminderOptionsEdit = document.getElementById("reminder_options_edit");
-
-  if (reminderCheckboxEdit && reminderOptionsEdit) {
-    reminderCheckboxEdit.addEventListener("change", function () {
-      reminderOptionsEdit.style.display = this.checked ? "block" : "none";
-    });
-  }
-});
-</script>
-  
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous">
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   <script src="../asset/attributes/Atribute1.js"></script>
   <script src="../asset/attributes/Atribute2.js"></script>

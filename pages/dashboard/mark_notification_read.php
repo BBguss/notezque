@@ -1,16 +1,49 @@
 <?php
+// filepath: c:\xampp\htdocs\Kelompok_3\pages\dashboard\mark_notification_read.php
 include '../../config/koneksi.php';
 include '../../config/session.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
-$notificationId = $data['notification_id'];
-$id_user = $_SESSION['id_user'];
+// Set header untuk JSON
+header('Content-Type: application/json');
 
-$sql = "UPDATE notifications SET is_read = 1 WHERE id_notification = ? AND id_user = ?";
+try {
+    $input = file_get_contents("php://input");
+    $data = json_decode($input, true);
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $notificationId, $id_user);
-$stmt->execute();
+    if (!$data || !isset($data['notification_id'])) {
+        echo json_encode(array('success' => false, 'error' => 'Invalid input'));
+        exit();
+    }
 
-echo json_encode(['success' => $stmt->affected_rows > 0]);
+    $notificationId = (int) $data['notification_id'];
+    $id_user = (int) $_SESSION['id_user'];
+
+    if ($notificationId <= 0) {
+        echo json_encode(array('success' => false, 'error' => 'Invalid notification ID'));
+        exit();
+    }
+
+    $sql = "UPDATE notifications 
+            SET is_read = 1 
+            WHERE id_notification = $notificationId AND id_user = $id_user";
+
+    $result = mysqli_query($conn, $sql);
+
+    if ($result) {
+        $affected_rows = mysqli_affected_rows($conn);
+        echo json_encode(array('success' => $affected_rows > 0));
+    } else {
+        echo json_encode(array(
+            'success' => false,
+            'error' => 'Database error: ' . mysqli_error($conn)
+        ));
+    }
+} catch (Exception $e) {
+    echo json_encode(array(
+        'success' => false,
+        'error' => 'Server error: ' . $e->getMessage()
+    ));
+}
+
+mysqli_close($conn);
 ?>

@@ -37,265 +37,264 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"
         rel="stylesheet">
 
-        <style>
-            /* Container untuk icon navbar */
-.nav-icons {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+    <style>
+        /* Container untuk icon navbar */
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-/* Styling untuk container notifikasi */
-.notification-container {
-    position: relative;
-    display: inline-block;
-      z-index: 10000;
-}
+        /* Styling untuk container notifikasi */
+        .notification-container {
+            position: relative;
+            display: inline-block;
+            z-index: 10000;
+        }
 
-/* Styling untuk icon lonceng */
-.notification-bell {
-    position: relative;
-    cursor: pointer;
-    color: white;
-    padding: 8px;
-    border-radius: 50%;
-    transition: background-color 0.3s ease;
-}
+        /* Styling untuk icon lonceng */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
 
-.notification-bell:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
+        .notification-bell:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-/* Badge untuk jumlah notifikasi */
-.notification-badge {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    background-color: #ff4444;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: bold;
-    min-width: 20px;
-}
+        /* Badge untuk jumlah notifikasi */
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 20px;
+        }
 
-.notification-badge.hidden {
-    display: none;
-}
+        .notification-badge.hidden {
+            display: none;
+        }
 
-/* Dropdown notifikasi */
-.notification-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 350px;
-    max-height: 400px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 99999 !important;;
-    display: none;
-    border: 1px solid #e0e0e0;
-}
+        /* Dropdown notifikasi */
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 350px;
+            max-height: 400px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 99999 !important;
+            ;
+            display: none;
+            border: 1px solid #e0e0e0;
+        }
 
-.notification-dropdown.show {
-    display: block !important;
-}
+        .notification-dropdown.show {
+            display: block !important;
+        }
 
-/* Header dropdown */
-.notification-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        /* Header dropdown */
+        .notification-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.notification-header h3 {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-}
+        .notification-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
 
-.mark-all-read {
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
+        .mark-all-read {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
 
-.mark-all-read:hover {
-    background-color: #f8f9fa;
-}
+        .mark-all-read:hover {
+            background-color: #f8f9fa;
+        }
 
-/* List notifikasi */
-.notification-list {
-    max-height: 300px;
-    overflow-y: auto;
-}
+        /* List notifikasi */
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
 
-/* Item notifikasi */
-.notification-item {
-    padding: 12px 20px;
-    border-bottom: 1px solid #f5f5f5;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    position: relative;
-}
+        /* Item notifikasi */
+        .notification-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
 
-.notification-item:hover {
-    background-color: #f8f9fa;
-}
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
 
-.notification-item.unread {
-    background-color: #f0f8ff;
-    border-left: 3px solid #007bff;
-}
+        .notification-item.unread {
+            background-color: #f0f8ff;
+            border-left: 3px solid #007bff;
+        }
 
-.notification-item.unread::before {
-    content: '';
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 8px;
-    height: 8px;
-    background-color: #007bff;
-    border-radius: 50%;
-}
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background-color: #007bff;
+            border-radius: 50%;
+        }
 
-.notification-title {
-    font-weight: bold;
-    color: #333;
-    font-size: 14px;
-    margin-bottom: 4px;
-}
+        .notification-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
 
-.notification-message {
-    color: #666;
-    font-size: 13px;
-    margin-bottom: 4px;
-}
+        .notification-message {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
 
-.notification-time {
-    color: #999;
-    font-size: 11px;
-}
+        .notification-time {
+            color: #999;
+            font-size: 11px;
+        }
 
-/* Jika tidak ada notifikasi */
-.no-notifications {
-    padding: 40px 20px;
-    text-align: center;
-    color: #999;
-}
+        /* Jika tidak ada notifikasi */
+        .no-notifications {
+            padding: 40px 20px;
+            text-align: center;
+            color: #999;
+        }
 
-.no-notifications p {
-    margin: 0;
-    font-size: 14px;
-}
+        .no-notifications p {
+            margin: 0;
+            font-size: 14px;
+        }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .notification-dropdown {
-        width: 300px;
-        right: -50px;
-    }
-}
+        /* Responsive */
+        @media (max-width: 768px) {
+            .notification-dropdown {
+                width: 300px;
+                right: -50px;
+            }
+        }
 
-/* animasi greeting user */
-.toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: blue;
-  color: #fff;
-  padding: 14px 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  font-size: 16px;
-  z-index: 99999;
-  opacity: 0;
-  transform: translateY(-20px);
-  animation: slideIn 0.5s forwards, fadeOut 0.5s 3.5s forwards;
-}
+        /* animasi greeting user */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: blue;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            z-index: 99999;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideIn 0.5s forwards, fadeOut 0.5s 3.5s forwards;
+        }
 
-@keyframes slideIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    transform: translateY(-20px);
-    z-index: -5;
-  }
-}
-
-
-
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+                z-index: -5;
+            }
+        }
     </style>
 </head>
 
 <body>
     <header>
         <div class="topNav-db">
-             <nav>
-        <a href="5Dashboard.php"><img src="../../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
-        <div class="nav-icons">
-            <!-- Icon Notifikasi -->
-            <div class="notification-container">
-            <div class="notification-bell" id="notificationBell">
-    <iconify-icon icon="mdi:bell-outline" width="28" height="28"></iconify-icon>
-    <span class="notification-badge" id="notificationBadge">0</span>
-</div>
-<div class="notification-dropdown" id="notificationDropdown">
-    <div class="notification-header">
-        <h3>Notifikasi</h3>
-        <button class="mark-all-read" id="markAllRead">Tandai Semua Dibaca</button>
-    </div>
-    <div class="notification-list" id="notificationList">
-        <div class="no-notifications">
-            <p>Tidak ada notifikasi</p>
-        </div>
-    </div>
-</div>
+            <nav>
+                <a href="5Dashboard.php"><img src="../../uploads/<?= $logo['gambar'] ?>" alt="Logo"></a>
+                <div class="nav-icons">
+                    <!-- Icon Notifikasi -->
+                    <div class="notification-container">
+                        <div class="notification-bell" id="notificationBell">
+                            <iconify-icon icon="mdi:bell-outline" width="28" height="28"></iconify-icon>
+                            <span class="notification-badge" id="notificationBadge">0</span>
+                        </div>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <h3>Notifikasi</h3>
+                                <button class="mark-all-read" id="markAllRead">Tandai Semua Dibaca</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <div class="no-notifications">
+                                    <p>Tidak ada notifikasi</p>
+                                </div>
+                            </div>
+                        </div>
 
-<?php if (isset($_SESSION['welcome_message'])): ?>
-  <div class="toast" id="loginToast">
-    <?= $_SESSION['welcome_message']; ?>
-  </div>
-  <?php unset($_SESSION['welcome_message']); ?>
-<?php endif; ?>
+                        <?php if (isset($_SESSION['welcome_message'])): ?>
+                            <div class="toast" id="loginToast">
+                                <?= $_SESSION['welcome_message']; ?>
+                            </div>
+                            <?php unset($_SESSION['welcome_message']); ?>
+                        <?php endif; ?>
 
 
-            </div>
-            
-            <!-- Icon Profile -->
-            <div class="dropdown">
-                <i class="dropdown-button" style="color: white;">
-                    <iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon>
-                </i>
-                <div class="dropdown-content">
-                    <a href="../../pages/12profile.php"><button type="submit" name="profile">Profile</button></a>
-                    <form action="" method="post">
-                        <button type="submit" name="logout">Logout</button>
-                    </form>
+                    </div>
+
+                    <!-- Icon Profile -->
+                    <div class="dropdown">
+                        <i class="dropdown-button" style="color: white;">
+                            <iconify-icon icon="iconamoon:profile-light" width="36" height="36"></iconify-icon>
+                        </i>
+                        <div class="dropdown-content">
+                            <a href="../../pages/12profile.php"><button type="submit"
+                                    name="profile">Profile</button></a>
+                            <form action="" method="post">
+                                <button type="submit" name="logout">Logout</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </nav>
+            </nav>
         </div>
 
         <aside>
@@ -336,7 +335,7 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
             <div class="container-atas">
                 <div class="jadwalKuliah-db">
                     <h2>Acara hari ini</h2>
-                    <?php 
+                    <?php
                     if ($dataAcara && mysqli_num_rows($dataAcara) > 0) {
                         while ($row = mysqli_fetch_assoc($dataAcara)) {
                             echo '
@@ -347,11 +346,11 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
                             <div class="keterangan">
                                 <div class="waktu">
                                     <h4>Waktu</h4>
-                                    <p>'. ($row['waktu_acara']).'</p>
+                                    <p>' . ($row['waktu_acara']) . '</p>
                                 </div>
                                 <div class="ruangan">
                                     <h4>Deskripsi</h4>
-                                    <p>'.($row['desc_acara']).'</p>
+                                    <p>' . ($row['desc_acara']) . '</p>
                                 </div>
                             </div>
                         </div>
@@ -359,7 +358,7 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
                         }
                     }
                     ?>
-                    
+
                 </div>
 
                 <div class="kalender-db">
@@ -418,7 +417,7 @@ $logo = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM konten_statis WHER
                             echo '
                         <div class="tmatkul">
                             <div class="deadline">
-                                <p><strong>Deadline:</strong> ' .($row['deadline1']) . " [" .($row['deadline2']) . "]" . '</p>
+                                <p><strong>Deadline:</strong> ' . ($row['deadline1']) . " [" . ($row['deadline2']) . "]" . '</p>
                             </div>
                             <h4><strong>Judul tugas:</strong> ' . ($row['judul_tugas']) . '</h4>
                             <p><strong>Mata Kuliah:</strong> ' . ($row['matkul']) . '</p>
